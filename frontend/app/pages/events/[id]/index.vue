@@ -28,20 +28,26 @@
     </div>
 
     <div v-else class="flex-1 flex flex-col">
-      <div class="relative flex-1 min-h-0 overflow-hidden">
+      <div class="relative mx-auto w-full max-w-md pb-4">
         <GameCard
           v-for="(game, index) in visibleCards"
           :key="game.id"
           :game="game"
           :active="index === 0"
           :style="stackStyle(index)"
-          :class="index === 0 ? 'z-20' : 'z-10 pointer-events-none'"
+          :class="
+            index === 0
+              ? 'relative z-20'
+              : 'absolute inset-0 z-10 pointer-events-none'
+          "
           :drag-x="index === 0 ? dragX : 0"
           :drag-y="index === 0 ? dragY : 0"
           :leaving="index === 0 ? leaving : null"
           @pointerdown="index === 0 ? onPointerDown($event) : undefined"
         />
       </div>
+
+      <div class="flex-1 min-h-0" aria-hidden="true" />
 
       <div class="relative z-30 flex items-center justify-center gap-4 py-6 shrink-0 bg-slate-950">
         <button

@@ -1,12 +1,12 @@
 <template>
   <article
-    class="absolute inset-x-0 top-0 mx-auto w-full max-w-md max-h-full flex flex-col rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden select-none touch-none"
+    class="mx-auto w-full max-w-md flex flex-col rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden select-none touch-none"
     :style="cardStyle"
     @pointerdown="$emit('pointerdown', $event)"
   >
     <MediaCarousel :media="game.media" :active="active" class="shrink-0 bg-black" />
 
-    <div class="p-4 space-y-2.5 min-h-0 overflow-hidden">
+    <div class="p-4 space-y-2.5">
       <div class="flex items-start justify-between gap-3">
         <h2 class="text-xl font-bold leading-tight min-w-0">{{ game.name }}</h2>
         <span
