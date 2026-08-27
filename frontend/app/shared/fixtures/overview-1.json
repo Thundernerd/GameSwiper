@@ -1,0 +1,31 @@
+{
+  "event": {
+    "id": 1,
+    "name": "Summer Game Fest 2024",
+    "slug": "summer-game-fest-2024"
+  },
+  "liked": [
+    {
+      "id": 101,
+      "name": "Astro Bot",
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d9f.jpg",
+      "platforms": ["PlayStation 5"],
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/astro-bot" },
+        { "label": "Official", "url": "https://www.playstation.com/games/astro-bot/" }
+      ]
+    }
+  ],
+  "disliked": [
+    {
+      "id": 104,
+      "name": "Silent Hill 2",
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8ghd.jpg",
+      "platforms": ["PlayStation 5", "PC (Microsoft Windows)"],
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/silent-hill-2" },
+        { "label": "Steam", "url": "https://store.steampowered.com/app/2124490" }
+      ]
+    }
+  ]
+}

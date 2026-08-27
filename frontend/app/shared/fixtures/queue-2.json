@@ -1,0 +1,111 @@
+{
+  "event": {
+    "id": 2,
+    "name": "The Game Awards 2023",
+    "slug": "the-game-awards-2023"
+  },
+  "games": [
+    {
+      "id": 101,
+      "name": "Astro Bot",
+      "genres": ["Platform", "Adventure"],
+      "platforms": ["PlayStation 5"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d9f.jpg",
+      "summary": "A charming 3D platformer starring Astro and his crew of Bots across dazzling worlds.",
+      "rating": 88,
+      "developers": ["Team Asobi"],
+      "publishers": ["Sony Interactive Entertainment"],
+      "releaseDate": "2024-09-06T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/astro-bot" },
+        { "label": "Official", "url": "https://www.playstation.com/games/astro-bot/" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/uJPGP1fTypM",
+          "title": "Astro Bot Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/scq8a1.jpg"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d9f.jpg"
+        }
+      ]
+    },
+    {
+      "id": 201,
+      "name": "Baldur's Gate 3",
+      "genres": ["Role-playing (RPG)", "Strategy"],
+      "platforms": ["PC (Microsoft Windows)", "PlayStation 5", "Xbox Series X|S"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co670h.jpg",
+      "summary": "Gather your party and return to the Forgotten Realms in a story-rich D&D RPG.",
+      "rating": 96,
+      "developers": ["Larian Studios"],
+      "publishers": ["Larian Studios"],
+      "releaseDate": "2023-08-03T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/baldurs-gate-3" },
+        { "label": "Steam", "url": "https://store.steampowered.com/app/1086940" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/1T22wNbyByM",
+          "title": "Cinematic Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co670h.jpg"
+        }
+      ]
+    },
+    {
+      "id": 202,
+      "name": "Alan Wake 2",
+      "genres": ["Adventure", "Shooter"],
+      "platforms": ["PC (Microsoft Windows)", "PlayStation 5", "Xbox Series X|S"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co6lbd.jpg",
+      "summary": "A survival horror sequel where fiction and reality blur in Bright Falls.",
+      "rating": 89,
+      "developers": ["Remedy Entertainment"],
+      "publishers": ["Epic Games Publishing"],
+      "releaseDate": "2023-10-27T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/alan-wake-2" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/dlkeNPSVFWG",
+          "title": "Launch Trailer"
+        }
+      ]
+    },
+    {
+      "id": 203,
+      "name": "Spider-Man 2",
+      "genres": ["Adventure", "Fighting"],
+      "platforms": ["PlayStation 5"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co6foj.jpg",
+      "summary": null,
+      "rating": null,
+      "developers": ["Insomniac Games"],
+      "publishers": ["Sony Interactive Entertainment"],
+      "releaseDate": "2023-10-20T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/marvels-spider-man-2" },
+        { "label": "Official", "url": "https://www.playstation.com/games/marvels-spider-man-2/" }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co6foj.jpg"
+        }
+      ]
+    }
+  ]
+}

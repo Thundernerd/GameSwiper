@@ -1,0 +1,56 @@
+{
+  "event": {
+    "id": 3,
+    "name": "Nintendo Direct March 2024",
+    "slug": "nintendo-direct-march-2024"
+  },
+  "games": [
+    {
+      "id": 301,
+      "name": "Paper Mario: The Thousand-Year Door",
+      "genres": ["Role-playing (RPG)", "Adventure"],
+      "platforms": ["Nintendo Switch"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co7d8m.jpg",
+      "summary": "Mario returns to Rogueport in a remake of the beloved paper RPG adventure.",
+      "rating": 90,
+      "developers": ["Intelligent Systems"],
+      "publishers": ["Nintendo"],
+      "releaseDate": "2024-05-23T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/paper-mario-the-thousand-year-door" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/VQ5Pj0S7z5E",
+          "title": "Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co7d8m.jpg"
+        }
+      ]
+    },
+    {
+      "id": 302,
+      "name": "Luigi's Mansion 2 HD",
+      "genres": ["Adventure", "Puzzle"],
+      "platforms": ["Nintendo Switch"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co7abc.jpg",
+      "summary": "Luigi returns with his Poltergust to clear ghosts in this HD remaster.",
+      "rating": 77,
+      "developers": ["Next Level Games"],
+      "publishers": ["Nintendo"],
+      "releaseDate": "2024-06-27T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/luigis-mansion-2-hd" }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co7abc.jpg"
+        }
+      ]
+    }
+  ]
+}

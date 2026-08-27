@@ -1,0 +1,116 @@
+{
+  "event": {
+    "id": 1,
+    "name": "Summer Game Fest 2024",
+    "slug": "summer-game-fest-2024"
+  },
+  "games": [
+    {
+      "id": 101,
+      "name": "Astro Bot",
+      "genres": ["Platform", "Adventure"],
+      "platforms": ["PlayStation 5"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d9f.jpg",
+      "summary": "A charming 3D platformer starring Astro and his crew of Bots across dazzling worlds.",
+      "rating": 88,
+      "developers": ["Team Asobi"],
+      "publishers": ["Sony Interactive Entertainment"],
+      "releaseDate": "2024-09-06T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/astro-bot" },
+        { "label": "Official", "url": "https://www.playstation.com/games/astro-bot/" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/uJPGP1fTypM",
+          "title": "Astro Bot Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/scq8a1.jpg"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8d9f.jpg"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Metaphor: ReFantazio",
+      "genres": ["Role-playing (RPG)", "Adventure"],
+      "platforms": ["PC (Microsoft Windows)", "PlayStation 5", "Xbox Series X|S"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co6w2w.jpg",
+      "summary": "A fantasy RPG from the creators of Persona about a journey to become king.",
+      "rating": 92,
+      "developers": ["Studio Zero"],
+      "publishers": ["Atlus", "Sega"],
+      "releaseDate": "2024-10-11T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/metaphor-refantazio" },
+        { "label": "Steam", "url": "https://store.steampowered.com/app/2679460" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/MjFkJAhmmw4",
+          "title": "Launch Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co6w2w.jpg"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Black Myth: Wukong",
+      "genres": ["Role-playing (RPG)", "Adventure"],
+      "platforms": ["PC (Microsoft Windows)", "PlayStation 5"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co7n8y.jpg",
+      "summary": "An action RPG inspired by Journey to the West, following the Destined One.",
+      "rating": 81,
+      "developers": ["Game Science"],
+      "publishers": ["Game Science"],
+      "releaseDate": "2024-08-20T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/black-myth-wukong" },
+        { "label": "Steam", "url": "https://store.steampowered.com/app/2358720" }
+      ],
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://www.youtube.com/embed/iFq1oajn_Oo",
+          "title": "Final Trailer"
+        },
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_screenshot_big/scnxk2.jpg"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Silent Hill 2",
+      "genres": ["Adventure", "Puzzle"],
+      "platforms": ["PlayStation 5", "PC (Microsoft Windows)"],
+      "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8ghd.jpg",
+      "summary": "A remake of the psychological horror classic as James Sunderland searches for his wife.",
+      "rating": null,
+      "developers": ["Bloober Team"],
+      "publishers": ["Konami"],
+      "releaseDate": "2024-10-08T00:00:00Z",
+      "links": [
+        { "label": "IGDB", "url": "https://www.igdb.com/games/silent-hill-2" },
+        { "label": "Steam", "url": "https://store.steampowered.com/app/2124490" }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co8ghd.jpg"
+        }
+      ]
+    }
+  ]
+}

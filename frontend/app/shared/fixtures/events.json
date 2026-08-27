@@ -1,0 +1,34 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "name": "Summer Game Fest 2024",
+      "slug": "summer-game-fest-2024",
+      "logoUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co5s5v.jpg",
+      "startTime": "2024-06-07T17:00:00Z",
+      "endTime": "2024-06-07T23:00:00Z",
+      "ratedCount": 0,
+      "totalCount": 4
+    },
+    {
+      "id": 2,
+      "name": "The Game Awards 2023",
+      "slug": "the-game-awards-2023",
+      "logoUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co2rrg.jpg",
+      "startTime": "2023-12-07T20:00:00Z",
+      "endTime": "2023-12-08T02:00:00Z",
+      "ratedCount": 1,
+      "totalCount": 3
+    },
+    {
+      "id": 3,
+      "name": "Nintendo Direct March 2024",
+      "slug": "nintendo-direct-march-2024",
+      "logoUrl": null,
+      "startTime": "2024-03-14T15:00:00Z",
+      "endTime": "2024-03-14T16:00:00Z",
+      "ratedCount": 0,
+      "totalCount": 2
+    }
+  ]
+}
