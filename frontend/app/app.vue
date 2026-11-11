@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <header
-      v-if="user && !isPrototype"
+      v-if="user"
       class="sticky top-0 z-40 border-b-4 border-arcade-magenta bg-arcade-bg"
     >
       <div class="mx-auto max-w-6xl px-4 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -33,19 +33,12 @@
     <main class="flex-1">
       <NuxtPage />
     </main>
-    <div v-if="!isPrototype" class="arcade-scanlines" aria-hidden="true" />
+    <div class="arcade-scanlines" aria-hidden="true" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { isPrototypePath } from '~/prototypes/styles'
-
 const { user, fetchMe, logout } = useAuth()
-const route = useRoute()
-// Throwaway style prototypes draw their own header.
-const isPrototype = computed(() => isPrototypePath(route.path))
-// Throwaway: lets main.css keep the arcade body type out of the other style prototypes.
-useHead({ bodyAttrs: { class: computed(() => (isPrototype.value ? 'prototype' : '')) } })
 
 onMounted(() => {
   fetchMe()
