@@ -9,19 +9,22 @@
   Retro arcade style: neon on near-black, pixel type, hard edges and scanlines.
   The palette is also in the Tailwind theme as `arcade-*` (tailwind.config.ts), so markup
   writes `text-arcade-yellow` rather than referring to these variables.
+  Each variable holds space-separated RGB channels, not a colour, so Tailwind's opacity
+  modifiers work (`bg-arcade-cyan/20`). In CSS, wrap them: `rgb(var(--arcade-cyan))`, or
+  `rgb(var(--arcade-cyan) / 0.5)` for a translucent one.
 */
 :root {
-  --arcade-bg: #08060f;
-  --arcade-panel: #120e1f;
-  --arcade-line: #3a3163;
-  --arcade-text: #efeeff; /* AA: 17.6:1 on --arcade-bg, 16.5:1 on --arcade-panel */
-  --arcade-muted: #b4b0d6; /* AA: 9.7:1 on --arcade-bg, 9.1:1 on --arcade-panel */
-  --arcade-dim: #8f8bb5; /* AA: 6.3:1 on --arcade-bg, 5.9:1 on --arcade-panel */
-  --arcade-magenta: #ff4fd8;
-  --arcade-cyan: #3ef0ff;
-  --arcade-yellow: #ffe24a;
-  --arcade-green: #4dff8a;
-  --arcade-red: #ff5a72;
+  --arcade-bg: 8 6 15; /* #08060f */
+  --arcade-panel: 18 14 31; /* #120e1f */
+  --arcade-line: 58 49 99; /* #3a3163 */
+  --arcade-text: 239 238 255; /* #efeeff · AA: 17.6:1 on --arcade-bg, 16.5:1 on --arcade-panel */
+  --arcade-muted: 180 176 214; /* #b4b0d6 · AA: 9.7:1 on --arcade-bg, 9.1:1 on --arcade-panel */
+  --arcade-dim: 143 139 181; /* #8f8bb5 · AA: 6.3:1 on --arcade-bg, 5.9:1 on --arcade-panel */
+  --arcade-magenta: 255 79 216; /* #ff4fd8 */
+  --arcade-cyan: 62 240 255; /* #3ef0ff */
+  --arcade-yellow: 255 226 74; /* #ffe24a */
+  --arcade-green: 77 255 138; /* #4dff8a */
+  --arcade-red: 255 90 114; /* #ff5a72 */
 }
 
 html,
@@ -31,12 +34,14 @@ body,
 }
 
 body {
+  /* The glow stops are --arcade-magenta and --arcade-cyan, but stay literal rgba(): written as
+     rgb(var(…) / a), Chromium renders these gradients up to 1/255 off from before. */
   background:
     radial-gradient(ellipse at 50% 0%, rgba(255, 79, 216, 0.12), transparent 60%),
     radial-gradient(ellipse at 50% 100%, rgba(62, 240, 255, 0.08), transparent 60%),
-    var(--arcade-bg);
+    rgb(var(--arcade-bg));
   background-attachment: fixed;
-  color: var(--arcade-text);
+  color: rgb(var(--arcade-text));
   font-family: 'VT323', ui-monospace, monospace;
   font-size: 1.3rem;
   line-height: 1.25;
@@ -51,14 +56,34 @@ body {
 a:focus-visible,
 button:focus-visible,
 select:focus-visible {
-  outline: 2px dashed var(--arcade-yellow);
+  outline: 2px dashed rgb(var(--arcade-yellow));
   outline-offset: 3px;
 }
 
-.arcade-display {
+.arcade-display,
+.arcade-back-link {
   font-family: 'Press Start 2P', ui-monospace, monospace;
   line-height: 1.6;
   letter-spacing: 0.02em;
+}
+
+/* Links: cyan, yellow on hover.
+   arcade-link is an inline text link; arcade-back-link is a small pixel-type link back up a
+   level ("◀ EVENTS") and also gets the arcade-display type above. */
+.arcade-link,
+.arcade-back-link {
+  color: rgb(var(--arcade-cyan));
+}
+.arcade-link:hover,
+.arcade-back-link:hover {
+  color: rgb(var(--arcade-yellow));
+}
+.arcade-link {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+.arcade-back-link {
+  font-size: 10px;
 }
 
 .arcade-glow {
@@ -66,8 +91,8 @@ select:focus-visible {
 }
 
 .arcade-panel {
-  background: var(--arcade-panel);
-  border: 2px solid var(--arcade-line);
+  background: rgb(var(--arcade-panel));
+  border: 2px solid rgb(var(--arcade-line));
   box-shadow: 4px 4px 0 #000;
 }
 
@@ -90,30 +115,30 @@ select:focus-visible {
   pointer-events: none;
 }
 .arcade-btn-ghost {
-  color: var(--arcade-muted);
+  color: rgb(var(--arcade-muted));
 }
 .arcade-btn-primary {
-  color: var(--arcade-bg);
-  background: var(--arcade-yellow);
-  border-color: var(--arcade-yellow);
+  color: rgb(var(--arcade-bg));
+  background: rgb(var(--arcade-yellow));
+  border-color: rgb(var(--arcade-yellow));
 }
 .arcade-btn-primary:hover {
-  background: color-mix(in srgb, var(--arcade-yellow) 70%, white);
+  background: color-mix(in srgb, rgb(var(--arcade-yellow)) 70%, white);
 }
 
 .arcade-input {
   width: 100%;
   background: #000;
-  border: 2px solid var(--arcade-line);
-  color: var(--arcade-green);
+  border: 2px solid rgb(var(--arcade-line));
+  color: rgb(var(--arcade-green));
   padding: 0.4rem 0.75rem;
   font-size: 1.5rem;
   outline: none;
-  caret-color: var(--arcade-green);
+  caret-color: rgb(var(--arcade-green));
 }
 .arcade-input:focus {
-  border-color: var(--arcade-cyan);
-  box-shadow: 0 0 0 2px #000, 0 0 12px rgba(62, 240, 255, 0.5);
+  border-color: rgb(var(--arcade-cyan));
+  box-shadow: 0 0 0 2px #000, 0 0 12px rgb(var(--arcade-cyan) / 0.5);
 }
 
 .arcade-tag {

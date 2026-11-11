@@ -6,11 +6,8 @@
       All games you liked or disliked across events.
     </p>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
-      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending">LOADING…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" />
 
     <template v-else>
       <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b-2 border-arcade-line">
@@ -48,7 +45,7 @@
         <p class="arcade-display text-xs text-arcade-yellow mb-3">NO SCORES YET</p>
         <p class="text-arcade-muted">
           {{ emptyMessage }}
-          <NuxtLink to="/" class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow ml-1">Browse events</NuxtLink>
+          <NuxtLink to="/" class="arcade-link ml-1">Browse events</NuxtLink>
         </p>
       </div>
 
@@ -88,13 +85,13 @@ const tabs = computed(() => [
     key: 'liked' as const,
     label: 'LIKED',
     count: liked.value.length,
-    activeClass: 'border-arcade-green text-arcade-green',
+    activeClass: [actionColors.like.border, actionColors.like.text],
   },
   {
     key: 'disliked' as const,
     label: 'DISLIKED',
     count: disliked.value.length,
-    activeClass: 'border-arcade-red text-arcade-red',
+    activeClass: [actionColors.dislike.border, actionColors.dislike.text],
   },
 ])
 

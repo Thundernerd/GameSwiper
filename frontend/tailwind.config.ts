@@ -1,8 +1,10 @@
 import type { Config } from 'tailwindcss'
 
 // The arcade palette lives as CSS variables in app/assets/css/main.css; these names map to it,
-// so markup writes `text-arcade-yellow` instead of `text-[color:var(--arcade-yellow)]`.
-const arcade = (name: string) => `var(--arcade-${name})`
+// so markup writes `text-arcade-yellow` instead of `text-[color:rgb(var(--arcade-yellow))]`.
+// The variables hold RGB channels, so `<alpha-value>` makes opacity modifiers such as
+// `bg-arcade-cyan/20` work.
+const arcade = (name: string) => `rgb(var(--arcade-${name}) / <alpha-value>)`
 
 export default {
   theme: {
