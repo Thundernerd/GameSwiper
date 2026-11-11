@@ -48,6 +48,14 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+To type-check the frontend (including `.vue` files), run:
+
+```bash
+npm run typecheck
+```
+
+`nuxt build` strips types without checking them, so run this before you commit. It exits non-zero on any type error.
+
 ## API contract
 
 The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/api.ts). The mock fixtures are in [`frontend/app/shared/fixtures/`](frontend/app/shared/fixtures/).
