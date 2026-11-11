@@ -125,12 +125,12 @@ async function onLogout() {
   color: var(--r-muted);
 }
 .retro-btn-primary {
-  color: #08060f;
+  color: var(--r-bg);
   background: var(--r-yellow);
   border-color: var(--r-yellow);
 }
 .retro-btn-primary:hover {
-  background: #fff07a;
+  background: color-mix(in srgb, var(--r-yellow) 70%, white);
 }
 
 .retro-input {
