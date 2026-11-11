@@ -1,14 +1,13 @@
 <template>
   <Shell>
     <div class="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16">
-      <p class="ed-caps text-stone-600">Your reading list</p>
-      <h1 class="ed-serif mt-3 text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05]">Library</h1>
+      <h1 class="ed-serif text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05]">Library</h1>
       <p class="mt-4 mb-10 text-lg text-stone-600">
         All games you liked or disliked across events.
       </p>
 
       <p v-if="pending" class="ed-serif italic text-xl text-stone-600 border-t border-stone-300 pt-6">Loading…</p>
-      <p v-else-if="error" class="border-t border-rose-700 pt-6 text-rose-700">{{ error }}</p>
+      <p v-else-if="error" class="border-t-2 border-stone-900 pt-6 ed-serif text-xl italic">{{ error }}</p>
 
       <template v-else>
         <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 mb-10 border-b border-stone-300">

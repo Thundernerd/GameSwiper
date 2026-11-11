@@ -8,7 +8,7 @@
       <p class="mt-4 mb-10 sm:mb-14 text-lg text-stone-600">Your likes and dislikes for this event.</p>
 
       <p v-if="pending" class="ed-serif italic text-xl text-stone-600 border-t border-stone-300 pt-6">Loading…</p>
-      <p v-else-if="error" class="border-t border-rose-700 pt-6 text-rose-700">{{ error }}</p>
+      <p v-else-if="error" class="border-t-2 border-stone-900 pt-6 ed-serif text-xl italic">{{ error }}</p>
 
       <div v-else class="grid gap-12 md:gap-14 md:grid-cols-2">
         <section v-for="column in columns" :key="column.key" class="min-w-0">
@@ -51,7 +51,7 @@
                     {{ link.label }} ↗
                   </a>
                 </div>
-                <p v-if="itemError[game.id]" class="text-sm text-rose-700 mt-2">
+                <p v-if="itemError[game.id]" class="mt-2 border-l-2 border-stone-900 pl-2 text-sm italic">
                   {{ itemError[game.id] }}
                 </p>
               </div>

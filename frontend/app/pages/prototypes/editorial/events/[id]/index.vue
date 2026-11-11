@@ -15,11 +15,10 @@
       </div>
 
       <p v-if="pending" class="ed-serif italic text-xl text-stone-600 py-20 text-center">Loading deck…</p>
-      <p v-else-if="error" class="text-rose-700 py-20 text-center">{{ error }}</p>
+      <p v-else-if="error" class="ed-serif text-xl italic py-20 text-center">{{ error }}</p>
 
       <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center py-16">
-        <p class="ed-caps text-stone-600">Fin.</p>
-        <p class="ed-serif mt-3 text-5xl font-medium tracking-tight">Deck cleared</p>
+        <p class="ed-serif text-5xl font-medium tracking-tight">Deck cleared</p>
         <p class="mt-4 text-lg text-stone-600">You have rated every game in this event.</p>
         <NuxtLink
           :to="link(`/events/${eventId}/overview`)"

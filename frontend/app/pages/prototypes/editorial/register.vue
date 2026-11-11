@@ -1,8 +1,7 @@
 <template>
   <Shell>
     <div class="mx-auto max-w-md px-5 sm:px-8 py-14 sm:py-24">
-      <p class="ed-caps text-stone-600">New reader</p>
-      <h1 class="ed-serif mt-3 text-5xl font-medium tracking-tight leading-[1.05]">Create account</h1>
+      <h1 class="ed-serif text-5xl font-medium tracking-tight leading-[1.05]">Create account</h1>
       <p class="mt-4 mb-10 text-lg text-stone-600 leading-relaxed">Save your likes and pick up where you left off.</p>
       <form class="space-y-6" @submit.prevent="onSubmit">
         <label class="block">
@@ -25,7 +24,7 @@
             autocomplete="new-password"
           />
         </label>
-        <p v-if="error" class="text-sm text-rose-700">{{ error }}</p>
+        <p v-if="error" class="border-l-2 border-stone-900 pl-3 ed-serif italic">{{ error }}</p>
         <button
           type="submit"
           :disabled="loading"

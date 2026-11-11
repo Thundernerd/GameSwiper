@@ -2,8 +2,7 @@
   <Shell>
     <div class="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16">
       <header class="mb-10 sm:mb-14 max-w-2xl">
-        <p class="ed-caps text-stone-600">The archive</p>
-        <h1 class="ed-serif mt-3 text-4xl sm:text-6xl font-medium leading-[1.05] tracking-tight">
+        <h1 class="ed-serif text-4xl sm:text-6xl font-medium leading-[1.05] tracking-tight">
           Finished events
         </h1>
         <p class="mt-4 text-lg text-stone-600 leading-relaxed">
@@ -14,7 +13,7 @@
       <p v-if="pending" class="ed-serif italic text-xl text-stone-600 border-t border-stone-300 pt-6">
         Loading events…
       </p>
-      <p v-else-if="error" class="border-t border-rose-700 pt-6 text-rose-700">{{ error }}</p>
+      <p v-else-if="error" class="border-t-2 border-stone-900 pt-6 ed-serif text-xl italic">{{ error }}</p>
       <p v-else-if="!events.length" class="border-t border-stone-300 pt-6 text-stone-600">
         No finished events yet. Sync IGDB from the backend, or enable mock mode.
       </p>
@@ -52,17 +51,13 @@
             <span class="text-stone-600 tabular-nums">
               {{ ev.ratedCount }} / {{ ev.totalCount }} rated
             </span>
-            <span
-              class="ed-caps"
-              :class="isDone(ev) ? 'text-emerald-700' : 'text-stone-900'"
-            >
+            <span class="ed-caps text-stone-900">
               {{ isDone(ev) ? 'Done' : 'Swipe →' }}
             </span>
           </div>
           <div class="mt-2 h-px bg-stone-300">
             <div
-              class="h-px transition-all"
-              :class="isDone(ev) ? 'bg-emerald-700' : 'bg-stone-900'"
+              class="h-px bg-stone-900 transition-all"
               :style="{
                 width: `${ev.totalCount ? Math.min(100, (ev.ratedCount / ev.totalCount) * 100) : 0}%`,
               }"
