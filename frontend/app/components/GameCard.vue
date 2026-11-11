@@ -99,14 +99,18 @@ const overlayLabels: Record<SwipeAction, string> = {
   defer: 'Later',
 }
 
-const overlayLabel = computed(() => {
-  const action = props.leaving ?? swipeDecision(props.dragX || 0, props.dragY || 0)
-  return action ? overlayLabels[action] : ''
-})
+const overlayClasses: Record<SwipeAction, string> = {
+  like: 'border-arcade-green text-arcade-green',
+  dislike: 'border-arcade-red text-arcade-red',
+  defer: 'border-arcade-yellow text-arcade-yellow',
+}
 
-const overlayClass = computed(() => {
-  if (overlayLabel.value === 'Like') return 'border-arcade-green text-arcade-green'
-  if (overlayLabel.value === 'Nope') return 'border-arcade-red text-arcade-red'
-  return 'border-arcade-yellow text-arcade-yellow'
-})
+/** What the card is doing: flying off (`leaving`), or what releasing the drag here would do. */
+const overlayAction = computed(
+  () => props.leaving ?? swipeDecision(props.dragX || 0, props.dragY || 0),
+)
+
+const overlayLabel = computed(() => (overlayAction.value ? overlayLabels[overlayAction.value] : ''))
+
+const overlayClass = computed(() => (overlayAction.value ? overlayClasses[overlayAction.value] : ''))
 </script>
