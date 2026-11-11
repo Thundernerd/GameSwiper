@@ -22,6 +22,12 @@ export const prototypeStyles: PrototypeStyle[] = [
     name: 'Retro arcade',
     description: 'Arcade cabinet on a CRT: neon on near-black, pixel type, hard edges and scanlines.',
   },
+  {
+    id: 'editorial',
+    name: 'Editorial',
+    description:
+      'Light magazine layout: serif headlines, roomy cover art, and colour only for like, dislike and defer.',
+  },
 ]
 
 /**
