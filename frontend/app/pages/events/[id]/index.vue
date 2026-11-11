@@ -1,29 +1,33 @@
 <template>
   <div class="mx-auto max-w-lg px-4 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
-    <div class="flex items-center justify-between gap-3 mb-4">
-      <div>
-        <NuxtLink to="/" class="text-sm text-slate-400 hover:text-slate-200">← Events</NuxtLink>
-        <h1 class="text-xl font-semibold mt-1">{{ eventName }}</h1>
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <div class="min-w-0">
+        <NuxtLink to="/" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">◀ EVENTS</NuxtLink>
+        <h1 class="arcade-display text-xs sm:text-sm leading-relaxed mt-2 text-arcade-text">{{ eventName }}</h1>
       </div>
       <NuxtLink
         :to="`/events/${eventId}/overview`"
-        class="text-sm rounded-lg border border-slate-700 px-3 py-1.5 hover:bg-slate-800"
+        class="arcade-btn arcade-btn-ghost shrink-0 text-[10px] px-2.5 py-2 !text-arcade-cyan"
       >
-        Overview
+        OVERVIEW
       </NuxtLink>
     </div>
 
-    <p v-if="pending" class="text-slate-400 py-20 text-center">Loading deck…</p>
-    <p v-else-if="error" class="text-rose-400 py-20 text-center">{{ error }}</p>
+    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan py-20 text-center">LOADING DECK…</p>
+    <div v-else-if="error" class="arcade-panel !border-arcade-red my-16 p-5 text-center">
+      <p class="arcade-display text-xs text-arcade-red mb-3">ERROR</p>
+      <p class="text-arcade-text">{{ error }}</p>
+    </div>
 
-    <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-4">
-      <p class="text-2xl font-semibold">Deck cleared</p>
-      <p class="text-slate-400">You have rated every game in this event.</p>
+    <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-5">
+      <p class="arcade-display arcade-glow text-xl sm:text-2xl leading-relaxed text-arcade-green">DECK<br />CLEARED!</p>
+      <p class="arcade-display arcade-blink text-[10px] text-arcade-yellow">STAGE COMPLETE</p>
+      <p class="text-arcade-muted">You have rated every game in this event.</p>
       <NuxtLink
         :to="`/events/${eventId}/overview`"
-        class="rounded-xl bg-violet-600 hover:bg-violet-500 px-5 py-2.5 font-medium"
+        class="arcade-btn arcade-btn-primary px-5 py-3 text-xs"
       >
-        View overview
+        ▶ VIEW OVERVIEW
       </NuxtLink>
     </div>
 
@@ -49,34 +53,38 @@
 
       <div class="flex-1 min-h-0" aria-hidden="true" />
 
-      <div class="relative z-30 flex items-center justify-center gap-4 py-6 shrink-0 bg-slate-950">
+      <div class="relative z-30 flex items-end justify-center gap-5 py-6 shrink-0 bg-arcade-bg">
         <button
           type="button"
-          class="h-14 w-14 rounded-full border-2 border-rose-500 text-rose-400 text-xl font-bold hover:bg-rose-500/10"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-red"
           title="Dislike"
+          aria-label="Dislike"
           @click="decide('dislike')"
         >
           ✕
         </button>
         <button
           type="button"
-          class="h-12 w-12 rounded-full border-2 border-amber-400 text-amber-300 text-sm font-semibold hover:bg-amber-400/10"
+          class="arcade-btn h-12 w-12 text-lg !text-arcade-yellow"
           title="Not sure yet"
+          aria-label="Not sure yet"
           @click="decide('defer')"
         >
           ?
         </button>
         <button
           type="button"
-          class="h-14 w-14 rounded-full border-2 border-emerald-500 text-emerald-400 text-xl font-bold hover:bg-emerald-500/10"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-green"
           title="Like"
+          aria-label="Like"
           @click="decide('like')"
         >
           ♥
         </button>
       </div>
-      <p class="text-center text-xs text-slate-500 pb-4">
-        Swipe right to like · left to dislike · down or ? to defer · {{ deck.length }} left
+      <p class="text-center text-arcade-dim pb-4">
+        Swipe right to like · left to dislike · down or ? to defer ·
+        <span class="text-arcade-yellow tabular-nums">{{ deck.length }} left</span>
       </p>
     </div>
   </div>
@@ -123,8 +131,8 @@ async function loadQueue() {
 function stackStyle(index: number) {
   if (index === 0) return {}
   return {
-    transform: 'scale(0.96) translateY(12px)',
-    opacity: 0.85,
+    transform: 'translate(8px, 8px)',
+    opacity: 0.6,
   }
 }
 

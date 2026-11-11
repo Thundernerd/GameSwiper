@@ -1,58 +1,63 @@
 <template>
   <div class="mx-auto max-w-5xl px-4 py-8">
-    <NuxtLink :to="`/events/${eventId}`" class="text-sm text-slate-400 hover:text-slate-200">
-      ← Back to deck
+    <NuxtLink :to="`/events/${eventId}`" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">
+      ◀ BACK TO DECK
     </NuxtLink>
-    <h1 class="text-3xl font-bold mt-2 mb-1">{{ title }}</h1>
-    <p class="text-slate-400 mb-8">Your likes and dislikes for this event.</p>
+    <p class="arcade-display text-[10px] text-arcade-yellow mt-6 mb-3">— RESULTS —</p>
+    <h1 class="arcade-display arcade-glow text-base sm:text-2xl leading-relaxed text-arcade-magenta mb-3">{{ title }}</h1>
+    <p class="text-arcade-muted mb-8">Your likes and dislikes for this event.</p>
 
-    <p v-if="pending" class="text-slate-400">Loading…</p>
-    <p v-else-if="error" class="text-rose-400">{{ error }}</p>
+    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
+    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
+      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
+      <p class="text-arcade-text">{{ error }}</p>
+    </div>
 
     <div v-else class="grid gap-8 md:grid-cols-2">
-      <section v-for="column in columns" :key="column.key">
-        <h2 :class="['text-lg font-semibold mb-4', column.headingClass]">
-          {{ column.title }} ({{ column.games.length }})
+      <section v-for="column in columns" :key="column.key" class="min-w-0">
+        <h2 :class="['arcade-display text-xs sm:text-sm mb-4 pb-2 border-b-2', column.headingClass]">
+          {{ column.title }} <span class="tabular-nums">({{ column.games.length }})</span>
         </h2>
-        <p v-if="!column.games.length" class="text-slate-500 text-sm">{{ column.empty }}</p>
+        <p v-if="!column.games.length" class="text-arcade-dim">{{ column.empty }}</p>
         <ul class="space-y-3">
           <li
             v-for="game in column.games"
             :key="game.id"
-            class="flex gap-3 rounded-xl border border-slate-800 bg-slate-900/50 p-3"
+            class="arcade-panel flex gap-3 p-3"
           >
             <img
               v-if="game.coverUrl"
               :src="game.coverUrl"
               :alt="game.name"
-              class="h-20 w-14 object-cover rounded-lg bg-slate-800"
+              class="h-20 w-14 shrink-0 object-cover bg-black border-2 border-arcade-line"
             />
             <div class="min-w-0 flex-1">
-              <p class="font-medium truncate">{{ game.name }}</p>
-              <p class="text-xs text-slate-400 mt-0.5 truncate">
+              <p class="text-arcade-text text-2xl leading-none truncate">{{ game.name }}</p>
+              <p class="text-arcade-muted mt-1 truncate">
                 {{ game.platforms.join(', ') || '—' }}
               </p>
-              <div class="flex flex-wrap gap-2 mt-2">
+              <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2">
                 <a
                   v-for="link in game.links"
                   :key="link.url"
                   :href="link.url"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-xs text-violet-300 hover:underline"
+                  class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow"
                 >
                   {{ link.label }}
                 </a>
               </div>
-              <p v-if="itemError[game.id]" class="text-xs text-rose-400 mt-2">
+              <p v-if="itemError[game.id]" class="text-arcade-red mt-2">
                 {{ itemError[game.id] }}
               </p>
             </div>
             <button
               type="button"
-              class="shrink-0 self-center h-10 w-10 rounded-full border-2 text-lg font-bold disabled:opacity-50"
+              class="arcade-btn shrink-0 self-center h-11 w-11 text-xl !font-sans"
               :class="column.moveButtonClass"
               :title="column.moveTitle"
+              :aria-label="column.moveTitle"
               :disabled="movingId === game.id"
               @click="moveGame(game, column.moveAction)"
             >
@@ -91,25 +96,25 @@ function sortLists() {
 const columns = computed(() => [
   {
     key: 'liked',
-    title: 'Liked',
+    title: 'LIKED',
     games: liked.value,
     empty: 'No likes yet.',
-    headingClass: 'text-emerald-300',
+    headingClass: 'text-arcade-green border-arcade-green',
     moveAction: 'dislike' as SwipeAction,
     moveLabel: '✕',
     moveTitle: 'Move to disliked',
-    moveButtonClass: 'border-rose-500 text-rose-400 hover:bg-rose-500/10',
+    moveButtonClass: '!text-arcade-red',
   },
   {
     key: 'disliked',
-    title: 'Disliked',
+    title: 'DISLIKED',
     games: disliked.value,
     empty: 'No dislikes yet.',
-    headingClass: 'text-rose-300',
+    headingClass: 'text-arcade-red border-arcade-red',
     moveAction: 'like' as SwipeAction,
     moveLabel: '♥',
     moveTitle: 'Move to liked',
-    moveButtonClass: 'border-emerald-500 text-emerald-400 hover:bg-emerald-500/10',
+    moveButtonClass: '!text-arcade-green',
   },
 ])
 

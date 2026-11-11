@@ -1,18 +1,18 @@
 <template>
-  <article
-    class="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden"
-  >
+  <article class="arcade-panel flex flex-col overflow-hidden">
     <MediaCarousel
       :media="carouselMedia"
-      class="shrink-0 bg-black"
+      class="shrink-0 border-b-2 border-arcade-line"
     />
 
     <div class="p-4 space-y-3 flex-1 flex flex-col">
       <div class="flex items-start justify-between gap-3">
-        <h2 class="text-xl font-bold leading-tight min-w-0">{{ game.name }}</h2>
+        <h2 class="arcade-display text-sm sm:text-base leading-relaxed min-w-0 text-arcade-yellow">
+          {{ game.name }}
+        </h2>
         <span
           v-if="game.rating != null"
-          class="shrink-0 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-semibold px-2.5 py-1 tabular-nums"
+          class="arcade-display shrink-0 border-2 border-arcade-green text-arcade-green text-[10px] px-2 py-1 tabular-nums"
           :title="`IGDB rating ${game.rating}`"
         >
           {{ game.rating }}
@@ -24,67 +24,59 @@
           v-for="ev in game.events"
           :key="ev.id"
           :to="`/events/${ev.id}/overview`"
-          class="rounded-full border border-violet-500/40 bg-violet-500/10 text-violet-200 text-xs px-2.5 py-1 hover:bg-violet-500/20 transition"
+          class="arcade-tag text-arcade-cyan hover:bg-arcade-cyan hover:text-black"
         >
           {{ ev.name }}
         </NuxtLink>
       </div>
 
-      <p v-if="companyLine" class="text-sm text-slate-400" :title="companyLine">
+      <p v-if="companyLine" class="text-arcade-muted" :title="companyLine">
         {{ companyLine }}
       </p>
 
-      <p class="text-sm text-slate-300">
-        <span class="text-slate-500">WW release</span>
+      <p class="text-arcade-text">
+        <span class="text-arcade-dim">WW RELEASE</span>
         {{ ' · ' }}
-        <span :class="formattedRelease ? 'text-slate-200' : 'text-slate-500'">
+        <span :class="formattedRelease ? 'text-arcade-text' : 'text-arcade-dim'">
           {{ formattedRelease || 'Unknown' }}
         </span>
       </p>
 
-      <div v-if="game.summary" class="text-sm text-slate-300 leading-relaxed">
+      <div v-if="game.summary" class="text-arcade-text">
         <p :class="expanded || !needsToggle ? '' : 'line-clamp-4'">
           {{ game.summary }}
         </p>
         <button
           v-if="needsToggle"
           type="button"
-          class="mt-1 text-xs text-violet-300 hover:underline"
+          class="arcade-display mt-2 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
           @click="expanded = !expanded"
         >
-          {{ expanded ? 'Show less' : 'Show more' }}
+          {{ expanded ? '▲ LESS' : '▼ MORE' }}
         </button>
       </div>
 
       <div v-if="game.genres.length" class="flex flex-wrap gap-1.5">
-        <span
-          v-for="g in game.genres"
-          :key="`g-${g}`"
-          class="rounded-full bg-violet-500/20 text-violet-200 text-xs px-2.5 py-1"
-        >
+        <span v-for="g in game.genres" :key="`g-${g}`" class="arcade-tag text-arcade-magenta">
           {{ g }}
         </span>
       </div>
       <div v-if="game.platforms.length" class="flex flex-wrap gap-1.5">
-        <span
-          v-for="p in game.platforms"
-          :key="`p-${p}`"
-          class="rounded-full bg-slate-800 text-slate-300 text-xs px-2.5 py-1"
-        >
+        <span v-for="p in game.platforms" :key="`p-${p}`" class="arcade-tag text-arcade-muted">
           {{ p }}
         </span>
       </div>
 
-      <div v-if="game.links.length" class="flex flex-wrap gap-x-3 gap-y-1 pt-1 mt-auto">
+      <div v-if="game.links.length" class="flex flex-wrap gap-x-4 gap-y-1 pt-1 mt-auto">
         <a
           v-for="link in game.links"
           :key="link.url"
           :href="link.url"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-xs text-violet-300 hover:underline"
+          class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow"
         >
-          {{ link.label }}
+          ▸ {{ link.label }}
         </a>
       </div>
     </div>

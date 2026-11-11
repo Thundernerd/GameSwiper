@@ -1,46 +1,40 @@
 <template>
   <article
-    class="mx-auto w-full max-w-md flex flex-col rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden select-none touch-none"
+    class="arcade-panel mx-auto w-full max-w-md flex flex-col overflow-hidden select-none touch-none !border-arcade-cyan !shadow-[6px_6px_0_#000,0_0_24px_rgba(62,240,255,0.25)]"
     :style="cardStyle"
     @pointerdown="$emit('pointerdown', $event)"
   >
-    <MediaCarousel :media="game.media" :active="active" class="shrink-0 bg-black" />
+    <MediaCarousel :media="game.media" :active="active" class="shrink-0 border-b-2 border-arcade-cyan" />
 
     <div class="p-4 space-y-2.5">
       <div class="flex items-start justify-between gap-3">
-        <h2 class="text-xl font-bold leading-tight min-w-0">{{ game.name }}</h2>
+        <h2 class="arcade-display text-sm sm:text-base leading-relaxed min-w-0 text-arcade-yellow">
+          {{ game.name }}
+        </h2>
         <span
           v-if="game.rating != null"
-          class="shrink-0 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-semibold px-2.5 py-1 tabular-nums"
+          class="arcade-display shrink-0 border-2 border-arcade-green text-arcade-green text-[10px] px-2 py-1 tabular-nums"
           :title="`IGDB rating ${game.rating}`"
         >
           {{ game.rating }}
         </span>
       </div>
 
-      <p v-if="companyLine" class="text-sm text-slate-400 truncate" :title="companyLine">
+      <p v-if="companyLine" class="text-arcade-muted truncate" :title="companyLine">
         {{ companyLine }}
       </p>
 
-      <p v-if="game.summary" class="text-sm text-slate-300 leading-relaxed line-clamp-3">
+      <p v-if="game.summary" class="text-arcade-text line-clamp-3">
         {{ game.summary }}
       </p>
 
       <div class="flex flex-wrap gap-1.5">
-        <span
-          v-for="g in game.genres"
-          :key="`g-${g}`"
-          class="rounded-full bg-violet-500/20 text-violet-200 text-xs px-2.5 py-1"
-        >
+        <span v-for="g in game.genres" :key="`g-${g}`" class="arcade-tag text-arcade-magenta">
           {{ g }}
         </span>
       </div>
       <div class="flex flex-wrap gap-1.5">
-        <span
-          v-for="p in game.platforms"
-          :key="`p-${p}`"
-          class="rounded-full bg-slate-800 text-slate-300 text-xs px-2.5 py-1"
-        >
+        <span v-for="p in game.platforms" :key="`p-${p}`" class="arcade-tag text-arcade-muted">
           {{ p }}
         </span>
       </div>
@@ -48,13 +42,14 @@
 
     <div
       v-if="overlayLabel"
-      class="pointer-events-none absolute top-4 inset-x-0 flex justify-center"
+      class="pointer-events-none absolute top-6 inset-x-0 flex justify-center"
     >
       <span
-        class="rounded-lg border-2 px-4 py-1 text-lg font-bold uppercase tracking-wider bg-slate-950/70"
+        class="arcade-display flex flex-col items-center gap-1 border-4 bg-black/85 px-4 py-2 -rotate-6 shadow-[4px_4px_0_#000]"
         :class="overlayClass"
       >
-        {{ overlayLabel }}
+        <span class="text-[10px] text-arcade-text">PLAYER 1</span>
+        <span class="arcade-glow text-xl uppercase">{{ overlayLabel }}<template v-if="overlayLabel !== 'Later'">!</template></span>
       </span>
     </div>
   </article>
@@ -93,7 +88,7 @@ const cardStyle = computed(() => {
   const rot = x / 28
   return {
     transform: `translate(${x}px, ${y}px) rotate(${rot}deg)`,
-    transition: props.leaving || (!x && !y) ? 'transform 0.22s ease-out' : 'none',
+    transition: props.leaving || (!x && !y) ? 'transform 0.22s steps(6, end)' : 'none',
   }
 })
 
@@ -107,8 +102,8 @@ const overlayLabel = computed(() => {
 })
 
 const overlayClass = computed(() => {
-  if (overlayLabel.value === 'Like') return 'border-emerald-400 text-emerald-300'
-  if (overlayLabel.value === 'Nope') return 'border-rose-400 text-rose-300'
-  return 'border-amber-400 text-amber-300'
+  if (overlayLabel.value === 'Like') return 'border-arcade-green text-arcade-green'
+  if (overlayLabel.value === 'Nope') return 'border-arcade-red text-arcade-red'
+  return 'border-arcade-yellow text-arcade-yellow'
 })
 </script>

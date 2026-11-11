@@ -46,5 +46,7 @@ When a style is chosen:
 
 - delete `app/pages/prototypes/`, `app/pages/prototypes.vue`, `app/prototypes/`,
   `app/composables/usePrototypeLink.ts` and `app/middleware/prototype-auth.ts`;
-- remove the `isPrototypePath` checks in `app/app.vue` and `app/middleware/auth.global.ts`,
-  and the `ignore` entry in `nuxt.config.ts`.
+- remove the `isPrototypePath` checks in `app/app.vue` (including the `useHead` that sets
+  `body.prototype`) and `app/middleware/auth.global.ts`, and the `ignore` entry in
+  `nuxt.config.ts`;
+- delete the `body.prototype` block at the end of `app/assets/css/main.css`.
