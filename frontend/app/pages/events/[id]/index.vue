@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GameCard as GameCardType, SwipeAction } from '../../shared/api'
+import type { GameCard as GameCardType, SwipeAction } from '~/shared/api'
 
 const route = useRoute()
 const api = useApi()
@@ -177,10 +177,10 @@ function onPointerUp(e: PointerEvent) {
 }
 
 async function decide(action: SwipeAction) {
-  if (busy.value || !deck.value.length) return
+  const game = deck.value[0]
+  if (busy.value || !game) return
   busy.value = true
   leaving.value = action
-  const game = deck.value[0]
 
   if (action === 'like') dragX.value = 420
   else if (action === 'dislike') dragX.value = -420
