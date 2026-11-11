@@ -22,7 +22,6 @@
   --arcade-yellow: #ffe24a;
   --arcade-green: #4dff8a;
   --arcade-red: #ff5a72;
-  color-scheme: dark;
 }
 
 html,
@@ -150,14 +149,18 @@ select:focus-visible {
 
 /*
   Throwaway: #18 deletes this block along with /prototypes. The style prototypes other than
-  retro were drawn on the browser's default type and focus rings; app.vue marks their routes
-  with `body.prototype` so the arcade body type above doesn't leak into them.
+  retro were drawn on the browser's default type, corners and focus rings; app.vue marks their
+  routes with `body.prototype` so the arcade body styles above don't leak into them.
 */
 body.prototype {
   font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
   font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+/* Zero specificity, so their own rounded-* classes still win over it. */
+:where(body.prototype) * {
+  border-radius: revert;
 }
 body.prototype :is(a, button, select):focus-visible {
   outline: revert;
