@@ -17,7 +17,7 @@ The project has two parts:
 > mv backend/data/gameswiper.db backend/data/hypecheck.db
 > ```
 >
-> Or set `DATABASE_URL` in `backend/.env` to point at the old file.
+> If your `backend/.env` was copied from an older `.env.example`, it still sets `DATABASE_URL=sqlite:data/gameswiper.db?mode=rwc`. Change that line to `hypecheck.db` after the move, or the backend starts a new, empty database. Or skip the move and leave `DATABASE_URL` pointing at the old file.
 
 ### 1. IGDB / Twitch credentials
 
