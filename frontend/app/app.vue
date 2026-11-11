@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <header
-      v-if="user"
+      v-if="user && !isPrototype"
       class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40"
     >
       <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
@@ -36,7 +36,12 @@
 </template>
 
 <script setup lang="ts">
+import { isPrototypePath } from '~/prototypes/styles'
+
 const { user, fetchMe, logout } = useAuth()
+const route = useRoute()
+// Throwaway style prototypes draw their own header.
+const isPrototype = computed(() => isPrototypePath(route.path))
 
 onMounted(() => {
   fetchMe()
