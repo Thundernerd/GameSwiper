@@ -1,6 +1,6 @@
 <template>
   <article
-    class="mx-auto w-full max-w-md flex flex-col rounded-3xl border border-white/20 bg-slate-900/60 backdrop-blur-2xl overflow-hidden select-none touch-none ring-1 ring-inset ring-white/5"
+    class="mx-auto w-full max-w-md flex flex-col rounded-3xl border border-white/20 bg-slate-900/80 backdrop-blur-2xl overflow-hidden select-none touch-none ring-1 ring-inset ring-white/5"
     :style="cardStyle"
     @pointerdown="$emit('pointerdown', $event)"
   >
