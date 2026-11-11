@@ -2,64 +2,65 @@
   <Shell>
     <div class="mx-auto max-w-6xl px-4 py-10">
       <div class="mb-8">
-        <h1 class="text-3xl font-bold tracking-tight">Finished events</h1>
-        <p class="text-slate-400 mt-1">Pick an event and swipe through its games.</p>
+        <h1 class="text-4xl font-black tracking-tight">
+          <span class="bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-200 bg-clip-text text-transparent">
+            Finished events
+          </span>
+        </h1>
+        <p class="text-slate-200 mt-2">Pick an event and swipe through its games.</p>
       </div>
 
-      <p v-if="pending" class="text-slate-400">Loading events…</p>
-      <p v-else-if="error" class="text-rose-400">{{ error }}</p>
-      <p v-else-if="!events.length" class="text-slate-400">
+      <StatusPanel v-if="pending" kind="loading">Loading events…</StatusPanel>
+      <StatusPanel v-else-if="error" kind="error">{{ error }}</StatusPanel>
+      <StatusPanel v-else-if="!events.length" kind="empty">
         No finished events yet. Sync IGDB from the backend, or enable mock mode.
-      </p>
+      </StatusPanel>
 
-      <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-else class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <NuxtLink
           v-for="ev in events"
           :key="ev.id"
           :to="link(`/events/${ev.id}`)"
-          class="group rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden hover:border-violet-500/50 hover:bg-slate-900 transition"
+          class="group relative rounded-3xl border border-white/15 bg-slate-950/45 backdrop-blur-xl overflow-hidden shadow-[0_24px_60px_-24px_rgba(0,0,0,0.8)] transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:shadow-[0_30px_70px_-20px_rgba(217,70,239,0.45)]"
         >
-          <div class="aspect-[16/9] bg-slate-800 relative">
+          <div class="aspect-[16/9] relative overflow-hidden bg-gradient-to-br from-indigo-900/60 to-fuchsia-900/60">
             <img
               v-if="ev.logoUrl"
               :src="ev.logoUrl"
               :alt="ev.name"
-              class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition"
+              class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
             />
             <div
               v-else
-              class="h-full w-full flex items-center justify-center text-slate-500 text-sm"
+              class="h-full w-full flex items-center justify-center text-slate-200 text-sm"
             >
               No logo
             </div>
+            <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-950/70 to-transparent" />
           </div>
-          <div class="p-4 space-y-2">
-            <h2 class="font-semibold text-lg leading-snug">{{ ev.name }}</h2>
-            <p class="text-xs text-slate-400">
+          <div class="p-5 space-y-3">
+            <h2 class="font-bold text-lg leading-snug">{{ ev.name }}</h2>
+            <p class="text-xs text-slate-300">
               {{ formatRange(ev.startTime, ev.endTime) }}
             </p>
             <div class="flex items-center justify-between text-sm">
-              <span class="text-slate-300">
+              <span class="text-slate-100 tabular-nums">
                 {{ ev.ratedCount }} / {{ ev.totalCount }} rated
               </span>
               <span
-                class="rounded-full px-2 py-0.5 text-xs"
+                class="rounded-full px-2.5 py-0.5 text-xs font-bold"
                 :class="
-                  ev.ratedCount >= ev.totalCount && ev.totalCount > 0
-                    ? 'bg-emerald-500/20 text-emerald-300'
-                    : 'bg-violet-500/20 text-violet-200'
+                  isDone(ev)
+                    ? 'bg-gradient-to-r from-emerald-300 to-cyan-300 text-slate-950'
+                    : 'bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white shadow-md shadow-fuchsia-500/30'
                 "
               >
-                {{
-                  ev.ratedCount >= ev.totalCount && ev.totalCount > 0
-                    ? 'Done'
-                    : 'Swipe'
-                }}
+                {{ isDone(ev) ? 'Done' : 'Swipe' }}
               </span>
             </div>
-            <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
               <div
-                class="h-full bg-violet-500 transition-all"
+                class="h-full rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 shadow-[0_0_12px_rgba(217,70,239,0.7)] transition-all duration-700"
                 :style="{
                   width: `${ev.totalCount ? Math.min(100, (ev.ratedCount / ev.totalCount) * 100) : 0}%`,
                 }"
@@ -75,6 +76,7 @@
 <script setup lang="ts">
 import type { EventSummary } from '~/shared/api'
 import Shell from './-components/Shell.vue'
+import StatusPanel from './-components/StatusPanel.vue'
 
 const link = usePrototypeLink()
 
@@ -93,6 +95,10 @@ onMounted(async () => {
     pending.value = false
   }
 })
+
+function isDone(ev: EventSummary) {
+  return ev.ratedCount >= ev.totalCount && ev.totalCount > 0
+}
 
 function formatRange(start: string | null, end: string | null) {
   const fmt = (iso: string) =>

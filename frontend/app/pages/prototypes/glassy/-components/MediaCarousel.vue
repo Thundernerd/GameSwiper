@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden bg-slate-950">
+  <div class="overflow-hidden bg-slate-950/40">
     <template v-if="media.length">
       <div class="aspect-[16/10] w-full relative">
         <iframe
@@ -13,11 +13,11 @@
         <button
           v-else-if="current?.kind === 'video'"
           type="button"
-          class="h-full w-full flex flex-col items-center justify-center gap-2 bg-slate-900 text-slate-300 hover:bg-slate-800 transition"
+          class="group h-full w-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-indigo-950/80 via-slate-900/70 to-fuchsia-950/80 text-slate-100 transition"
           @click.stop="playVideo"
         >
           <span
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/90 text-white text-xl shadow-lg"
+            class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-500 via-violet-600 to-cyan-500 pl-1 text-white text-xl shadow-[0_0_40px_-4px_rgba(217,70,239,0.7)] ring-4 ring-white/15 group-hover:scale-110 transition"
             aria-hidden="true"
           >
             ▶
@@ -34,36 +34,39 @@
 
       <div
         v-if="media.length > 1"
-        class="flex items-center justify-center gap-2 py-2"
+        class="flex items-center justify-center gap-3 py-2"
         @pointerdown.stop
       >
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="grid h-7 w-7 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-slate-100 hover:bg-white/20 transition"
+          aria-label="Previous media"
           @click.stop="prev"
         >
           ‹
         </button>
-        <div class="flex gap-1">
+        <div class="flex items-center gap-1.5">
           <button
             v-for="(m, i) in media"
             :key="i"
             type="button"
-            class="h-1.5 w-1.5 rounded-full"
-            :class="i === index ? 'bg-white' : 'bg-white/40'"
+            class="h-1.5 rounded-full transition-all duration-300"
+            :class="i === index ? 'w-5 bg-gradient-to-r from-fuchsia-400 to-cyan-300' : 'w-1.5 bg-white/40 hover:bg-white/70'"
+            :aria-label="`Show media ${i + 1}`"
             @click.stop="goTo(i)"
           />
         </div>
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="grid h-7 w-7 place-items-center rounded-full border border-white/15 bg-white/10 text-sm text-slate-100 hover:bg-white/20 transition"
+          aria-label="Next media"
           @click.stop="next"
         >
           ›
         </button>
       </div>
     </template>
-    <div v-else class="aspect-[16/10] w-full flex items-center justify-center text-slate-500">
+    <div v-else class="aspect-[16/10] w-full flex items-center justify-center bg-gradient-to-br from-indigo-950/70 to-fuchsia-950/70 text-slate-300">
       No media
     </div>
   </div>

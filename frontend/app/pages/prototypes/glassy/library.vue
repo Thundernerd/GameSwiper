@@ -1,26 +1,30 @@
 <template>
   <Shell>
     <div class="mx-auto max-w-6xl px-4 py-8">
-      <h1 class="text-3xl font-bold tracking-tight">Library</h1>
-      <p class="text-slate-400 mt-1 mb-6">
+      <h1 class="text-4xl font-black tracking-tight">
+        <span class="bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-200 bg-clip-text text-transparent">Library</span>
+      </h1>
+      <p class="text-slate-200 mt-2 mb-6">
         All games you liked or disliked across events.
       </p>
 
-      <p v-if="pending" class="text-slate-400">Loading…</p>
-      <p v-else-if="error" class="text-rose-400">{{ error }}</p>
+      <StatusPanel v-if="pending" kind="loading">Loading…</StatusPanel>
+      <StatusPanel v-else-if="error" kind="error">{{ error }}</StatusPanel>
 
       <template v-else>
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b border-slate-800">
-          <div class="flex gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div class="flex gap-1 rounded-full border border-white/15 bg-slate-950/45 p-1 backdrop-blur-xl" role="tablist">
             <button
               v-for="tab in tabs"
               :key="tab.key"
               type="button"
-              class="px-4 py-2 text-sm font-medium border-b-2 -mb-px transition"
+              class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
+              role="tab"
+              :aria-selected="activeTab === tab.key"
               :class="
                 activeTab === tab.key
                   ? tab.activeClass
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  : 'text-slate-200 hover:bg-white/10 hover:text-white'
               "
               @click="activeTab = tab.key"
             >
@@ -28,11 +32,11 @@
             </button>
           </div>
 
-          <label class="flex items-center gap-2 text-sm text-slate-400 pb-2">
+          <label class="flex items-center gap-2 text-sm text-slate-200">
             <span class="shrink-0">Sort</span>
             <select
               v-model="sortBy"
-              class="rounded-lg border border-slate-700 bg-slate-900 text-slate-200 px-2.5 py-1.5 text-sm focus:outline-none focus:border-violet-500"
+              class="rounded-full border border-white/15 bg-slate-950/45 backdrop-blur-xl text-slate-50 px-3.5 py-1.5 text-sm transition focus:outline-none focus:border-fuchsia-400/70 focus:ring-4 focus:ring-fuchsia-500/20 [&>option]:bg-slate-900"
             >
               <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">
                 {{ opt.label }}
@@ -41,10 +45,10 @@
           </label>
         </div>
 
-        <p v-if="!activeGames.length" class="text-slate-500 text-sm">
+        <StatusPanel v-if="!activeGames.length" kind="empty">
           {{ emptyMessage }}
-          <NuxtLink :to="link('/')" class="text-violet-300 hover:underline ml-1">Browse events</NuxtLink>
-        </p>
+          <NuxtLink :to="link('/')" class="font-semibold text-fuchsia-300 hover:text-fuchsia-200 hover:underline ml-1">Browse events</NuxtLink>
+        </StatusPanel>
 
         <div v-else class="grid gap-6 md:grid-cols-2">
           <LibraryGameCard
@@ -62,6 +66,7 @@
 import type { LibraryGame } from '~/shared/api'
 import LibraryGameCard from './-components/LibraryGameCard.vue'
 import Shell from './-components/Shell.vue'
+import StatusPanel from './-components/StatusPanel.vue'
 
 type SortKey = 'name-asc' | 'name-desc' | 'release-desc' | 'release-asc'
 
@@ -86,13 +91,13 @@ const tabs = computed(() => [
     key: 'liked' as const,
     label: 'Liked',
     count: liked.value.length,
-    activeClass: 'border-emerald-400 text-emerald-300',
+    activeClass: 'bg-gradient-to-r from-emerald-300 to-cyan-300 text-slate-950 shadow-lg shadow-emerald-500/30',
   },
   {
     key: 'disliked' as const,
     label: 'Disliked',
     count: disliked.value.length,
-    activeClass: 'border-rose-400 text-rose-300',
+    activeClass: 'bg-gradient-to-r from-rose-300 to-orange-300 text-slate-950 shadow-lg shadow-rose-500/30',
   },
 ])
 
