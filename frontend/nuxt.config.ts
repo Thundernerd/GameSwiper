@@ -9,6 +9,22 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
+  // main.css carries the @tailwind directives itself. Without this the module also injects its
+  // default tailwind.css after it, so utilities would win over the arcade-* classes in main.css.
+  tailwindcss: { cssPath: false },
+  app: {
+    head: {
+      // Retro arcade type: Press Start 2P for display text, VT323 for body text.
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap',
+        },
+      ],
+    },
+  },
   // Throwaway style prototypes keep their components next to their pages; don't route them.
   ignore: ['**/pages/prototypes/*/-components/**'],
   runtimeConfig: {

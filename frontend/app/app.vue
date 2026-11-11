@@ -2,29 +2,30 @@
   <div class="min-h-screen flex flex-col">
     <header
       v-if="user && !isPrototype"
-      class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40"
+      class="sticky top-0 z-40 border-b-4 border-arcade-magenta bg-arcade-bg"
     >
-      <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
+      <div class="mx-auto max-w-6xl px-4 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div class="flex items-center gap-4 min-w-0">
-          <NuxtLink to="/" class="font-semibold tracking-tight text-lg text-violet-300 hover:text-violet-200">
-            GameSwiper
+          <NuxtLink
+            to="/"
+            class="arcade-display arcade-glow text-sm sm:text-base text-arcade-magenta hover:text-arcade-yellow"
+          >
+            GAMESWIPER
           </NuxtLink>
           <NuxtLink
             to="/library"
-            class="text-sm text-slate-300 hover:text-white transition"
-            active-class="text-violet-200"
+            class="arcade-display text-[10px] sm:text-xs text-arcade-cyan hover:text-arcade-yellow"
+            active-class="!text-arcade-yellow underline underline-offset-4"
           >
-            Library
+            LIBRARY
           </NuxtLink>
         </div>
-        <div class="flex items-center gap-3 text-sm text-slate-300">
-          <span>{{ user.username }}</span>
-          <button
-            type="button"
-            class="rounded-lg border border-slate-700 px-3 py-1.5 hover:bg-slate-800 transition"
-            @click="onLogout"
-          >
-            Log out
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="arcade-display text-[10px] sm:text-xs text-arcade-text truncate">
+            <span class="text-arcade-green">P1</span> {{ user.username }}
+          </span>
+          <button type="button" class="arcade-btn arcade-btn-ghost text-[10px] px-2.5 py-2" @click="onLogout">
+            LOG OUT
           </button>
         </div>
       </div>
@@ -32,6 +33,7 @@
     <main class="flex-1">
       <NuxtPage />
     </main>
+    <div v-if="!isPrototype" class="arcade-scanlines" aria-hidden="true" />
   </div>
 </template>
 
@@ -42,6 +44,8 @@ const { user, fetchMe, logout } = useAuth()
 const route = useRoute()
 // Throwaway style prototypes draw their own header.
 const isPrototype = computed(() => isPrototypePath(route.path))
+// Throwaway: lets main.css keep the arcade body type out of the other style prototypes.
+useHead({ bodyAttrs: { class: computed(() => (isPrototype.value ? 'prototype' : '')) } })
 
 onMounted(() => {
   fetchMe()

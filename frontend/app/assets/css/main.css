@@ -1,6 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Variants (sm:, hover:, …) go here, not at the end, so the arcade-* classes below override
+   them the same way they override plain utilities (e.g. arcade-display's line-height). */
+@tailwind variants;
+
+/*
+  Retro arcade style: neon on near-black, pixel type, hard edges and scanlines.
+  The palette is also in the Tailwind theme as `arcade-*` (tailwind.config.ts), so markup
+  writes `text-arcade-yellow` rather than referring to these variables.
+*/
+:root {
+  --arcade-bg: #08060f;
+  --arcade-panel: #120e1f;
+  --arcade-line: #3a3163;
+  --arcade-text: #efeeff; /* AA: 17.6:1 on --arcade-bg, 16.5:1 on --arcade-panel */
+  --arcade-muted: #b4b0d6; /* AA: 9.7:1 on --arcade-bg, 9.1:1 on --arcade-panel */
+  --arcade-dim: #8f8bb5; /* AA: 6.3:1 on --arcade-bg, 5.9:1 on --arcade-panel */
+  --arcade-magenta: #ff4fd8;
+  --arcade-cyan: #3ef0ff;
+  --arcade-yellow: #ffe24a;
+  --arcade-green: #4dff8a;
+  --arcade-red: #ff5a72;
+  color-scheme: dark;
+}
 
 html,
 body,
@@ -9,5 +32,134 @@ body,
 }
 
 body {
-  @apply bg-slate-950 text-slate-100 antialiased;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 79, 216, 0.12), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(62, 240, 255, 0.08), transparent 60%),
+    var(--arcade-bg);
+  background-attachment: fixed;
+  color: var(--arcade-text);
+  font-family: 'VT323', ui-monospace, monospace;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  -webkit-font-smoothing: none;
+}
+
+/* Hard edges everywhere; zero specificity, so it only overrides browser defaults. */
+* {
+  border-radius: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible {
+  outline: 2px dashed var(--arcade-yellow);
+  outline-offset: 3px;
+}
+
+.arcade-display {
+  font-family: 'Press Start 2P', ui-monospace, monospace;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+.arcade-glow {
+  text-shadow: 0 0 6px currentColor, 0 0 18px currentColor;
+}
+
+.arcade-panel {
+  background: var(--arcade-panel);
+  border: 2px solid var(--arcade-line);
+  box-shadow: 4px 4px 0 #000;
+}
+
+.arcade-btn {
+  font-family: 'Press Start 2P', ui-monospace, monospace;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+  box-shadow: 4px 4px 0 #000;
+  transition: transform 60ms, box-shadow 60ms, background-color 60ms;
+}
+.arcade-btn:hover {
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+}
+.arcade-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+.arcade-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.arcade-btn-ghost {
+  color: var(--arcade-muted);
+}
+.arcade-btn-primary {
+  color: var(--arcade-bg);
+  background: var(--arcade-yellow);
+  border-color: var(--arcade-yellow);
+}
+.arcade-btn-primary:hover {
+  background: color-mix(in srgb, var(--arcade-yellow) 70%, white);
+}
+
+.arcade-input {
+  width: 100%;
+  background: #000;
+  border: 2px solid var(--arcade-line);
+  color: var(--arcade-green);
+  padding: 0.4rem 0.75rem;
+  font-size: 1.5rem;
+  outline: none;
+  caret-color: var(--arcade-green);
+}
+.arcade-input:focus {
+  border-color: var(--arcade-cyan);
+  box-shadow: 0 0 0 2px #000, 0 0 12px rgba(62, 240, 255, 0.5);
+}
+
+.arcade-tag {
+  border: 1px solid currentColor;
+  padding: 0 0.4rem;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.arcade-scanlines {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.arcade-blink {
+  animation: arcade-blink 1s steps(1) infinite;
+}
+@keyframes arcade-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-blink {
+    animation: none;
+  }
+}
+
+/*
+  Throwaway: #18 deletes this block along with /prototypes. The style prototypes other than
+  retro were drawn on the browser's default type and focus rings; app.vue marks their routes
+  with `body.prototype` so the arcade body type above doesn't leak into them.
+*/
+body.prototype {
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body.prototype :is(a, button, select):focus-visible {
+  outline: revert;
+  outline-offset: revert;
 }
