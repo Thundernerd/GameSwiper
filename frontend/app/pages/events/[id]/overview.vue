@@ -1,21 +1,18 @@
 <template>
   <div class="mx-auto max-w-5xl px-4 py-8">
-    <NuxtLink :to="`/events/${eventId}`" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">
+    <NuxtLink :to="`/events/${eventId}`" class="arcade-back-link">
       ◀ BACK TO DECK
     </NuxtLink>
     <p class="arcade-display text-[10px] text-arcade-yellow mt-6 mb-3">— RESULTS —</p>
     <h1 class="arcade-display arcade-glow text-base sm:text-2xl leading-relaxed text-arcade-magenta mb-3">{{ title }}</h1>
     <p class="text-arcade-muted mb-8">Your likes and dislikes for this event.</p>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
-      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending">LOADING…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" />
 
     <div v-else class="grid gap-8 md:grid-cols-2">
       <section v-for="column in columns" :key="column.key" class="min-w-0">
-        <h2 :class="['arcade-display text-xs sm:text-sm mb-4 pb-2 border-b-2', column.headingClass]">
+        <h2 :class="['arcade-display text-xs sm:text-sm mb-4 pb-2 border-b-2', ...column.headingClass]">
           {{ column.title }} <span class="tabular-nums">({{ column.games.length }})</span>
         </h2>
         <p v-if="!column.games.length" class="text-arcade-dim">{{ column.empty }}</p>
@@ -43,7 +40,7 @@
                   :href="link.url"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow"
+                  class="arcade-link"
                 >
                   {{ link.label }}
                 </a>
@@ -99,22 +96,22 @@ const columns = computed(() => [
     title: 'LIKED',
     games: liked.value,
     empty: 'No likes yet.',
-    headingClass: 'text-arcade-green border-arcade-green',
+    headingClass: [actionColors.like.border, actionColors.like.text],
     moveAction: 'dislike' as SwipeAction,
     moveLabel: '✕',
     moveTitle: 'Move to disliked',
-    moveButtonClass: '!text-arcade-red',
+    moveButtonClass: actionColors.dislike.text,
   },
   {
     key: 'disliked',
     title: 'DISLIKED',
     games: disliked.value,
     empty: 'No dislikes yet.',
-    headingClass: 'text-arcade-red border-arcade-red',
+    headingClass: [actionColors.dislike.border, actionColors.dislike.text],
     moveAction: 'like' as SwipeAction,
     moveLabel: '♥',
     moveTitle: 'Move to liked',
-    moveButtonClass: '!text-arcade-green',
+    moveButtonClass: actionColors.like.text,
   },
 ])
 

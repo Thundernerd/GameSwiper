@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-lg px-4 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
     <div class="flex items-center justify-between gap-3 mb-5">
       <div class="min-w-0">
-        <NuxtLink to="/" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">◀ EVENTS</NuxtLink>
+        <NuxtLink to="/" class="arcade-back-link">◀ EVENTS</NuxtLink>
         <h1 class="arcade-display text-xs sm:text-sm leading-relaxed mt-2 text-arcade-text">{{ eventName }}</h1>
       </div>
       <NuxtLink
@@ -13,11 +13,8 @@
       </NuxtLink>
     </div>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan py-20 text-center">LOADING DECK…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red my-16 p-5 text-center">
-      <p class="arcade-display text-xs text-arcade-red mb-3">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending" class="py-20 text-center">LOADING DECK…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" large class="my-16 text-center" />
 
     <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-5">
       <p class="arcade-display arcade-glow text-xl sm:text-2xl leading-relaxed text-arcade-green">DECK<br />CLEARED!</p>
@@ -56,7 +53,8 @@
       <div class="relative z-30 flex items-end justify-center gap-5 py-6 shrink-0 bg-arcade-bg">
         <button
           type="button"
-          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-red"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans"
+          :class="actionColors.dislike.text"
           title="Dislike"
           aria-label="Dislike"
           @click="decide('dislike')"
@@ -65,7 +63,8 @@
         </button>
         <button
           type="button"
-          class="arcade-btn h-12 w-12 text-lg !text-arcade-yellow"
+          class="arcade-btn h-12 w-12 text-lg"
+          :class="actionColors.defer.text"
           title="Not sure yet"
           aria-label="Not sure yet"
           @click="decide('defer')"
@@ -74,7 +73,8 @@
         </button>
         <button
           type="button"
-          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-green"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans"
+          :class="actionColors.like.text"
           title="Like"
           aria-label="Like"
           @click="decide('like')"
