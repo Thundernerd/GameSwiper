@@ -162,16 +162,16 @@ function onPointerMove(e: PointerEvent) {
   dragY.value = e.clientY - startY
 }
 
-/** Stops tracking the drag. Returns false if the event is for another pointer. */
-function endDrag(e: PointerEvent): boolean {
-  if (e.pointerId !== pointerId) return false
+/** Stops tracking the current drag, if any. Leaves the card where it is. */
+function stopDrag() {
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
   window.removeEventListener('pointercancel', onPointerCancel)
   dragging = false
   pointerId = null
-  return true
 }
+
+onBeforeUnmount(stopDrag)
 
 function snapBack() {
   dragX.value = 0
@@ -180,7 +180,8 @@ function snapBack() {
 
 /** The user let go of the card: act on where it was released. */
 function onPointerUp(e: PointerEvent) {
-  if (!endDrag(e)) return
+  if (e.pointerId !== pointerId) return
+  stopDrag()
   const action = swipeDecision(dragX.value, dragY.value)
   if (action) void decide(action)
   else snapBack()
@@ -191,12 +192,17 @@ function onPointerUp(e: PointerEvent) {
  * The user never released the card, so record nothing, however far it was dragged.
  */
 function onPointerCancel(e: PointerEvent) {
-  if (endDrag(e)) snapBack()
+  if (e.pointerId !== pointerId) return
+  stopDrag()
+  snapBack()
 }
 
 async function decide(action: SwipeAction) {
   const game = deck.value[0]
   if (busy.value || !game) return
+  // A button pressed mid-drag takes over: the held pointer no longer moves,
+  // releases or cancels this card (or the next one).
+  stopDrag()
   busy.value = true
   leaving.value = action
 
