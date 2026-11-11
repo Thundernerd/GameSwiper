@@ -18,7 +18,7 @@
 
       <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <NuxtLink
-          v-for="(ev, i) in events"
+          v-for="ev in events"
           :key="ev.id"
           :to="link(`/events/${ev.id}`)"
           class="group retro-panel overflow-hidden hover:!border-[color:var(--r-yellow)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000]"
@@ -36,9 +36,6 @@
             >
               NO SIGNAL
             </div>
-            <span class="retro-display absolute top-2 left-2 bg-black px-1.5 py-1 text-[10px] text-[color:var(--r-cyan)]">
-              STAGE {{ String(i + 1).padStart(2, '0') }}
-            </span>
           </div>
           <div class="p-4 space-y-3">
             <h2 class="retro-display text-xs sm:text-sm leading-relaxed text-[color:var(--r-text)] group-hover:text-[color:var(--r-yellow)]">
@@ -59,7 +56,7 @@
                     : 'border-[color:var(--r-yellow)] text-[color:var(--r-yellow)]'
                 "
               >
-                {{ isDone(ev) ? 'CLEAR!' : 'PRESS START' }}
+                {{ isDone(ev) ? 'DONE' : 'SWIPE' }}
               </span>
             </div>
             <div class="h-3 border-2 border-[color:var(--r-line)] bg-black p-px" aria-hidden="true">
