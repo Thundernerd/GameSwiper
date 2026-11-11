@@ -56,14 +56,15 @@
 </template>
 
 <script setup lang="ts">
-import type { GameCard } from '../shared/api'
+import type { GameCard, SwipeAction } from '../shared/api'
+import { swipeDecision } from '../shared/swipe'
 
 const props = defineProps<{
   game: GameCard
   active: boolean
   dragX?: number
   dragY?: number
-  leaving?: 'like' | 'dislike' | 'defer' | null
+  leaving?: SwipeAction | null
 }>()
 
 defineEmits<{ pointerdown: [PointerEvent] }>()
@@ -92,18 +93,24 @@ const cardStyle = computed(() => {
   }
 })
 
-const overlayLabel = computed(() => {
-  const x = props.dragX || 0
-  const y = props.dragY || 0
-  if (props.leaving === 'like' || x > 80) return 'Like'
-  if (props.leaving === 'dislike' || x < -80) return 'Nope'
-  if (props.leaving === 'defer' || y > 80) return 'Later'
-  return ''
-})
+const overlayLabels: Record<SwipeAction, string> = {
+  like: 'Like',
+  dislike: 'Nope',
+  defer: 'Later',
+}
 
-const overlayClass = computed(() => {
-  if (overlayLabel.value === 'Like') return 'border-arcade-green text-arcade-green'
-  if (overlayLabel.value === 'Nope') return 'border-arcade-red text-arcade-red'
-  return 'border-arcade-yellow text-arcade-yellow'
-})
+const overlayClasses: Record<SwipeAction, string> = {
+  like: 'border-arcade-green text-arcade-green',
+  dislike: 'border-arcade-red text-arcade-red',
+  defer: 'border-arcade-yellow text-arcade-yellow',
+}
+
+/** What the card is doing: flying off (`leaving`), or what releasing the drag here would do. */
+const overlayAction = computed(
+  () => props.leaving ?? swipeDecision(props.dragX || 0, props.dragY || 0),
+)
+
+const overlayLabel = computed(() => (overlayAction.value ? overlayLabels[overlayAction.value] : ''))
+
+const overlayClass = computed(() => (overlayAction.value ? overlayClasses[overlayAction.value] : ''))
 </script>

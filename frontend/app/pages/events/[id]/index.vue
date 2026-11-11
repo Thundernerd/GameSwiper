@@ -92,6 +92,7 @@
 
 <script setup lang="ts">
 import type { GameCard as GameCardType, SwipeAction } from '~/shared/api'
+import { swipeDecision } from '~/shared/swipe'
 
 const route = useRoute()
 const api = useApi()
@@ -102,7 +103,7 @@ const pending = ref(true)
 const error = ref('')
 const dragX = ref(0)
 const dragY = ref(0)
-const leaving = ref<'like' | 'dislike' | 'defer' | null>(null)
+const leaving = ref<SwipeAction | null>(null)
 const busy = ref(false)
 
 let pointerId: number | null = null
@@ -169,15 +170,9 @@ function onPointerUp(e: PointerEvent) {
   dragging = false
   pointerId = null
 
-  const x = dragX.value
-  const y = dragY.value
-  const threshold = 100
-  if (y > threshold && Math.abs(y) > Math.abs(x)) {
-    void decide('defer')
-  } else if (x > threshold) {
-    void decide('like')
-  } else if (x < -threshold) {
-    void decide('dislike')
+  const action = swipeDecision(dragX.value, dragY.value)
+  if (action) {
+    void decide(action)
   } else {
     dragX.value = 0
     dragY.value = 0
