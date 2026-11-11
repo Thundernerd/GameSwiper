@@ -49,7 +49,7 @@
         :class="overlayClass"
       >
         <span class="text-[10px] text-arcade-text">PLAYER 1</span>
-        <span class="arcade-glow text-xl">{{ overlayLabel }}</span>
+        <span class="arcade-glow text-xl uppercase">{{ overlayLabel }}<template v-if="overlayLabel !== 'Later'">!</template></span>
       </span>
     </div>
   </article>
@@ -95,15 +95,15 @@ const cardStyle = computed(() => {
 const overlayLabel = computed(() => {
   const x = props.dragX || 0
   const y = props.dragY || 0
-  if (props.leaving === 'like' || x > 80) return 'LIKE!'
-  if (props.leaving === 'dislike' || x < -80) return 'NOPE!'
-  if (props.leaving === 'defer' || y > 80) return 'LATER'
+  if (props.leaving === 'like' || x > 80) return 'Like'
+  if (props.leaving === 'dislike' || x < -80) return 'Nope'
+  if (props.leaving === 'defer' || y > 80) return 'Later'
   return ''
 })
 
 const overlayClass = computed(() => {
-  if (overlayLabel.value === 'LIKE!') return 'border-arcade-green text-arcade-green'
-  if (overlayLabel.value === 'NOPE!') return 'border-arcade-red text-arcade-red'
+  if (overlayLabel.value === 'Like') return 'border-arcade-green text-arcade-green'
+  if (overlayLabel.value === 'Nope') return 'border-arcade-red text-arcade-red'
   return 'border-arcade-yellow text-arcade-yellow'
 })
 </script>

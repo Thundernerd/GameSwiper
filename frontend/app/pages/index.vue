@@ -50,18 +50,18 @@
             <span
               class="arcade-display text-[10px] px-1.5 py-1 border-2"
               :class="
-                isDone(ev)
+                ev.ratedCount >= ev.totalCount && ev.totalCount > 0
                   ? 'border-arcade-green text-arcade-green'
                   : 'border-arcade-yellow text-arcade-yellow'
               "
             >
-              {{ isDone(ev) ? 'DONE' : 'SWIPE' }}
+              {{ ev.ratedCount >= ev.totalCount && ev.totalCount > 0 ? 'DONE' : 'SWIPE' }}
             </span>
           </div>
           <div class="h-3 border-2 border-arcade-line bg-black p-px" aria-hidden="true">
             <div
               class="h-full"
-              :class="isDone(ev) ? 'bg-arcade-green' : 'bg-arcade-magenta'"
+              :class="ev.ratedCount >= ev.totalCount && ev.totalCount > 0 ? 'bg-arcade-green' : 'bg-arcade-magenta'"
               :style="{
                 width: `${ev.totalCount ? Math.min(100, (ev.ratedCount / ev.totalCount) * 100) : 0}%`,
                 backgroundImage: 'repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.55) 6px 8px)',
@@ -92,10 +92,6 @@ onMounted(async () => {
     pending.value = false
   }
 })
-
-function isDone(ev: EventSummary) {
-  return ev.ratedCount >= ev.totalCount && ev.totalCount > 0
-}
 
 function formatRange(start: string | null, end: string | null) {
   const fmt = (iso: string) =>
