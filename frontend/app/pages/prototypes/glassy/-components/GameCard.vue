@@ -88,14 +88,55 @@ const companyLine = computed(() => {
   return `${developers.join(', ')} · ${publishers.join(', ')}`
 })
 
+type Decision = 'Like' | 'Nope' | 'Later'
+
+/** One colour per decision, shared by the overlay label and the drag glow. */
+const decisionStyles: Record<Decision, { glow: string; overlay: string }> = {
+  Like: {
+    glow: '52, 211, 153',
+    overlay:
+      'bg-gradient-to-r from-emerald-700/90 to-teal-700/90 shadow-[0_0_30px_rgba(52,211,153,0.6)] ring-2 ring-emerald-300/70',
+  },
+  Nope: {
+    glow: '251, 113, 133',
+    overlay:
+      'bg-gradient-to-r from-rose-600/90 to-pink-700/90 shadow-[0_0_30px_rgba(251,113,133,0.6)] ring-2 ring-rose-300/70',
+  },
+  Later: {
+    glow: '251, 191, 36',
+    overlay:
+      'bg-gradient-to-r from-amber-700/90 to-orange-700/90 shadow-[0_0_30px_rgba(251,191,36,0.6)] ring-2 ring-amber-300/70',
+  },
+}
+
+/** The decision the overlay label shows (same rules as the real swipe screen). */
+const overlayLabel = computed((): Decision | '' => {
+  const x = props.dragX || 0
+  const y = props.dragY || 0
+  if (props.leaving === 'like' || x > 80) return 'Like'
+  if (props.leaving === 'dislike' || x < -80) return 'Nope'
+  if (props.leaving === 'defer' || y > 80) return 'Later'
+  return ''
+})
+
+/** Where the drag is heading: the label once it shows, else the dominant axis so far. */
+const heading = computed((): Decision | null => {
+  if (overlayLabel.value) return overlayLabel.value
+  const x = props.dragX || 0
+  const y = props.dragY || 0
+  if (y > Math.abs(x)) return 'Later'
+  if (x > 0) return 'Like'
+  if (x < 0) return 'Nope'
+  return null
+})
+
 const cardStyle = computed(() => {
   const x = props.dragX || 0
   const y = props.dragY || 0
   const rot = x / 28
   // Tint the soft shadow toward the decision the drag is heading for.
-  const strength = Math.min(1, Math.max(Math.abs(x), Math.max(y, 0)) / 120)
-  const glow =
-    y > Math.abs(x) ? '251, 191, 36' : x > 0 ? '52, 211, 153' : x < 0 ? '251, 113, 133' : '0, 0, 0'
+  const strength = heading.value ? Math.min(1, Math.max(Math.abs(x), Math.max(y, 0)) / 120) : 0
+  const glow = heading.value ? decisionStyles[heading.value].glow : '0, 0, 0'
   return {
     transform: `translate(${x}px, ${y}px) rotate(${rot}deg)`,
     transition:
@@ -108,22 +149,9 @@ const cardStyle = computed(() => {
   }
 })
 
-const overlayLabel = computed(() => {
-  const x = props.dragX || 0
-  const y = props.dragY || 0
-  if (props.leaving === 'like' || x > 80) return 'Like'
-  if (props.leaving === 'dislike' || x < -80) return 'Nope'
-  if (props.leaving === 'defer' || y > 80) return 'Later'
-  return ''
-})
-
-const overlayClass = computed(() => {
-  if (overlayLabel.value === 'Like')
-    return 'bg-gradient-to-r from-emerald-700/90 to-teal-700/90 shadow-[0_0_30px_rgba(52,211,153,0.6)] ring-2 ring-emerald-300/70'
-  if (overlayLabel.value === 'Nope')
-    return 'bg-gradient-to-r from-rose-600/90 to-pink-700/90 shadow-[0_0_30px_rgba(251,113,133,0.6)] ring-2 ring-rose-300/70'
-  return 'bg-gradient-to-r from-amber-700/90 to-orange-700/90 shadow-[0_0_30px_rgba(251,191,36,0.6)] ring-2 ring-amber-300/70'
-})
+const overlayClass = computed(() =>
+  overlayLabel.value ? decisionStyles[overlayLabel.value].overlay : '',
+)
 </script>
 
 <style scoped>
