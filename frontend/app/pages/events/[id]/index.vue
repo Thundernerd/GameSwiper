@@ -153,7 +153,7 @@ function onPointerDown(e: PointerEvent) {
   ;(e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId)
   window.addEventListener('pointermove', onPointerMove)
   window.addEventListener('pointerup', onPointerUp)
-  window.addEventListener('pointercancel', onPointerUp)
+  window.addEventListener('pointercancel', onPointerCancel)
 }
 
 function onPointerMove(e: PointerEvent) {
@@ -162,26 +162,47 @@ function onPointerMove(e: PointerEvent) {
   dragY.value = e.clientY - startY
 }
 
-function onPointerUp(e: PointerEvent) {
-  if (e.pointerId !== pointerId) return
+/** Stops tracking the current drag, if any. Leaves the card where it is. */
+function stopDrag() {
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
-  window.removeEventListener('pointercancel', onPointerUp)
+  window.removeEventListener('pointercancel', onPointerCancel)
   dragging = false
   pointerId = null
+}
 
+onBeforeUnmount(stopDrag)
+
+function snapBack() {
+  dragX.value = 0
+  dragY.value = 0
+}
+
+/** The user let go of the card: act on where it was released. */
+function onPointerUp(e: PointerEvent) {
+  if (e.pointerId !== pointerId) return
+  stopDrag()
   const action = swipeDecision(dragX.value, dragY.value)
-  if (action) {
-    void decide(action)
-  } else {
-    dragX.value = 0
-    dragY.value = 0
-  }
+  if (action) void decide(action)
+  else snapBack()
+}
+
+/**
+ * The browser took the pointer away (an OS gesture, rotation, a native drag).
+ * The user never released the card, so record nothing, however far it was dragged.
+ */
+function onPointerCancel(e: PointerEvent) {
+  if (e.pointerId !== pointerId) return
+  stopDrag()
+  snapBack()
 }
 
 async function decide(action: SwipeAction) {
   const game = deck.value[0]
   if (busy.value || !game) return
+  // A button pressed mid-drag takes over: the held pointer no longer moves,
+  // releases or cancels this card (or the next one).
+  stopDrag()
   busy.value = true
   leaving.value = action
 
@@ -206,8 +227,7 @@ async function decide(action: SwipeAction) {
     error.value = e instanceof Error ? e.message : 'Swipe failed'
   } finally {
     leaving.value = null
-    dragX.value = 0
-    dragY.value = 0
+    snapBack()
     busy.value = false
   }
 }
