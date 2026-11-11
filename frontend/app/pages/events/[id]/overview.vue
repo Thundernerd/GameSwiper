@@ -15,7 +15,7 @@
 
     <div v-else class="grid gap-8 md:grid-cols-2">
       <section v-for="column in columns" :key="column.key" class="min-w-0">
-        <h2 :class="['arcade-display text-xs sm:text-sm mb-4 pb-2 border-b-2', column.headingClass]">
+        <h2 :class="['arcade-display text-xs sm:text-sm mb-4 pb-2 border-b-2', ...column.headingClass]">
           {{ column.title }} <span class="tabular-nums">({{ column.games.length }})</span>
         </h2>
         <p v-if="!column.games.length" class="text-arcade-dim">{{ column.empty }}</p>
@@ -99,22 +99,22 @@ const columns = computed(() => [
     title: 'LIKED',
     games: liked.value,
     empty: 'No likes yet.',
-    headingClass: 'text-arcade-green border-arcade-green',
+    headingClass: [actionColors.like.text, actionColors.like.border],
     moveAction: 'dislike' as SwipeAction,
     moveLabel: '✕',
     moveTitle: 'Move to disliked',
-    moveButtonClass: '!text-arcade-red',
+    moveButtonClass: actionColors.dislike.text,
   },
   {
     key: 'disliked',
     title: 'DISLIKED',
     games: disliked.value,
     empty: 'No dislikes yet.',
-    headingClass: 'text-arcade-red border-arcade-red',
+    headingClass: [actionColors.dislike.text, actionColors.dislike.border],
     moveAction: 'like' as SwipeAction,
     moveLabel: '♥',
     moveTitle: 'Move to liked',
-    moveButtonClass: '!text-arcade-green',
+    moveButtonClass: actionColors.like.text,
   },
 ])
 

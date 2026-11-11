@@ -88,13 +88,13 @@ const tabs = computed(() => [
     key: 'liked' as const,
     label: 'LIKED',
     count: liked.value.length,
-    activeClass: 'border-arcade-green text-arcade-green',
+    activeClass: [actionColors.like.border, actionColors.like.text],
   },
   {
     key: 'disliked' as const,
     label: 'DISLIKED',
     count: disliked.value.length,
-    activeClass: 'border-arcade-red text-arcade-red',
+    activeClass: [actionColors.dislike.border, actionColors.dislike.text],
   },
 ])
 

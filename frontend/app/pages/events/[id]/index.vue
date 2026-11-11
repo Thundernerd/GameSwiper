@@ -56,7 +56,8 @@
       <div class="relative z-30 flex items-end justify-center gap-5 py-6 shrink-0 bg-arcade-bg">
         <button
           type="button"
-          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-red"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans"
+          :class="actionColors.dislike.text"
           title="Dislike"
           aria-label="Dislike"
           @click="decide('dislike')"
@@ -65,7 +66,8 @@
         </button>
         <button
           type="button"
-          class="arcade-btn h-12 w-12 text-lg !text-arcade-yellow"
+          class="arcade-btn h-12 w-12 text-lg"
+          :class="actionColors.defer.text"
           title="Not sure yet"
           aria-label="Not sure yet"
           @click="decide('defer')"
@@ -74,7 +76,8 @@
         </button>
         <button
           type="button"
-          class="arcade-btn h-16 w-16 text-3xl !font-sans !text-arcade-green"
+          class="arcade-btn h-16 w-16 text-3xl !font-sans"
+          :class="actionColors.like.text"
           title="Like"
           aria-label="Like"
           @click="decide('like')"
