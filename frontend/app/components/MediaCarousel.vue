@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden bg-slate-950">
+  <div class="overflow-hidden bg-black">
     <template v-if="media.length">
       <div class="aspect-[16/10] w-full relative">
         <iframe
@@ -13,58 +13,61 @@
         <button
           v-else-if="current?.kind === 'video'"
           type="button"
-          class="h-full w-full flex flex-col items-center justify-center gap-2 bg-slate-900 text-slate-300 hover:bg-slate-800 transition"
+          class="h-full w-full flex flex-col items-center justify-center gap-3 bg-black text-arcade-text hover:bg-arcade-panel"
           @click.stop="playVideo"
         >
           <span
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/90 text-white text-xl shadow-lg"
+            class="arcade-display flex h-12 w-12 items-center justify-center border-2 border-arcade-magenta text-arcade-magenta text-base shadow-[4px_4px_0_#000]"
             aria-hidden="true"
           >
             ▶
           </span>
-          <span class="text-sm">{{ current.title || 'Play trailer' }}</span>
+          <span class="arcade-display text-[10px] uppercase px-4 text-center">{{ current.title || 'Play trailer' }}</span>
         </button>
         <img
           v-else-if="current"
           :src="current.url"
           :alt="current.title || 'Game media'"
-          class="h-full w-full object-cover"
+          class="h-full w-full object-cover [image-rendering:pixelated]"
         />
       </div>
 
       <div
         v-if="media.length > 1"
-        class="flex items-center justify-center gap-2 py-2"
+        class="flex items-center justify-center gap-3 py-2 bg-black"
         @pointerdown.stop
       >
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="arcade-display px-2 py-1 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
+          aria-label="Previous media"
           @click.stop="prev"
         >
-          ‹
+          ◀
         </button>
-        <div class="flex gap-1">
+        <div class="flex gap-1.5">
           <button
             v-for="(m, i) in media"
             :key="i"
             type="button"
-            class="h-1.5 w-1.5 rounded-full"
-            :class="i === index ? 'bg-white' : 'bg-white/40'"
+            class="h-2 w-2"
+            :class="i === index ? 'bg-arcade-yellow' : 'bg-arcade-line'"
+            :aria-label="`Media ${i + 1}`"
             @click.stop="goTo(i)"
           />
         </div>
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="arcade-display px-2 py-1 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
+          aria-label="Next media"
           @click.stop="next"
         >
-          ›
+          ▶
         </button>
       </div>
     </template>
-    <div v-else class="aspect-[16/10] w-full flex items-center justify-center text-slate-500">
-      No media
+    <div v-else class="arcade-display aspect-[16/10] w-full flex items-center justify-center text-[10px] text-arcade-dim">
+      NO SIGNAL
     </div>
   </div>
 </template>

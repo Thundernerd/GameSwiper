@@ -1,66 +1,70 @@
 <template>
   <div class="mx-auto max-w-6xl px-4 py-10">
     <div class="mb-8">
-      <h1 class="text-3xl font-bold tracking-tight">Finished events</h1>
-      <p class="text-slate-400 mt-1">Pick an event and swipe through its games.</p>
+      <p class="arcade-display text-[10px] text-arcade-cyan mb-3">— SELECT STAGE —</p>
+      <h1 class="arcade-display arcade-glow text-xl sm:text-3xl text-arcade-magenta">FINISHED EVENTS</h1>
+      <p class="text-arcade-muted mt-3">Pick an event and swipe through its games.</p>
     </div>
 
-    <p v-if="pending" class="text-slate-400">Loading events…</p>
-    <p v-else-if="error" class="text-rose-400">{{ error }}</p>
-    <p v-else-if="!events.length" class="text-slate-400">
+    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING EVENTS…</p>
+    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
+      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
+      <p class="text-arcade-text">{{ error }}</p>
+    </div>
+    <p v-else-if="!events.length" class="arcade-panel p-4 text-arcade-muted">
       No finished events yet. Sync IGDB from the backend, or enable mock mode.
     </p>
 
-    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <NuxtLink
         v-for="ev in events"
         :key="ev.id"
         :to="`/events/${ev.id}`"
-        class="group rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden hover:border-violet-500/50 hover:bg-slate-900 transition"
+        class="group arcade-panel overflow-hidden hover:!border-arcade-yellow hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000]"
       >
-        <div class="aspect-[16/9] bg-slate-800 relative">
+        <div class="aspect-[16/9] bg-black relative border-b-2 border-arcade-line">
           <img
             v-if="ev.logoUrl"
             :src="ev.logoUrl"
             :alt="ev.name"
-            class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition"
+            class="h-full w-full object-cover opacity-80 group-hover:opacity-100"
           />
           <div
             v-else
-            class="h-full w-full flex items-center justify-center text-slate-500 text-sm"
+            class="arcade-display h-full w-full flex items-center justify-center text-[10px] text-arcade-dim"
           >
-            No logo
+            NO SIGNAL
           </div>
         </div>
-        <div class="p-4 space-y-2">
-          <h2 class="font-semibold text-lg leading-snug">{{ ev.name }}</h2>
-          <p class="text-xs text-slate-400">
+        <div class="p-4 space-y-3">
+          <h2 class="arcade-display text-xs sm:text-sm leading-relaxed text-arcade-text group-hover:text-arcade-yellow">
+            {{ ev.name }}
+          </h2>
+          <p class="text-arcade-muted">
             {{ formatRange(ev.startTime, ev.endTime) }}
           </p>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-300">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-arcade-text tabular-nums">
               {{ ev.ratedCount }} / {{ ev.totalCount }} rated
             </span>
             <span
-              class="rounded-full px-2 py-0.5 text-xs"
+              class="arcade-display text-[10px] px-1.5 py-1 border-2"
               :class="
-                ev.ratedCount >= ev.totalCount && ev.totalCount > 0
-                  ? 'bg-emerald-500/20 text-emerald-300'
-                  : 'bg-violet-500/20 text-violet-200'
+                isDone(ev)
+                  ? 'border-arcade-green text-arcade-green'
+                  : 'border-arcade-yellow text-arcade-yellow'
               "
             >
-              {{
-                ev.ratedCount >= ev.totalCount && ev.totalCount > 0
-                  ? 'Done'
-                  : 'Swipe'
-              }}
+              {{ isDone(ev) ? 'DONE' : 'SWIPE' }}
             </span>
           </div>
-          <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+          <div class="h-3 border-2 border-arcade-line bg-black p-px" aria-hidden="true">
             <div
-              class="h-full bg-violet-500 transition-all"
+              class="h-full"
+              :class="isDone(ev) ? 'bg-arcade-green' : 'bg-arcade-magenta'"
               :style="{
                 width: `${ev.totalCount ? Math.min(100, (ev.ratedCount / ev.totalCount) * 100) : 0}%`,
+                backgroundImage: 'repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.55) 6px 8px)',
               }"
             />
           </div>
@@ -88,6 +92,10 @@ onMounted(async () => {
     pending.value = false
   }
 })
+
+function isDone(ev: EventSummary) {
+  return ev.ratedCount >= ev.totalCount && ev.totalCount > 0
+}
 
 function formatRange(start: string | null, end: string | null) {
   const fmt = (iso: string) =>

@@ -1,37 +1,41 @@
 <template>
   <div class="mx-auto max-w-6xl px-4 py-8">
-    <h1 class="text-3xl font-bold tracking-tight">Library</h1>
-    <p class="text-slate-400 mt-1 mb-6">
+    <p class="arcade-display text-[10px] text-arcade-cyan mb-3">— HIGH SCORES —</p>
+    <h1 class="arcade-display arcade-glow text-xl sm:text-3xl text-arcade-magenta">LIBRARY</h1>
+    <p class="text-arcade-muted mt-3 mb-6">
       All games you liked or disliked across events.
     </p>
 
-    <p v-if="pending" class="text-slate-400">Loading…</p>
-    <p v-else-if="error" class="text-rose-400">{{ error }}</p>
+    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
+    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
+      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
+      <p class="text-arcade-text">{{ error }}</p>
+    </div>
 
     <template v-else>
-      <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b border-slate-800">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b-2 border-arcade-line">
         <div class="flex gap-2">
           <button
             v-for="tab in tabs"
             :key="tab.key"
             type="button"
-            class="px-4 py-2 text-sm font-medium border-b-2 -mb-px transition"
+            class="arcade-display px-3 py-3 text-[10px] sm:text-xs border-b-4 -mb-[2px]"
             :class="
               activeTab === tab.key
                 ? tab.activeClass
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                : 'border-transparent text-arcade-muted hover:text-arcade-text'
             "
             @click="activeTab = tab.key"
           >
-            {{ tab.label }} ({{ tab.count }})
+            {{ tab.label }} <span class="tabular-nums">({{ tab.count }})</span>
           </button>
         </div>
 
-        <label class="flex items-center gap-2 text-sm text-slate-400 pb-2">
-          <span class="shrink-0">Sort</span>
+        <label class="flex items-center gap-2 text-arcade-muted pb-2">
+          <span class="arcade-display shrink-0 text-[10px]">SORT</span>
           <select
             v-model="sortBy"
-            class="rounded-lg border border-slate-700 bg-slate-900 text-slate-200 px-2.5 py-1.5 text-sm focus:outline-none focus:border-violet-500"
+            class="bg-black border-2 border-arcade-line text-arcade-text px-2 py-1 focus:outline-none focus:border-arcade-cyan"
           >
             <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
@@ -40,10 +44,13 @@
         </label>
       </div>
 
-      <p v-if="!activeGames.length" class="text-slate-500 text-sm">
-        {{ emptyMessage }}
-        <NuxtLink to="/" class="text-violet-300 hover:underline ml-1">Browse events</NuxtLink>
-      </p>
+      <div v-if="!activeGames.length" class="arcade-panel p-6 text-center">
+        <p class="arcade-display text-xs text-arcade-yellow mb-3">NO SCORES YET</p>
+        <p class="text-arcade-muted">
+          {{ emptyMessage }}
+          <NuxtLink to="/" class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow ml-1">Browse events</NuxtLink>
+        </p>
+      </div>
 
       <div v-else class="grid gap-6 md:grid-cols-2">
         <LibraryGameCard
@@ -79,15 +86,15 @@ const sortOptions: { value: SortKey; label: string }[] = [
 const tabs = computed(() => [
   {
     key: 'liked' as const,
-    label: 'Liked',
+    label: 'LIKED',
     count: liked.value.length,
-    activeClass: 'border-emerald-400 text-emerald-300',
+    activeClass: 'border-arcade-green text-arcade-green',
   },
   {
     key: 'disliked' as const,
-    label: 'Disliked',
+    label: 'DISLIKED',
     count: disliked.value.length,
-    activeClass: 'border-rose-400 text-rose-300',
+    activeClass: 'border-arcade-red text-arcade-red',
   },
 ])
 
