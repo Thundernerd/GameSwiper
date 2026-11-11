@@ -36,12 +36,12 @@
 </template>
 
 <script setup lang="ts">
+import { isPrototypePath } from '~/prototypes/styles'
+
 const { user, fetchMe, logout } = useAuth()
 const route = useRoute()
 // Throwaway style prototypes draw their own header.
-const isPrototype = computed(
-  () => route.path === '/prototypes' || route.path.startsWith('/prototypes/'),
-)
+const isPrototype = computed(() => isPrototypePath(route.path))
 
 onMounted(() => {
   fetchMe()

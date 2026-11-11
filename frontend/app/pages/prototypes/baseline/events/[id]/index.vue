@@ -90,7 +90,7 @@ import GameCard from '../../-components/GameCard.vue'
 import Shell from '../../-components/Shell.vue'
 
 const route = useRoute()
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 const api = useApi()
 const eventId = computed(() => Number(route.params.id))
 const eventName = ref('Event')

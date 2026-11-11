@@ -10,11 +10,10 @@ pages alone. `/prototypes` lists every style with links to its screens.
 ## Add a style
 
 1. Copy the `baseline/` folder next to it, named after your style id (for example `neon/`).
-2. In the copied files, replace every `usePrototypeLink('baseline')` with
-   `usePrototypeLink('neon')`.
-3. Add one entry to `prototypeStyles` in `app/prototypes/styles.ts`:
+   The copies need no edits to work: links take the style from the URL.
+2. Add one entry to `prototypeStyles` in `app/prototypes/styles.ts`:
    `{ id: 'neon', name: 'Neon', description: 'One sentence about the look.' }`.
-4. Restyle the copies however you like. Open `/prototypes` and check all six screens.
+3. Restyle the copies however you like. Open `/prototypes` and check all six screens.
 
 That's it: a new folder plus one list entry.
 
@@ -23,9 +22,9 @@ That's it: a new folder plus one list entry.
 - **Routes.** The folder mirrors the real app: `index.vue` (events), `events/[id]/index.vue`
   (swipe), `events/[id]/overview.vue`, `library.vue`, `login.vue`, `register.vue`.
 - **Links.** Never hard-code an app path like `'/'` or `/events/${id}`. Wrap it:
-  `const link = usePrototypeLink('neon')`, then `:to="link(`/events/${id}`)"` or
-  `navigateTo(link('/'))`. Only the shared "Back to all styles" link may leave
-  `/prototypes/<style>/`.
+  `const link = usePrototypeLink()`, then `:to="link(`/events/${id}`)"` or
+  `navigateTo(link('/'))`. `link` maps the path into whichever style is in the URL. Only the
+  shared "Back to all styles" link may leave `/prototypes/<style>/`.
 - **Components.** Put the style's components in its `-components/` folder and import them
   with a relative path (`import GameCard from './-components/GameCard.vue'`). Nuxt does not
   turn that folder into routes (see `ignore` in `nuxt.config.ts`), and it does not
@@ -47,5 +46,5 @@ When a style is chosen:
 
 - delete `app/pages/prototypes/`, `app/pages/prototypes.vue`, `app/prototypes/`,
   `app/composables/usePrototypeLink.ts` and `app/middleware/prototype-auth.ts`;
-- remove the `/prototypes` checks in `app/app.vue` and `app/middleware/auth.global.ts`, and
-  the `ignore` entry in `nuxt.config.ts`.
+- remove the `isPrototypePath` checks in `app/app.vue` and `app/middleware/auth.global.ts`,
+  and the `ignore` entry in `nuxt.config.ts`.

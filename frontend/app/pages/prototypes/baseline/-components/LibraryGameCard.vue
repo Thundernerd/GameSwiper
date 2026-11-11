@@ -99,7 +99,7 @@ const props = defineProps<{
   game: LibraryGame
 }>()
 
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 const expanded = ref(false)
 
 const needsToggle = computed(() => (props.game.summary?.length ?? 0) > 220)

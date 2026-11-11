@@ -15,7 +15,7 @@
             <NuxtLink
               v-for="screen in prototypeScreens"
               :key="screen.path"
-              :to="usePrototypeLink(style.id)(screen.path)"
+              :to="prototypePath(style.id, screen.path)"
               class="rounded-md border border-neutral-300 px-2.5 py-1 text-sm hover:border-neutral-900 hover:bg-neutral-100"
             >
               {{ screen.label }}
@@ -28,5 +28,5 @@
 </template>
 
 <script setup lang="ts">
-import { prototypeScreens, prototypeStyles } from '~/prototypes/styles'
+import { prototypePath, prototypeScreens, prototypeStyles } from '~/prototypes/styles'
 </script>

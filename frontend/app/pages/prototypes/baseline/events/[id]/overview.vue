@@ -72,7 +72,7 @@ import type { GameOverview, SwipeAction } from '~/shared/api'
 import Shell from '../../-components/Shell.vue'
 
 const route = useRoute()
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 const api = useApi()
 const eventId = computed(() => Number(route.params.id))
 const title = ref('Overview')

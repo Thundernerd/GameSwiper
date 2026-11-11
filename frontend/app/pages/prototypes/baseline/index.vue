@@ -76,7 +76,7 @@
 import type { EventSummary } from '~/shared/api'
 import Shell from './-components/Shell.vue'
 
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 
 const api = useApi()
 const events = ref<EventSummary[]>([])

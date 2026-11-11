@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import Shell from './-components/Shell.vue'
 
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 
 const { register, user } = useAuth()
 const username = ref('')

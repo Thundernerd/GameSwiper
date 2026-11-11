@@ -1,5 +1,7 @@
 // Throwaway: the visual-style prototypes under /prototypes. See app/pages/prototypes/README.md.
 
+export const prototypesBase = '/prototypes'
+
 export interface PrototypeStyle {
   /** Folder name under app/pages/prototypes/ and URL segment: /prototypes/<id>/ */
   id: string
@@ -17,15 +19,34 @@ export const prototypeStyles: PrototypeStyle[] = [
   },
 ]
 
-/** The six screens every style copies, as paths relative to /prototypes/<id>. */
+/**
+ * The six screens every style copies, as real-app paths. `public` screens are viewable
+ * without a (mock) user.
+ */
 export const prototypeScreens = [
-  { label: 'Events', path: '/' },
-  { label: 'Swipe', path: '/events/1' },
-  { label: 'Overview', path: '/events/1/overview' },
-  { label: 'Library', path: '/library' },
-  { label: 'Login', path: '/login' },
-  { label: 'Register', path: '/register' },
+  { label: 'Events', path: '/', public: false },
+  { label: 'Swipe', path: '/events/1', public: false },
+  { label: 'Overview', path: '/events/1/overview', public: false },
+  { label: 'Library', path: '/library', public: false },
+  { label: 'Login', path: '/login', public: true },
+  { label: 'Register', path: '/register', public: true },
 ] as const
 
-/** Screens that are viewable without a (mock) user. */
-export const publicPrototypeScreens = ['/login', '/register']
+/** True for /prototypes and everything under it. */
+export function isPrototypePath(path: string) {
+  return path === prototypesBase || path.startsWith(`${prototypesBase}/`)
+}
+
+/** Maps a real-app path ('/', '/events/1', …) to the same screen in a style prototype. */
+export function prototypePath(style: string, path: string) {
+  const base = `${prototypesBase}/${style}`
+  return path === '/' ? base : `${base}${path}`
+}
+
+/** Splits '/prototypes/<style>/<rest>' into the style id and the real-app path of the screen. */
+export function parsePrototypePath(path: string): { style: string; screen: string } | null {
+  if (!isPrototypePath(path)) return null
+  const [style = '', ...rest] = path.slice(prototypesBase.length + 1).split('/')
+  if (!style) return null
+  return { style, screen: `/${rest.join('/')}`.replace(/(.)\/$/, '$1') }
+}

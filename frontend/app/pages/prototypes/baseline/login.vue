@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import Shell from './-components/Shell.vue'
 
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 
 const { login, user } = useAuth()
 const api = useApi()

@@ -1,11 +1,16 @@
 // Throwaway: see app/pages/prototypes/README.md.
+import { parsePrototypePath, prototypePath } from '~/prototypes/styles'
 
 /**
- * Returns a function that maps a real-app path ('/', '/events/1', '/login', …) to the same
- * screen inside a style prototype ('/prototypes/<style>', '/prototypes/<style>/events/1', …),
- * so copied pages never jump back into the real app.
+ * Returns `link(path)`, which maps a real-app path ('/', '/events/1', '/login', …) to the same
+ * screen in the style prototype currently being viewed, so copied pages never jump back into
+ * the real app. The style comes from the URL, so a copied style folder needs no edits.
  */
-export function usePrototypeLink(style: string) {
-  const base = `/prototypes/${style}`
-  return (path: string) => (path === '/' ? base : `${base}${path}`)
+export function usePrototypeLink() {
+  const route = useRoute()
+  return (path: string) => {
+    const style = parsePrototypePath(route.path)?.style
+    if (!style) throw new Error(`usePrototypeLink used outside a style prototype: ${route.path}`)
+    return prototypePath(style, path)
+  }
 }

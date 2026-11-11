@@ -65,7 +65,7 @@ import Shell from './-components/Shell.vue'
 
 type SortKey = 'name-asc' | 'name-desc' | 'release-desc' | 'release-asc'
 
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 const api = useApi()
 const liked = ref<LibraryGame[]>([])
 const disliked = ref<LibraryGame[]>([])

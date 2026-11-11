@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-const link = usePrototypeLink('baseline')
+const link = usePrototypeLink()
 const { user, logout } = useAuth()
 
 async function onLogout() {
