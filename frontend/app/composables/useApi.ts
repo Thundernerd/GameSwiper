@@ -19,8 +19,8 @@ import queue2 from '../shared/fixtures/queue-2.json'
 import queue3 from '../shared/fixtures/queue-3.json'
 import overview1 from '../shared/fixtures/overview-1.json'
 
-const MOCK_USER_KEY = 'gameswiper_mock_user'
-const MOCK_SWIPES_KEY = 'gameswiper_mock_swipes'
+const MOCK_USER_KEY = 'hypecheck_mock_user'
+const MOCK_SWIPES_KEY = 'hypecheck_mock_swipes'
 
 type SwipeMap = Record<string, Record<number, SwipeAction>>
 

@@ -23,7 +23,10 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::registry()
         .with(
             EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| EnvFilter::new("gameswiper_api=info,tower_http=info")),
+                // Derived from the crate name so a rename can't silently drop app logs.
+                .unwrap_or_else(|_| {
+                    EnvFilter::new(concat!(env!("CARGO_CRATE_NAME"), "=info,tower_http=info"))
+                }),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();

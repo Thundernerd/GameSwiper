@@ -8,9 +8,9 @@
         <div class="flex items-center gap-4 min-w-0">
           <NuxtLink
             to="/"
-            class="arcade-display arcade-glow text-sm sm:text-base text-arcade-magenta hover:text-arcade-yellow"
+            class="arcade-display arcade-glow whitespace-nowrap text-sm sm:text-base text-arcade-magenta hover:text-arcade-yellow"
           >
-            GAMESWIPER
+            HYPE CHECK
           </NuxtLink>
           <NuxtLink
             to="/library"

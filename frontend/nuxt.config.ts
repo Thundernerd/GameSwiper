@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   tailwindcss: { cssPath: false },
   app: {
     head: {
+      title: 'Hype Check',
       // Retro arcade type: Press Start 2P for display text, VT323 for body text.
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

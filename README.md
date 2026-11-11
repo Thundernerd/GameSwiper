@@ -1,6 +1,6 @@
-# GameSwiper
+# Hype Check
 
-GameSwiper shows games from finished IGDB events as cards. You can like, dislike, or defer each card. Later visits show only the games that you did not rate.
+Hype Check shows games from finished IGDB events as cards. You can like, dislike, or defer each card. Later visits show only the games that you did not rate.
 
 ## Stack
 
@@ -10,6 +10,14 @@ The project has two parts:
 - **frontend/** — A Nuxt 4 (Vue 3) app. The app uses mock fixtures when `NUXT_PUBLIC_USE_MOCK` is `true` (default). When that value is `false`, the app uses the live API through the `/api` proxy.
 
 ## Setup
+
+> **Renamed from GameSwiper.** The default database file is now `backend/data/hypecheck.db`. To keep your existing local data, move the old file:
+>
+> ```bash
+> mv backend/data/gameswiper.db backend/data/hypecheck.db
+> ```
+>
+> If your `backend/.env` was copied from an older `.env.example`, it still sets `DATABASE_URL=sqlite:data/gameswiper.db?mode=rwc`. Change that line to `hypecheck.db` after the move, or the backend starts a new, empty database. Or skip the move and leave `DATABASE_URL` pointing at the old file.
 
 ### 1. IGDB / Twitch credentials
 
