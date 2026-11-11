@@ -60,8 +60,8 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
-/* Pixel type. arcade-display is the base; arcade-label and arcade-small-link below share it and
-   add their own size (and colour, for the link). */
+/* Pixel type. arcade-display is the base; arcade-label and arcade-small-link share it at 10px,
+   and arcade-small-link adds the link colours below. */
 .arcade-display,
 .arcade-label,
 .arcade-small-link {
@@ -70,9 +70,10 @@ select:focus-visible {
   letter-spacing: 0.02em;
 }
 
-/* Section label above a page title ("— SELECT STAGE —"): small pixel type only; each page sets
-   its own colour and margins. */
-.arcade-label {
+/* arcade-label: section label above a page title ("— SELECT STAGE —"); each page sets its own
+   colour and margins. */
+.arcade-label,
+.arcade-small-link {
   font-size: 10px;
 }
 
@@ -90,9 +91,6 @@ select:focus-visible {
 .arcade-link {
   text-decoration-line: underline;
   text-underline-offset: 4px;
-}
-.arcade-small-link {
-  font-size: 10px;
 }
 
 .arcade-glow {
