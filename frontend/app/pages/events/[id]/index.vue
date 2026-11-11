@@ -227,8 +227,7 @@ async function decide(action: SwipeAction) {
     error.value = e instanceof Error ? e.message : 'Swipe failed'
   } finally {
     leaving.value = null
-    dragX.value = 0
-    dragY.value = 0
+    snapBack()
     busy.value = false
   }
 }
