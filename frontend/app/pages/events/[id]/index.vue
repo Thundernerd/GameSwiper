@@ -153,7 +153,7 @@ function onPointerDown(e: PointerEvent) {
   ;(e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId)
   window.addEventListener('pointermove', onPointerMove)
   window.addEventListener('pointerup', onPointerUp)
-  window.addEventListener('pointercancel', onPointerUp)
+  window.addEventListener('pointercancel', onPointerCancel)
 }
 
 function onPointerMove(e: PointerEvent) {
@@ -162,21 +162,36 @@ function onPointerMove(e: PointerEvent) {
   dragY.value = e.clientY - startY
 }
 
-function onPointerUp(e: PointerEvent) {
-  if (e.pointerId !== pointerId) return
+/** Stops tracking the drag. Returns false if the event is for another pointer. */
+function endDrag(e: PointerEvent): boolean {
+  if (e.pointerId !== pointerId) return false
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
-  window.removeEventListener('pointercancel', onPointerUp)
+  window.removeEventListener('pointercancel', onPointerCancel)
   dragging = false
   pointerId = null
+  return true
+}
 
+function snapBack() {
+  dragX.value = 0
+  dragY.value = 0
+}
+
+/** The user let go of the card: act on where it was released. */
+function onPointerUp(e: PointerEvent) {
+  if (!endDrag(e)) return
   const action = swipeDecision(dragX.value, dragY.value)
-  if (action) {
-    void decide(action)
-  } else {
-    dragX.value = 0
-    dragY.value = 0
-  }
+  if (action) void decide(action)
+  else snapBack()
+}
+
+/**
+ * The browser took the pointer away (an OS gesture, rotation, a native drag).
+ * The user never released the card, so record nothing, however far it was dragged.
+ */
+function onPointerCancel(e: PointerEvent) {
+  if (endDrag(e)) snapBack()
 }
 
 async function decide(action: SwipeAction) {
