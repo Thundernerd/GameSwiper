@@ -1,11 +1,6 @@
 <template>
   <Shell>
     <div class="mx-auto max-w-md px-4 py-12 sm:py-20">
-      <div class="mb-6 text-center">
-        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-200 bg-clip-text text-transparent">
-          GameSwiper
-        </span>
-      </div>
       <div class="rounded-3xl border border-white/15 bg-slate-950/50 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_30px_80px_-24px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-white/5">
         <h1 class="text-3xl font-black tracking-tight mb-2">Welcome back</h1>
         <p class="text-slate-200 mb-8">Sign in to continue swiping games from finished events.</p>
