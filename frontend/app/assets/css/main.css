@@ -61,28 +61,36 @@ select:focus-visible {
 }
 
 .arcade-display,
-.arcade-back-link {
+.arcade-label,
+.arcade-small-link {
   font-family: 'Press Start 2P', ui-monospace, monospace;
   line-height: 1.6;
   letter-spacing: 0.02em;
 }
 
+/* Section label above a page title ("— SELECT STAGE —"): small pixel type only; each page sets
+   its own colour and margins. */
+.arcade-label {
+  font-size: 10px;
+}
+
 /* Links: cyan, yellow on hover.
-   arcade-link is an inline text link; arcade-back-link is a small pixel-type link back up a
-   level ("◀ EVENTS") and also gets the arcade-display type above. */
+   arcade-link is an inline text link. arcade-small-link is small pixel type, for links back up a
+   level ("◀ EVENTS") and small text buttons ("▼ MORE", carousel arrows); it also gets the
+   arcade-display type above. */
 .arcade-link,
-.arcade-back-link {
+.arcade-small-link {
   color: rgb(var(--arcade-cyan));
 }
 .arcade-link:hover,
-.arcade-back-link:hover {
+.arcade-small-link:hover {
   color: rgb(var(--arcade-yellow));
 }
 .arcade-link {
   text-decoration-line: underline;
   text-underline-offset: 4px;
 }
-.arcade-back-link {
+.arcade-small-link {
   font-size: 10px;
 }
 

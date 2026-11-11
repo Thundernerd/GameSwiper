@@ -39,7 +39,7 @@
       >
         <button
           type="button"
-          class="arcade-display px-2 py-1 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
+          class="arcade-small-link px-2 py-1"
           aria-label="Previous media"
           @click.stop="prev"
         >
@@ -58,7 +58,7 @@
         </div>
         <button
           type="button"
-          class="arcade-display px-2 py-1 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
+          class="arcade-small-link px-2 py-1"
           aria-label="Next media"
           @click.stop="next"
         >

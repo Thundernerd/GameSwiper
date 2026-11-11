@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-6xl px-4 py-8">
-    <p class="arcade-display text-[10px] text-arcade-cyan mb-3">— HIGH SCORES —</p>
+    <p class="arcade-label text-arcade-cyan mb-3">— HIGH SCORES —</p>
     <h1 class="arcade-display arcade-glow text-xl sm:text-3xl text-arcade-magenta">LIBRARY</h1>
     <p class="text-arcade-muted mt-3 mb-6">
       All games you liked or disliked across events.

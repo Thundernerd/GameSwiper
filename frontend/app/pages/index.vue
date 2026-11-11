@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto max-w-6xl px-4 py-10">
     <div class="mb-8">
-      <p class="arcade-display text-[10px] text-arcade-cyan mb-3">— SELECT STAGE —</p>
+      <p class="arcade-label text-arcade-cyan mb-3">— SELECT STAGE —</p>
       <h1 class="arcade-display arcade-glow text-xl sm:text-3xl text-arcade-magenta">FINISHED EVENTS</h1>
       <p class="text-arcade-muted mt-3">Pick an event and swipe through its games.</p>
     </div>
