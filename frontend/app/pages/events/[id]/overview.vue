@@ -7,11 +7,8 @@
     <h1 class="arcade-display arcade-glow text-base sm:text-2xl leading-relaxed text-arcade-magenta mb-3">{{ title }}</h1>
     <p class="text-arcade-muted mb-8">Your likes and dislikes for this event.</p>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
-      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending">LOADING…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" />
 
     <div v-else class="grid gap-8 md:grid-cols-2">
       <section v-for="column in columns" :key="column.key" class="min-w-0">

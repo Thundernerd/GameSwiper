@@ -6,11 +6,8 @@
       All games you liked or disliked across events.
     </p>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
-      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending">LOADING…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" />
 
     <template v-else>
       <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b-2 border-arcade-line">

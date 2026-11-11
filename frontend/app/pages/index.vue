@@ -6,11 +6,8 @@
       <p class="text-arcade-muted mt-3">Pick an event and swipe through its games.</p>
     </div>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan">LOADING EVENTS…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red p-4">
-      <p class="arcade-display text-xs text-arcade-red mb-2">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending">LOADING EVENTS…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" />
     <p v-else-if="!events.length" class="arcade-panel p-4 text-arcade-muted">
       No finished events yet. Sync IGDB from the backend, or enable mock mode.
     </p>

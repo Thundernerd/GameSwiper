@@ -13,11 +13,8 @@
       </NuxtLink>
     </div>
 
-    <p v-if="pending" class="arcade-display arcade-blink text-xs text-arcade-cyan py-20 text-center">LOADING DECK…</p>
-    <div v-else-if="error" class="arcade-panel !border-arcade-red my-16 p-5 text-center">
-      <p class="arcade-display text-xs text-arcade-red mb-3">ERROR</p>
-      <p class="text-arcade-text">{{ error }}</p>
-    </div>
+    <LoadingLine v-if="pending" class="py-20 text-center">LOADING DECK…</LoadingLine>
+    <ErrorPanel v-else-if="error" :message="error" large class="my-16 text-center" />
 
     <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-5">
       <p class="arcade-display arcade-glow text-xl sm:text-2xl leading-relaxed text-arcade-green">DECK<br />CLEARED!</p>
