@@ -245,11 +245,9 @@ async function liveFetch<T>(path: string, options: RequestInit = {}): Promise<T>
     ...(options.headers as Record<string, string> | undefined),
   }
 
-  // useRequestFetch forwards cookies during SSR; browser uses same-origin /api proxy
-  const doFetch = import.meta.server ? useRequestFetch() : $fetch
-
   try {
-    return (await doFetch(`/api${path}`, {
+    // Same-origin /api proxy; the browser sends the session cookie.
+    return (await $fetch(`/api${path}`, {
       method: (options.method as 'GET' | 'POST' | undefined) || 'GET',
       body: options.body ? JSON.parse(options.body as string) : undefined,
       headers,

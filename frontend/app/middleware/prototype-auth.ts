@@ -4,8 +4,6 @@
 import { parsePrototypePath, prototypePath, prototypeScreens, prototypeStyles } from '~/prototypes/styles'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (import.meta.server) return
-
   const parsed = parsePrototypePath(to.path)
   if (!parsed) return // the /prototypes index
   if (!prototypeStyles.some((s) => s.id === parsed.style)) return // unknown style: let it 404
