@@ -17,6 +17,12 @@ export const prototypeStyles: PrototypeStyle[] = [
     name: 'Baseline',
     description: 'The current look, copied as-is, to compare the other styles against.',
   },
+  {
+    id: 'glassy',
+    name: 'Glassy',
+    description:
+      'Frosted-glass cards and panels over the active game\'s blurred cover art, with bold gradient accents, soft shadows and motion.',
+  },
 ]
 
 /**
