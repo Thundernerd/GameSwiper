@@ -18,6 +18,11 @@ export const prototypeStyles: PrototypeStyle[] = [
     description: 'The current look, copied as-is, to compare the other styles against.',
   },
   {
+    id: 'retro',
+    name: 'Retro arcade',
+    description: 'Arcade cabinet on a CRT: neon on near-black, pixel type, hard edges and scanlines.',
+  },
+  {
     id: 'editorial',
     name: 'Editorial',
     description:
