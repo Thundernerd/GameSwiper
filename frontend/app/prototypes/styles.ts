@@ -17,6 +17,23 @@ export const prototypeStyles: PrototypeStyle[] = [
     name: 'Baseline',
     description: 'The current look, copied as-is, to compare the other styles against.',
   },
+  {
+    id: 'glassy',
+    name: 'Glassy',
+    description:
+      'Frosted-glass cards and panels over the active game\'s blurred cover art, with bold gradient accents, soft shadows and motion.',
+  },
+  {
+    id: 'retro',
+    name: 'Retro arcade',
+    description: 'Arcade cabinet on a CRT: neon on near-black, pixel type, hard edges and scanlines.',
+  },
+  {
+    id: 'editorial',
+    name: 'Editorial',
+    description:
+      'Light magazine layout: serif headlines, roomy cover art, and colour only for like, dislike and defer.',
+  },
 ]
 
 /**
