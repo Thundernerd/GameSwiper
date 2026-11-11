@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden bg-slate-950">
+  <div class="overflow-hidden bg-stone-100">
     <template v-if="media.length">
       <div class="aspect-[16/10] w-full relative">
         <iframe
@@ -13,16 +13,16 @@
         <button
           v-else-if="current?.kind === 'video'"
           type="button"
-          class="h-full w-full flex flex-col items-center justify-center gap-2 bg-slate-900 text-slate-300 hover:bg-slate-800 transition"
+          class="h-full w-full flex flex-col items-center justify-center gap-3 bg-stone-900 text-[#f7f4ee] hover:bg-stone-800 transition"
           @click.stop="playVideo"
         >
           <span
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/90 text-white text-xl shadow-lg"
+            class="flex h-14 w-14 items-center justify-center rounded-full border border-[#f7f4ee] text-xl"
             aria-hidden="true"
           >
             ▶
           </span>
-          <span class="text-sm">{{ current.title || 'Play trailer' }}</span>
+          <span class="ed-serif italic">{{ current.title || 'Play trailer' }}</span>
         </button>
         <img
           v-else-if="current"
@@ -34,36 +34,39 @@
 
       <div
         v-if="media.length > 1"
-        class="flex items-center justify-center gap-2 py-2"
+        class="flex items-center justify-center gap-3 py-2 bg-white border-b border-stone-200"
         @pointerdown.stop
       >
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="px-2 py-0.5 text-lg leading-none text-stone-900 hover:opacity-60"
+          aria-label="Previous media"
           @click.stop="prev"
         >
           ‹
         </button>
-        <div class="flex gap-1">
+        <div class="flex gap-1.5">
           <button
             v-for="(m, i) in media"
             :key="i"
             type="button"
-            class="h-1.5 w-1.5 rounded-full"
-            :class="i === index ? 'bg-white' : 'bg-white/40'"
+            class="h-1.5 rounded-full transition-all"
+            :class="i === index ? 'w-4 bg-stone-900' : 'w-1.5 bg-stone-300'"
+            :aria-label="`Show media ${i + 1}`"
             @click.stop="goTo(i)"
           />
         </div>
         <button
           type="button"
-          class="rounded-full bg-black/50 px-2 py-1 text-xs"
+          class="px-2 py-0.5 text-lg leading-none text-stone-900 hover:opacity-60"
+          aria-label="Next media"
           @click.stop="next"
         >
           ›
         </button>
       </div>
     </template>
-    <div v-else class="aspect-[16/10] w-full flex items-center justify-center text-slate-500">
+    <div v-else class="aspect-[16/10] w-full flex items-center justify-center ed-serif italic text-stone-600">
       No media
     </div>
   </div>

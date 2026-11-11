@@ -1,38 +1,40 @@
 <template>
   <Shell>
-    <div class="mx-auto max-w-6xl px-4 py-8">
-      <h1 class="text-3xl font-bold tracking-tight">Library</h1>
-      <p class="text-slate-400 mt-1 mb-6">
+    <div class="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16">
+      <p class="ed-caps text-stone-600">Your reading list</p>
+      <h1 class="ed-serif mt-3 text-4xl sm:text-6xl font-medium tracking-tight leading-[1.05]">Library</h1>
+      <p class="mt-4 mb-10 text-lg text-stone-600">
         All games you liked or disliked across events.
       </p>
 
-      <p v-if="pending" class="text-slate-400">Loading…</p>
-      <p v-else-if="error" class="text-rose-400">{{ error }}</p>
+      <p v-if="pending" class="ed-serif italic text-xl text-stone-600 border-t border-stone-300 pt-6">Loading…</p>
+      <p v-else-if="error" class="border-t border-rose-700 pt-6 text-rose-700">{{ error }}</p>
 
       <template v-else>
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-6 border-b border-slate-800">
-          <div class="flex gap-2">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 mb-10 border-b border-stone-300">
+          <div class="flex gap-6">
             <button
               v-for="tab in tabs"
               :key="tab.key"
               type="button"
-              class="px-4 py-2 text-sm font-medium border-b-2 -mb-px transition"
+              class="ed-serif py-2 text-2xl border-b-2 -mb-px transition"
               :class="
                 activeTab === tab.key
                   ? tab.activeClass
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  : 'border-transparent text-stone-600 hover:text-stone-900'
               "
               @click="activeTab = tab.key"
             >
-              {{ tab.label }} ({{ tab.count }})
+              {{ tab.label }}
+              <span class="ed-caps align-middle tabular-nums">{{ tab.count }}</span>
             </button>
           </div>
 
-          <label class="flex items-center gap-2 text-sm text-slate-400 pb-2">
-            <span class="shrink-0">Sort</span>
+          <label class="flex items-center gap-2 pb-3">
+            <span class="shrink-0 ed-caps text-stone-600">Sort</span>
             <select
               v-model="sortBy"
-              class="rounded-lg border border-slate-700 bg-slate-900 text-slate-200 px-2.5 py-1.5 text-sm focus:outline-none focus:border-violet-500"
+              class="border-0 border-b border-stone-400 bg-transparent py-1 pl-0 pr-7 text-sm text-stone-900 focus:outline-none focus:ring-0 focus:border-stone-900"
             >
               <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">
                 {{ opt.label }}
@@ -41,12 +43,15 @@
           </label>
         </div>
 
-        <p v-if="!activeGames.length" class="text-slate-500 text-sm">
+        <p v-if="!activeGames.length" class="ed-serif italic text-xl text-stone-600">
           {{ emptyMessage }}
-          <NuxtLink :to="link('/')" class="text-violet-300 hover:underline ml-1">Browse events</NuxtLink>
+          <NuxtLink
+            :to="link('/')"
+            class="ml-1 not-italic text-stone-900 underline underline-offset-4 hover:opacity-70"
+          >Browse events</NuxtLink>
         </p>
 
-        <div v-else class="grid gap-6 md:grid-cols-2">
+        <div v-else class="grid gap-x-10 gap-y-14 md:grid-cols-2">
           <LibraryGameCard
             v-for="game in activeGames"
             :key="`${activeTab}-${game.id}`"
@@ -86,13 +91,13 @@ const tabs = computed(() => [
     key: 'liked' as const,
     label: 'Liked',
     count: liked.value.length,
-    activeClass: 'border-emerald-400 text-emerald-300',
+    activeClass: 'border-emerald-700 text-emerald-700',
   },
   {
     key: 'disliked' as const,
     label: 'Disliked',
     count: disliked.value.length,
-    activeClass: 'border-rose-400 text-rose-300',
+    activeClass: 'border-rose-700 text-rose-700',
   },
 ])
 

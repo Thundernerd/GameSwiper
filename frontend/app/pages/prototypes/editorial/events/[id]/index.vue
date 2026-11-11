@@ -1,28 +1,29 @@
 <template>
   <Shell>
-    <div class="mx-auto max-w-lg px-4 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
-      <div class="flex items-center justify-between gap-3 mb-4">
-        <div>
-          <NuxtLink :to="link('/')" class="text-sm text-slate-400 hover:text-slate-200">← Events</NuxtLink>
-          <h1 class="text-xl font-semibold mt-1">{{ eventName }}</h1>
+    <div class="mx-auto max-w-lg px-5 sm:px-8 pt-6 sm:pt-10 flex flex-col min-h-[calc(100vh-8rem)]">
+      <div class="flex items-end justify-between gap-4 mb-6 border-b border-stone-300 pb-4">
+        <div class="min-w-0">
+          <NuxtLink :to="link('/')" class="ed-caps text-stone-600 hover:text-stone-900">← Events</NuxtLink>
+          <h1 class="ed-serif text-3xl font-medium leading-tight mt-2">{{ eventName }}</h1>
         </div>
         <NuxtLink
           :to="link(`/events/${eventId}/overview`)"
-          class="text-sm rounded-lg border border-slate-700 px-3 py-1.5 hover:bg-slate-800"
+          class="shrink-0 ed-caps border-b border-stone-900 pb-0.5 hover:opacity-70"
         >
           Overview
         </NuxtLink>
       </div>
 
-      <p v-if="pending" class="text-slate-400 py-20 text-center">Loading deck…</p>
-      <p v-else-if="error" class="text-rose-400 py-20 text-center">{{ error }}</p>
+      <p v-if="pending" class="ed-serif italic text-xl text-stone-600 py-20 text-center">Loading deck…</p>
+      <p v-else-if="error" class="text-rose-700 py-20 text-center">{{ error }}</p>
 
-      <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-4">
-        <p class="text-2xl font-semibold">Deck cleared</p>
-        <p class="text-slate-400">You have rated every game in this event.</p>
+      <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center py-16">
+        <p class="ed-caps text-stone-600">Fin.</p>
+        <p class="ed-serif mt-3 text-5xl font-medium tracking-tight">Deck cleared</p>
+        <p class="mt-4 text-lg text-stone-600">You have rated every game in this event.</p>
         <NuxtLink
           :to="link(`/events/${eventId}/overview`)"
-          class="rounded-xl bg-violet-600 hover:bg-violet-500 px-5 py-2.5 font-medium"
+          class="mt-8 bg-stone-900 text-[#f7f4ee] hover:bg-stone-700 px-6 py-3.5 ed-caps transition"
         >
           View overview
         </NuxtLink>
@@ -50,35 +51,39 @@
 
         <div class="flex-1 min-h-0" aria-hidden="true" />
 
-        <div class="relative z-30 flex items-center justify-center gap-4 py-6 shrink-0 bg-slate-950">
+        <div class="relative z-30 flex items-center justify-center gap-6 py-6 shrink-0 bg-[#f7f4ee]">
           <button
             type="button"
-            class="h-14 w-14 rounded-full border-2 border-rose-500 text-rose-400 text-xl font-bold hover:bg-rose-500/10"
+            class="h-14 w-14 rounded-full border border-rose-700 bg-white text-rose-700 text-xl hover:bg-rose-700 hover:text-white transition"
             title="Dislike"
+            aria-label="Dislike"
             @click="decide('dislike')"
           >
             ✕
           </button>
           <button
             type="button"
-            class="h-12 w-12 rounded-full border-2 border-amber-400 text-amber-300 text-sm font-semibold hover:bg-amber-400/10"
+            class="h-12 w-12 rounded-full border border-amber-800 bg-white text-amber-800 ed-serif text-lg italic hover:bg-amber-800 hover:text-white transition"
             title="Not sure yet"
+            aria-label="Not sure yet"
             @click="decide('defer')"
           >
             ?
           </button>
           <button
             type="button"
-            class="h-14 w-14 rounded-full border-2 border-emerald-500 text-emerald-400 text-xl font-bold hover:bg-emerald-500/10"
+            class="h-14 w-14 rounded-full border border-emerald-700 bg-white text-emerald-700 text-xl hover:bg-emerald-700 hover:text-white transition"
             title="Like"
+            aria-label="Like"
             @click="decide('like')"
           >
             ♥
           </button>
         </div>
-        <p class="text-center text-xs text-slate-500 pb-4">
-          Swipe right to like · left to dislike · down or ? to defer · {{ deck.length }} left
+        <p class="text-center text-sm text-stone-600 leading-relaxed">
+          Swipe right to like · left to dislike · down or ? to defer
         </p>
+        <p class="text-center ed-serif italic text-stone-900 pt-1 pb-4">{{ deck.length }} left</p>
       </div>
     </div>
   </Shell>

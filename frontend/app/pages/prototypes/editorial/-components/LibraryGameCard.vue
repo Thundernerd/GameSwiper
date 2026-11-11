@@ -1,90 +1,74 @@
 <template>
-  <article
-    class="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden"
-  >
-    <MediaCarousel
-      :media="carouselMedia"
-      class="shrink-0 bg-black"
-    />
+  <article class="flex flex-col min-w-0 border-t border-stone-900 pt-4">
+    <MediaCarousel :media="carouselMedia" class="shrink-0" />
 
-    <div class="p-4 space-y-3 flex-1 flex flex-col">
-      <div class="flex items-start justify-between gap-3">
-        <h2 class="text-xl font-bold leading-tight min-w-0">{{ game.name }}</h2>
-        <span
-          v-if="game.rating != null"
-          class="shrink-0 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-semibold px-2.5 py-1 tabular-nums"
-          :title="`IGDB rating ${game.rating}`"
-        >
-          {{ game.rating }}
-        </span>
-      </div>
-
-      <div v-if="game.events.length" class="flex flex-wrap gap-1.5">
+    <div class="pt-5 space-y-3 flex-1 flex flex-col">
+      <div v-if="game.events.length" class="flex flex-wrap gap-x-3 gap-y-1">
         <NuxtLink
           v-for="ev in game.events"
           :key="ev.id"
           :to="link(`/events/${ev.id}/overview`)"
-          class="rounded-full border border-violet-500/40 bg-violet-500/10 text-violet-200 text-xs px-2.5 py-1 hover:bg-violet-500/20 transition"
+          class="ed-caps text-stone-600 hover:text-stone-900 hover:underline underline-offset-4"
         >
           {{ ev.name }}
         </NuxtLink>
       </div>
 
-      <p v-if="companyLine" class="text-sm text-slate-400" :title="companyLine">
-        {{ companyLine }}
-      </p>
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 class="ed-serif text-3xl font-medium leading-tight min-w-0">{{ game.name }}</h2>
+        <span
+          v-if="game.rating != null"
+          class="shrink-0 ed-serif text-2xl italic tabular-nums"
+          :title="`IGDB rating ${game.rating}`"
+        >
+          {{ game.rating }}<span class="sr-only"> IGDB rating</span>
+        </span>
+      </div>
 
-      <p class="text-sm text-slate-300">
-        <span class="text-slate-500">WW release</span>
-        {{ ' · ' }}
-        <span :class="formattedRelease ? 'text-slate-200' : 'text-slate-500'">
+      <p class="text-sm text-stone-600">
+        <template v-if="companyLine">
+          <span :title="companyLine">{{ companyLine }}</span>
+          {{ ' · ' }}
+        </template>
+        <span>WW release</span>
+        {{ ' ' }}
+        <span :class="formattedRelease ? 'text-stone-900' : 'italic'">
           {{ formattedRelease || 'Unknown' }}
         </span>
       </p>
 
-      <div v-if="game.summary" class="text-sm text-slate-300 leading-relaxed">
+      <div v-if="game.summary" class="text-[0.95rem] text-stone-700 leading-relaxed">
         <p :class="expanded || !needsToggle ? '' : 'line-clamp-4'">
           {{ game.summary }}
         </p>
         <button
           v-if="needsToggle"
           type="button"
-          class="mt-1 text-xs text-violet-300 hover:underline"
+          class="mt-1 ed-serif italic text-stone-900 underline underline-offset-4 hover:opacity-70"
           @click="expanded = !expanded"
         >
           {{ expanded ? 'Show less' : 'Show more' }}
         </button>
       </div>
 
-      <div v-if="game.genres.length" class="flex flex-wrap gap-1.5">
-        <span
-          v-for="g in game.genres"
-          :key="`g-${g}`"
-          class="rounded-full bg-violet-500/20 text-violet-200 text-xs px-2.5 py-1"
-        >
-          {{ g }}
-        </span>
-      </div>
-      <div v-if="game.platforms.length" class="flex flex-wrap gap-1.5">
-        <span
-          v-for="p in game.platforms"
-          :key="`p-${p}`"
-          class="rounded-full bg-slate-800 text-slate-300 text-xs px-2.5 py-1"
-        >
-          {{ p }}
-        </span>
+      <div
+        v-if="game.genres.length || game.platforms.length"
+        class="border-t border-stone-200 pt-3 space-y-1 text-sm"
+      >
+        <p v-if="game.genres.length" class="text-stone-900">{{ game.genres.join(' · ') }}</p>
+        <p v-if="game.platforms.length" class="text-stone-600">{{ game.platforms.join(' · ') }}</p>
       </div>
 
-      <div v-if="game.links.length" class="flex flex-wrap gap-x-3 gap-y-1 pt-1 mt-auto">
+      <div v-if="game.links.length" class="flex flex-wrap gap-x-4 gap-y-1 pt-1 mt-auto">
         <a
           v-for="link in game.links"
           :key="link.url"
           :href="link.url"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-xs text-violet-300 hover:underline"
+          class="ed-caps text-stone-900 border-b border-stone-400 hover:border-stone-900"
         >
-          {{ link.label }}
+          {{ link.label }} ↗
         </a>
       </div>
     </div>

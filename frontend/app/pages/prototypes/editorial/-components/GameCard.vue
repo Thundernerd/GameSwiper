@@ -1,57 +1,47 @@
 <template>
   <article
-    class="mx-auto w-full max-w-md flex flex-col rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden select-none touch-none"
+    class="mx-auto w-full max-w-md flex flex-col bg-white border border-stone-300 shadow-[0_1px_2px_rgba(28,25,23,0.06),0_12px_32px_-12px_rgba(28,25,23,0.18)] overflow-hidden select-none touch-none"
     :style="cardStyle"
     @pointerdown="$emit('pointerdown', $event)"
   >
-    <MediaCarousel :media="game.media" :active="active" class="shrink-0 bg-black" />
+    <MediaCarousel :media="game.media" :active="active" class="shrink-0" />
 
-    <div class="p-4 space-y-2.5">
-      <div class="flex items-start justify-between gap-3">
-        <h2 class="text-xl font-bold leading-tight min-w-0">{{ game.name }}</h2>
+    <div class="px-5 pt-4 pb-5 space-y-3">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 class="ed-serif text-2xl font-medium leading-tight min-w-0">{{ game.name }}</h2>
         <span
           v-if="game.rating != null"
-          class="shrink-0 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-semibold px-2.5 py-1 tabular-nums"
+          class="shrink-0 ed-serif text-xl italic tabular-nums text-stone-900"
           :title="`IGDB rating ${game.rating}`"
         >
-          {{ game.rating }}
+          {{ game.rating }}<span class="sr-only"> IGDB rating</span>
         </span>
       </div>
 
-      <p v-if="companyLine" class="text-sm text-slate-400 truncate" :title="companyLine">
+      <p v-if="companyLine" class="ed-caps text-stone-600 truncate" :title="companyLine">
         {{ companyLine }}
       </p>
 
-      <p v-if="game.summary" class="text-sm text-slate-300 leading-relaxed line-clamp-3">
+      <p v-if="game.summary" class="text-[0.95rem] text-stone-700 leading-relaxed line-clamp-3">
         {{ game.summary }}
       </p>
 
-      <div class="flex flex-wrap gap-1.5">
-        <span
-          v-for="g in game.genres"
-          :key="`g-${g}`"
-          class="rounded-full bg-violet-500/20 text-violet-200 text-xs px-2.5 py-1"
-        >
-          {{ g }}
-        </span>
-      </div>
-      <div class="flex flex-wrap gap-1.5">
-        <span
-          v-for="p in game.platforms"
-          :key="`p-${p}`"
-          class="rounded-full bg-slate-800 text-slate-300 text-xs px-2.5 py-1"
-        >
-          {{ p }}
-        </span>
+      <div class="border-t border-stone-200 pt-3 space-y-1 text-sm">
+        <p v-if="game.genres.length" class="text-stone-900">
+          {{ game.genres.join(' · ') }}
+        </p>
+        <p v-if="game.platforms.length" class="text-stone-600">
+          {{ game.platforms.join(' · ') }}
+        </p>
       </div>
     </div>
 
     <div
       v-if="overlayLabel"
-      class="pointer-events-none absolute top-4 inset-x-0 flex justify-center"
+      class="pointer-events-none absolute top-5 inset-x-0 flex justify-center"
     >
       <span
-        class="rounded-lg border-2 px-4 py-1 text-lg font-bold uppercase tracking-wider bg-slate-950/70"
+        class="ed-serif border-2 bg-white/95 px-5 py-1 text-2xl font-semibold italic tracking-wide -rotate-3"
         :class="overlayClass"
       >
         {{ overlayLabel }}
@@ -108,8 +98,8 @@ const overlayLabel = computed(() => {
 })
 
 const overlayClass = computed(() => {
-  if (overlayLabel.value === 'Like') return 'border-emerald-400 text-emerald-300'
-  if (overlayLabel.value === 'Nope') return 'border-rose-400 text-rose-300'
-  return 'border-amber-400 text-amber-300'
+  if (overlayLabel.value === 'Like') return 'border-emerald-700 text-emerald-700'
+  if (overlayLabel.value === 'Nope') return 'border-rose-700 text-rose-700'
+  return 'border-amber-800 text-amber-800'
 })
 </script>

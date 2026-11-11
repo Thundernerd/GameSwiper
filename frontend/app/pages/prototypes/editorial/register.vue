@@ -1,41 +1,42 @@
 <template>
   <Shell>
-    <div class="mx-auto max-w-md px-4 py-16">
-      <h1 class="text-3xl font-bold mb-2">Create account</h1>
-      <p class="text-slate-400 mb-8">Save your likes and pick up where you left off.</p>
-      <form class="space-y-4" @submit.prevent="onSubmit">
+    <div class="mx-auto max-w-md px-5 sm:px-8 py-14 sm:py-24">
+      <p class="ed-caps text-stone-600">New reader</p>
+      <h1 class="ed-serif mt-3 text-5xl font-medium tracking-tight leading-[1.05]">Create account</h1>
+      <p class="mt-4 mb-10 text-lg text-stone-600 leading-relaxed">Save your likes and pick up where you left off.</p>
+      <form class="space-y-6" @submit.prevent="onSubmit">
         <label class="block">
-          <span class="text-sm text-slate-300">Username</span>
+          <span class="ed-caps text-stone-600">Username</span>
           <input
             v-model="username"
             required
-            class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 outline-none focus:border-violet-500"
+            class="mt-2 w-full border-0 border-b border-stone-400 bg-transparent px-0 py-2 text-lg outline-none focus:border-stone-900 focus:ring-0"
             autocomplete="username"
           />
         </label>
         <label class="block">
-          <span class="text-sm text-slate-300">Password</span>
+          <span class="ed-caps text-stone-600">Password</span>
           <input
             v-model="password"
             type="password"
             required
             minlength="6"
-            class="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 outline-none focus:border-violet-500"
+            class="mt-2 w-full border-0 border-b border-stone-400 bg-transparent px-0 py-2 text-lg outline-none focus:border-stone-900 focus:ring-0"
             autocomplete="new-password"
           />
         </label>
-        <p v-if="error" class="text-sm text-rose-400">{{ error }}</p>
+        <p v-if="error" class="text-sm text-rose-700">{{ error }}</p>
         <button
           type="submit"
           :disabled="loading"
-          class="w-full rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-60 py-2.5 font-medium transition"
+          class="w-full bg-stone-900 text-[#f7f4ee] hover:bg-stone-700 disabled:opacity-60 py-3.5 ed-caps transition"
         >
           {{ loading ? 'Creating…' : 'Register' }}
         </button>
       </form>
-      <p class="mt-6 text-sm text-slate-400">
+      <p class="mt-8 border-t border-stone-300 pt-6 text-sm text-stone-600">
         Already have an account?
-        <NuxtLink :to="link('/login')" class="text-violet-300 hover:underline">Sign in</NuxtLink>
+        <NuxtLink :to="link('/login')" class="font-semibold text-stone-900 underline underline-offset-4 hover:opacity-70">Sign in</NuxtLink>
       </p>
     </div>
   </Shell>
