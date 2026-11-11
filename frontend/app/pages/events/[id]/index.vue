@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GameCard as GameCardType, SwipeAction } from '../../shared/api'
+import type { GameCard as GameCardType, SwipeAction } from '~/shared/api'
 
 const route = useRoute()
 const api = useApi()
