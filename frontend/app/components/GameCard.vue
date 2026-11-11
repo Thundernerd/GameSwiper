@@ -107,7 +107,7 @@ const overlayAction = computed(
 const overlayLabel = computed(() => (overlayAction.value ? overlayLabels[overlayAction.value] : ''))
 
 const overlayClass = computed(() => {
-  if (!overlayAction.value) return ''
+  if (!overlayAction.value) return []
   const { border, text } = actionColors[overlayAction.value]
   return [border, text]
 })
