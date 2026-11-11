@@ -49,7 +49,7 @@
         <button
           v-if="needsToggle"
           type="button"
-          class="arcade-display mt-2 text-[10px] text-arcade-cyan hover:text-arcade-yellow"
+          class="arcade-small-link mt-2"
           @click="expanded = !expanded"
         >
           {{ expanded ? '▲ LESS' : '▼ MORE' }}

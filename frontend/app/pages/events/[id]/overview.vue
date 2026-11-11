@@ -1,9 +1,9 @@
 <template>
   <div class="mx-auto max-w-5xl px-4 py-8">
-    <NuxtLink :to="`/events/${eventId}`" class="arcade-back-link">
+    <NuxtLink :to="`/events/${eventId}`" class="arcade-small-link">
       ◀ BACK TO DECK
     </NuxtLink>
-    <p class="arcade-display text-[10px] text-arcade-yellow mt-6 mb-3">— RESULTS —</p>
+    <p class="arcade-label text-arcade-yellow mt-6 mb-3">— RESULTS —</p>
     <h1 class="arcade-display arcade-glow text-base sm:text-2xl leading-relaxed text-arcade-magenta mb-3">{{ title }}</h1>
     <p class="text-arcade-muted mb-8">Your likes and dislikes for this event.</p>
 
