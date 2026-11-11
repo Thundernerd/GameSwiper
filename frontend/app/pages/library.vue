@@ -45,7 +45,7 @@
         <p class="arcade-display text-xs text-arcade-yellow mb-3">NO SCORES YET</p>
         <p class="text-arcade-muted">
           {{ emptyMessage }}
-          <NuxtLink to="/" class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow ml-1">Browse events</NuxtLink>
+          <NuxtLink to="/" class="arcade-link ml-1">Browse events</NuxtLink>
         </p>
       </div>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-5xl px-4 py-8">
-    <NuxtLink :to="`/events/${eventId}`" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">
+    <NuxtLink :to="`/events/${eventId}`" class="arcade-back-link">
       ◀ BACK TO DECK
     </NuxtLink>
     <p class="arcade-display text-[10px] text-arcade-yellow mt-6 mb-3">— RESULTS —</p>
@@ -40,7 +40,7 @@
                   :href="link.url"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow"
+                  class="arcade-link"
                 >
                   {{ link.label }}
                 </a>

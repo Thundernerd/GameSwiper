@@ -74,7 +74,7 @@
           :href="link.url"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow"
+          class="arcade-link"
         >
           ▸ {{ link.label }}
         </a>

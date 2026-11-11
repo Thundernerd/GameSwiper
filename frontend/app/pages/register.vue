@@ -14,7 +14,7 @@
   >
     <p class="mt-6 text-arcade-muted">
       Already have an account?
-      <NuxtLink to="/login" class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow">Sign in</NuxtLink>
+      <NuxtLink to="/login" class="arcade-link">Sign in</NuxtLink>
     </p>
   </AuthFrame>
 </template>

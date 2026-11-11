@@ -2,7 +2,7 @@
   <div class="mx-auto max-w-lg px-4 py-6 flex flex-col min-h-[calc(100vh-4rem)]">
     <div class="flex items-center justify-between gap-3 mb-5">
       <div class="min-w-0">
-        <NuxtLink to="/" class="arcade-display text-[10px] text-arcade-cyan hover:text-arcade-yellow">◀ EVENTS</NuxtLink>
+        <NuxtLink to="/" class="arcade-back-link">◀ EVENTS</NuxtLink>
         <h1 class="arcade-display text-xs sm:text-sm leading-relaxed mt-2 text-arcade-text">{{ eventName }}</h1>
       </div>
       <NuxtLink

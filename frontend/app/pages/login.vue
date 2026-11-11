@@ -14,7 +14,7 @@
   >
     <p class="mt-6 text-arcade-muted">
       No account?
-      <NuxtLink to="/register" class="text-arcade-cyan underline underline-offset-4 hover:text-arcade-yellow">Register</NuxtLink>
+      <NuxtLink to="/register" class="arcade-link">Register</NuxtLink>
     </p>
     <p v-if="useMock" class="mt-3 text-arcade-dim">Mock mode: any username/password works.</p>
   </AuthFrame>

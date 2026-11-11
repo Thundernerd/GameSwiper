@@ -60,10 +60,30 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
-.arcade-display {
+.arcade-display,
+.arcade-back-link {
   font-family: 'Press Start 2P', ui-monospace, monospace;
   line-height: 1.6;
   letter-spacing: 0.02em;
+}
+
+/* An inline text link. */
+.arcade-link {
+  color: rgb(var(--arcade-cyan));
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+.arcade-link:hover {
+  color: rgb(var(--arcade-yellow));
+}
+
+/* A small pixel-type link back up a level ("◀ EVENTS"); also gets the arcade-display type above. */
+.arcade-back-link {
+  font-size: 10px;
+  color: rgb(var(--arcade-cyan));
+}
+.arcade-back-link:hover {
+  color: rgb(var(--arcade-yellow));
 }
 
 .arcade-glow {
