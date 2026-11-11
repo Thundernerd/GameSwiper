@@ -4,6 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
+  // Throwaway style prototypes keep their components next to their pages; don't route them.
+  ignore: ['**/pages/prototypes/*/-components/**'],
   runtimeConfig: {
     public: {
       useMock: true,

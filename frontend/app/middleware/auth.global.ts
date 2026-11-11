@@ -4,6 +4,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const publicPaths = ['/login', '/register']
   if (publicPaths.includes(to.path)) return
+  // Throwaway style prototypes handle their own auth (middleware/prototype-auth.ts).
+  if (to.path === '/prototypes' || to.path.startsWith('/prototypes/')) return
 
   const { user, ready, fetchMe } = useAuth()
   if (!ready.value) await fetchMe()
