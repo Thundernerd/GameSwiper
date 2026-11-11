@@ -17,6 +17,12 @@ export const prototypeStyles: PrototypeStyle[] = [
     name: 'Baseline',
     description: 'The current look, copied as-is, to compare the other styles against.',
   },
+  {
+    id: 'editorial',
+    name: 'Editorial',
+    description:
+      'Light magazine layout: serif headlines, roomy cover art, and colour only for like, dislike and defer.',
+  },
 ]
 
 /**
