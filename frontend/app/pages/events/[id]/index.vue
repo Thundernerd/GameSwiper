@@ -103,7 +103,7 @@ const pending = ref(true)
 const error = ref('')
 const dragX = ref(0)
 const dragY = ref(0)
-const leaving = ref<'like' | 'dislike' | 'defer' | null>(null)
+const leaving = ref<SwipeAction | null>(null)
 const busy = ref(false)
 
 let pointerId: number | null = null

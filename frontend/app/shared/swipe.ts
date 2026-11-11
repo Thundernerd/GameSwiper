@@ -1,7 +1,7 @@
 import type { SwipeAction } from './api'
 
 /** How far (px) the card must be dragged before letting go records a decision. */
-export const SWIPE_THRESHOLD = 100
+const SWIPE_THRESHOLD = 100
 
 /**
  * The decision that releasing a card dragged by (dx, dy) performs, or null when
