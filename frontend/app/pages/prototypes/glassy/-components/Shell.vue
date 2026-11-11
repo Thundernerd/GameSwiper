@@ -4,7 +4,7 @@
   a slowly drifting gradient mesh. A dark scrim keeps text on top at AA contrast.
 -->
 <template>
-  <div class="glassy relative isolate min-h-screen flex flex-col text-slate-50 antialiased [overflow-x:clip]">
+  <div class="relative isolate min-h-screen flex flex-col text-slate-50 antialiased [overflow-x:clip]">
     <div class="fixed inset-0 -z-10 overflow-hidden bg-slate-950" aria-hidden="true">
       <div class="mesh absolute inset-0">
         <span class="blob blob-a" />

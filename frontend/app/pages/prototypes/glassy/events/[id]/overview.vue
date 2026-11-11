@@ -26,7 +26,7 @@
           <p v-if="!column.games.length" class="rounded-2xl border border-dashed border-white/20 px-4 py-6 text-center text-sm text-slate-200">
             {{ column.empty }}
           </p>
-          <TransitionGroup tag="ul" name="move" class="relative space-y-3">
+          <TransitionGroup tag="ul" name="reorder" class="relative space-y-3">
             <li
               v-for="game in column.games"
               :key="game.id"
@@ -173,24 +173,24 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.move-move,
-.move-enter-active,
-.move-leave-active {
+.reorder-move,
+.reorder-enter-active,
+.reorder-leave-active {
   transition: all 0.35s ease;
 }
-.move-enter-from,
-.move-leave-to {
+.reorder-enter-from,
+.reorder-leave-to {
   opacity: 0;
   transform: scale(0.95);
 }
-.move-leave-active {
+.reorder-leave-active {
   position: absolute;
   inset-inline: 0;
 }
 @media (prefers-reduced-motion: reduce) {
-  .move-move,
-  .move-enter-active,
-  .move-leave-active {
+  .reorder-move,
+  .reorder-enter-active,
+  .reorder-leave-active {
     transition: none;
   }
 }
