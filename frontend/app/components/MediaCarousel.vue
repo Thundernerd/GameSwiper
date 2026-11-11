@@ -28,6 +28,7 @@
           v-else-if="current"
           :src="current.url"
           :alt="current.title || 'Game media'"
+          draggable="false"
           class="h-full w-full object-cover [image-rendering:pixelated]"
         />
       </div>
