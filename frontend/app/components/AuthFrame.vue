@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-md px-4 py-16">
-    <p class="arcade-display arcade-glow text-center text-2xl sm:text-3xl text-arcade-magenta mb-4">GAME<br class="sm:hidden" />SWIPER</p>
+    <p class="arcade-display arcade-glow text-center text-2xl sm:text-3xl text-arcade-magenta mb-4">HYPE<br class="sm:hidden" />CHECK</p>
     <p class="arcade-display arcade-blink text-center text-[10px] text-arcade-yellow mb-10">{{ tagline }}</p>
     <div class="arcade-panel p-5 sm:p-6">
       <h1 class="arcade-display text-base sm:text-lg text-arcade-cyan mb-3">{{ heading }}</h1>

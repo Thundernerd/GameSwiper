@@ -23,7 +23,7 @@ impl Config {
 
         Self {
             database_url: env::var("DATABASE_URL")
-                .unwrap_or_else(|_| "sqlite:data/gameswiper.db?mode=rwc".into()),
+                .unwrap_or_else(|_| "sqlite:data/hypecheck.db?mode=rwc".into()),
             session_secret: env::var("SESSION_SECRET").unwrap_or_else(|_| {
                 tracing::warn!("SESSION_SECRET not set; using ephemeral default");
                 uuid::Uuid::new_v4().to_string()

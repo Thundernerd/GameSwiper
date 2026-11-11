@@ -10,7 +10,7 @@
             to="/"
             class="arcade-display arcade-glow text-sm sm:text-base text-arcade-magenta hover:text-arcade-yellow"
           >
-            GAMESWIPER
+            HYPE CHECK
           </NuxtLink>
           <NuxtLink
             to="/library"
