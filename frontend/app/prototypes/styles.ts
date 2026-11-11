@@ -18,6 +18,12 @@ export const prototypeStyles: PrototypeStyle[] = [
     description: 'The current look, copied as-is, to compare the other styles against.',
   },
   {
+    id: 'glassy',
+    name: 'Glassy',
+    description:
+      'Frosted-glass cards and panels over the active game\'s blurred cover art, with bold gradient accents, soft shadows and motion.',
+  },
+  {
     id: 'retro',
     name: 'Retro arcade',
     description: 'Arcade cabinet on a CRT: neon on near-black, pixel type, hard edges and scanlines.',
