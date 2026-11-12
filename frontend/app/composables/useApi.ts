@@ -282,7 +282,7 @@ export function useApi() {
         body: JSON.stringify(creds),
       })
     },
-    async logout() {
+    async logout(): Promise<void> {
       if (useMock) return (await mockApi()).logout()
       await liveFetch<unknown>('/auth/logout', { method: 'POST' })
     },
