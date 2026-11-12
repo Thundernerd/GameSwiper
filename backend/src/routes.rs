@@ -261,7 +261,7 @@ async fn ensure_hydrated(state: &AppState, event: &EventMeta) -> AppResult<()> {
     if hydration_stale(event.games_hydrated_at.as_deref()) {
         hydrate_event_games(&state.pool, &state.igdb, event.id, event.igdb_id)
             .await
-            .map_err(|e| AppError::Other(e))?;
+            .map_err(AppError::Other)?;
     }
     Ok(())
 }
@@ -615,7 +615,7 @@ async fn user_library(
 /// Sorts library games by name, ignoring case. The sort is stable, so games
 /// whose names differ only in case keep their incoming (id) order.
 fn sort_library_by_name(games: &mut [LibraryGame]) {
-    games.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    games.sort_by_key(|g| g.name.to_lowercase());
 }
 
 #[cfg(test)]

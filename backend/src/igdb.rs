@@ -388,7 +388,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
             }
         }
     }
-    videos.sort_by(|a, b| b.0.cmp(&a.0));
+    videos.sort_by_key(|v| std::cmp::Reverse(v.0));
 
     let mut shots: Vec<(i64, MediaItem)> = Vec::new();
     if let Some(list) = &game.screenshots {
@@ -405,7 +405,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
             }
         }
     }
-    shots.sort_by(|a, b| b.0.cmp(&a.0));
+    shots.sort_by_key(|s| std::cmp::Reverse(s.0));
 
     let mut media: Vec<MediaItem> = videos.into_iter().map(|(_, m)| m).collect();
     media.extend(shots.into_iter().map(|(_, m)| m));
