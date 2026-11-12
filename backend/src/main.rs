@@ -10,12 +10,12 @@ mod sync;
 
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 
-use axum::http::{HeaderValue, Method, StatusCode, header};
-use axum::{Router, routing::get};
+use axum::http::{header, HeaderValue, Method, StatusCode};
+use axum::{routing::get, Router};
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
-use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use crate::{config::Config, igdb::IgdbClient, state::AppState};
 
@@ -55,12 +55,7 @@ async fn main() -> anyhow::Result<()> {
         db::seed_demo_if_empty(&pool).await?;
     }
 
-    sync::spawn_sync_loop(
-        pool.clone(),
-        igdb.clone(),
-        config.igdb_sync_interval_hours,
-    )
-    .await;
+    sync::spawn_sync_loop(pool.clone(), igdb.clone(), config.igdb_sync_interval_hours).await;
 
     let state = AppState {
         pool,
@@ -91,9 +86,9 @@ fn app(state: AppState) -> Router {
     let static_dir = state.config.static_dir.clone();
 
     let cors = CorsLayer::new()
-        .allow_origin(AllowOrigin::exact(
-            HeaderValue::from_static("http://localhost:3000"),
-        ))
+        .allow_origin(AllowOrigin::exact(HeaderValue::from_static(
+            "http://localhost:3000",
+        )))
         .allow_credentials(true)
         .allow_methods([
             Method::GET,
@@ -140,7 +135,7 @@ fn sqlite_path_from_url(url: &str) -> Option<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use axum::body::{Body, to_bytes};
+    use axum::body::{to_bytes, Body};
     use axum::http::Request;
     use tower::ServiceExt;
 

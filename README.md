@@ -64,6 +64,15 @@ npm run typecheck
 
 `nuxt build` strips types without checking them, so run this before you commit. It exits non-zero on any type error.
 
+To lint the frontend with ESLint (unused variables, Vue template mistakes and similar), run:
+
+```bash
+npm run lint       # report problems; exits non-zero on any error
+npm run lint:fix   # fix what ESLint can fix by itself
+```
+
+Run `npm run lint` before you commit too. The rules come from [`@nuxt/eslint`](https://eslint.nuxt.com/packages/module) and can be overridden in `frontend/eslint.config.mjs`.
+
 ### Serving the built frontend
 
 The backend can also serve the built frontend. Then one process on one origin runs the whole app, with no `/api` proxy and no CORS.

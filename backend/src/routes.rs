@@ -1,9 +1,9 @@
 use axum::{
-    Json, Router,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
     routing::{get, post},
+    Json, Router,
 };
 use chrono::Utc;
 use rand::seq::SliceRandom;
@@ -11,8 +11,8 @@ use serde_json::json;
 
 use crate::{
     auth::{
-        AuthUser, clear_session_cookie, create_session, delete_session, hash_password,
-        read_session_cookie, set_session_cookie, verify_password,
+        clear_session_cookie, create_session, delete_session, hash_password, read_session_cookie,
+        set_session_cookie, verify_password, AuthUser,
     },
     error::{AppError, AppResult},
     models::{
@@ -261,7 +261,7 @@ async fn ensure_hydrated(state: &AppState, event: &EventMeta) -> AppResult<()> {
     if hydration_stale(event.games_hydrated_at.as_deref()) {
         hydrate_event_games(&state.pool, &state.igdb, event.id, event.igdb_id)
             .await
-            .map_err(|e| AppError::Other(e))?;
+            .map_err(AppError::Other)?;
     }
     Ok(())
 }
@@ -379,11 +379,7 @@ async fn event_queue(
     }))
 }
 
-async fn remaining_count(
-    pool: &sqlx::SqlitePool,
-    user_id: i64,
-    event_id: i64,
-) -> AppResult<i64> {
+async fn remaining_count(pool: &sqlx::SqlitePool, user_id: i64, event_id: i64) -> AppResult<i64> {
     let count = sqlx::query_scalar::<_, i64>(
         r#"
         SELECT COUNT(*)
@@ -580,9 +576,7 @@ async fn user_library(
             _ => continue,
         };
 
-        let release_date = row
-            .first_release_date
-            .filter(|s| !s.trim().is_empty());
+        let release_date = row.first_release_date.filter(|s| !s.trim().is_empty());
 
         if let Some(existing) = target.get_mut(&row.id) {
             if !existing.events.iter().any(|e| e.id == event.id) {
@@ -612,8 +606,63 @@ async fn user_library(
 
     let mut liked: Vec<LibraryGame> = liked_map.into_values().collect();
     let mut disliked: Vec<LibraryGame> = disliked_map.into_values().collect();
-    liked.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
-    disliked.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    sort_library_by_name(&mut liked);
+    sort_library_by_name(&mut disliked);
 
     Ok(Json(LibraryResponse { liked, disliked }))
+}
+
+/// Sorts library games by name, ignoring case. The sort is stable, so games
+/// whose names differ only in case keep their incoming (id) order.
+fn sort_library_by_name(games: &mut [LibraryGame]) {
+    games.sort_by_key(|g| g.name.to_lowercase());
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn library_game(id: i64, name: &str) -> LibraryGame {
+        LibraryGame {
+            id,
+            name: name.into(),
+            genres: vec![],
+            platforms: vec![],
+            media: vec![],
+            cover_url: None,
+            summary: None,
+            rating: None,
+            developers: vec![],
+            publishers: vec![],
+            links: vec![],
+            release_date: None,
+            events: vec![],
+        }
+    }
+
+    #[test]
+    fn library_sorts_by_name_ignoring_case_and_keeps_id_order_on_ties() {
+        // Input arrives in id order, as it comes out of the BTreeMap.
+        let mut games = vec![
+            library_game(1, "beta"),
+            library_game(2, "alpha"),
+            library_game(3, "Gamma"),
+            library_game(4, "Alpha"),
+            library_game(5, "BETA"),
+        ];
+
+        sort_library_by_name(&mut games);
+
+        let order: Vec<(i64, &str)> = games.iter().map(|g| (g.id, g.name.as_str())).collect();
+        assert_eq!(
+            order,
+            vec![
+                (2, "alpha"),
+                (4, "Alpha"),
+                (1, "beta"),
+                (5, "BETA"),
+                (3, "Gamma"),
+            ]
+        );
+    }
 }
