@@ -29,14 +29,15 @@ cargo_version="$(awk '
 ' "$root/backend/Cargo.toml")"
 npm_version="$(jq -r '.version // empty' "$root/frontend/package.json")"
 
-if [[ "$cargo_version" != "$version" && "$cargo_version" != "$core" ]]; then
-  echo "tag $tag does not match backend/Cargo.toml version '$cargo_version'" >&2
-  exit 1
-fi
-if [[ "$npm_version" != "$version" && "$npm_version" != "$core" ]]; then
-  echo "tag $tag does not match frontend/package.json version '$npm_version'" >&2
-  exit 1
-fi
+# require_match <manifest> <its version>
+require_match() {
+  if [[ "$2" != "$version" && "$2" != "$core" ]]; then
+    echo "tag $tag does not match $1 version '$2'" >&2
+    exit 1
+  fi
+}
+require_match backend/Cargo.toml "$cargo_version"
+require_match frontend/package.json "$npm_version"
 
 echo "version=$version"
 if [[ "$version" == "$core" ]]; then

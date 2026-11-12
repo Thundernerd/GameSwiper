@@ -36,7 +36,8 @@ cp "$binary" "$dir/$exe"
 # Workflow artifacts don't keep the executable bit.
 chmod +x "$dir/$exe"
 cp -R "$public_dir" "$dir/public"
-cp "$env_example" "$dir/.env.example"
+# The repo's .env.example points STATIC_DIR at the source tree; here the frontend is ./public.
+sed 's|^# *STATIC_DIR=.*|STATIC_DIR=./public|' "$env_example" >"$dir/.env.example"
 
 # RUN.md: shared setup, then the notes for this OS.
 {
@@ -51,8 +52,9 @@ The server serves both on one port, so there is nothing else to install.
 The server reads its settings from environment variables, or from a \`.env\` file in the
 folder you start it from. Copy \`.env.example\` to \`.env\` and set:
 
-- \`STATIC_DIR=./public\` — serve the frontend from this folder. Without it the server only
-  answers \`/api\`. The path is resolved from the folder you start the server in.
+- \`STATIC_DIR=./public\` — serve the frontend from this folder (\`.env.example\` already
+  sets it). Without it the server only answers \`/api\`. The path is resolved from the folder
+  you start the server in.
 - \`BIND_ADDR\` — the address and port to listen on. Default: \`127.0.0.1:8080\`.
 - \`IGDB_CLIENT_ID\` and \`IGDB_CLIENT_SECRET\` — your Twitch application's credentials (see the
   project README). Without them the server shows a few demo events instead of IGDB data.
@@ -63,7 +65,7 @@ The SQLite database goes in \`data/\` next to where you start the server, unless
 
 EOF
   case "$os" in
-    linux)
+    linux | macos)
       cat <<'EOF'
 ## Run
 
@@ -75,16 +77,10 @@ cp .env.example .env   # then edit .env as above
 Open http://127.0.0.1:8080 (or the address you set in `BIND_ADDR`).
 EOF
       ;;
+  esac
+  case "$os" in
     macos)
       cat <<'EOF'
-## Run
-
-```bash
-cp .env.example .env   # then edit .env as above
-./hypecheck_api
-```
-
-Open http://127.0.0.1:8080 (or the address you set in `BIND_ADDR`).
 
 ## Unsigned binary
 
@@ -94,6 +90,8 @@ download and refuses to open it. Clear the quarantine flag once before the first
 ```bash
 xattr -d com.apple.quarantine hypecheck_api
 ```
+
+If it answers `No such xattr`, the binary isn't quarantined and there is nothing to clear.
 EOF
       ;;
     windows)
