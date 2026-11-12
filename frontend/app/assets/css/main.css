@@ -99,8 +99,8 @@ select:focus-visible {
   text-underline-offset: 4px;
 }
 
-/* For markup that sets its background colour with a Tailwind class (the header bar): adds the
-   scanlines on top of that colour. */
+/* For markup that sets its background colour with a Tailwind class (the header bar, the swipe
+   page's action bar): adds the scanlines on top of that colour. */
 .arcade-scanlines {
   background-image: var(--arcade-scanlines);
 }
