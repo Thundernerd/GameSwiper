@@ -2,8 +2,8 @@ use chrono::{Duration, Utc};
 use sqlx::SqlitePool;
 
 use crate::igdb::{
-    IgdbClient, build_links, build_media, company_names, image_url, names, unix_to_rfc3339,
-    ww_full_release_date,
+    build_links, build_media, company_names, image_url, names, unix_to_rfc3339,
+    ww_full_release_date, IgdbClient,
 };
 
 pub async fn sync_finished_events(pool: &SqlitePool, igdb: &IgdbClient) -> anyhow::Result<()> {
@@ -58,13 +58,20 @@ pub async fn sync_finished_events(pool: &SqlitePool, igdb: &IgdbClient) -> anyho
     Ok(())
 }
 
-pub async fn spawn_sync_loop(pool: SqlitePool, igdb: std::sync::Arc<IgdbClient>, interval_hours: u64) {
+pub async fn spawn_sync_loop(
+    pool: SqlitePool,
+    igdb: std::sync::Arc<IgdbClient>,
+    interval_hours: u64,
+) {
     tokio::spawn(async move {
         loop {
             if let Err(err) = sync_finished_events(&pool, &igdb).await {
                 tracing::error!(error = %err, "event sync failed");
             }
-            tokio::time::sleep(std::time::Duration::from_secs(interval_hours.saturating_mul(3600))).await;
+            tokio::time::sleep(std::time::Duration::from_secs(
+                interval_hours.saturating_mul(3600),
+            ))
+            .await;
         }
     });
 }
@@ -174,13 +181,11 @@ pub async fn hydrate_event_games(
         .await?;
 
     for game_id in local_ids {
-        sqlx::query(
-            "INSERT OR IGNORE INTO event_games (event_id, game_id) VALUES (?, ?)",
-        )
-        .bind(event_id)
-        .bind(game_id)
-        .execute(pool)
-        .await?;
+        sqlx::query("INSERT OR IGNORE INTO event_games (event_id, game_id) VALUES (?, ?)")
+            .bind(event_id)
+            .bind(game_id)
+            .execute(pool)
+            .await?;
     }
 
     let now = Utc::now().to_rfc3339();
