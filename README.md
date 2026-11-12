@@ -44,6 +44,16 @@ The API listens on `http://127.0.0.1:8080`.
 
 If you do not set IGDB credentials, the backend creates a few finished demo events. You can use these events to try the full flow on your machine.
 
+Before you commit, run the same backend checks that CI runs:
+
+```bash
+cargo fmt --check
+cargo clippy --all-targets --locked -- -D warnings
+cargo test --locked
+```
+
+Each command exits non-zero on a problem. Run `cargo fmt` to fix the formatting.
+
 ### 3. Frontend
 
 ```bash
