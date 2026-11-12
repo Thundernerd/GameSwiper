@@ -4,6 +4,8 @@ on:
   pull_request:
   push:
     branches: [main]
+  # The release workflow runs these checks before it builds anything.
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -72,3 +74,17 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  release-scripts:
+    name: Release scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: ShellCheck
+        run: shellcheck .github/scripts/*.sh
+
+      - name: Tests
+        run: bash .github/scripts/check-release-version.test.sh
