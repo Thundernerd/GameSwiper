@@ -282,9 +282,9 @@ export function useApi() {
         body: JSON.stringify(creds),
       })
     },
-    async logout() {
+    async logout(): Promise<void> {
       if (useMock) return (await mockApi()).logout()
-      return liveFetch<void>('/auth/logout', { method: 'POST' })
+      await liveFetch<unknown>('/auth/logout', { method: 'POST' })
     },
     async me() {
       if (useMock) return (await mockApi()).me()
