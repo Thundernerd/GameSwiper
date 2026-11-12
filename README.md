@@ -56,6 +56,8 @@ Each command exits non-zero on a problem. Run `cargo fmt` to fix the formatting.
 
 ### 3. Frontend
 
+The frontend uses Node 26, as set in `frontend/.nvmrc`. If you use nvm, run `nvm use` in `frontend/`.
+
 ```bash
 cd frontend
 cp ../.env.example .env   # optional
