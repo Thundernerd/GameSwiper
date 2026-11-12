@@ -1,5 +1,7 @@
 # Hype Check
 
+[![CI](https://github.com/Thundernerd/HypeCheck/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Thundernerd/HypeCheck/actions/workflows/ci.yml)
+
 Hype Check shows games from finished IGDB events as cards. You can like, dislike, or defer each card. Later visits show only the games that you did not rate.
 
 ## Stack
