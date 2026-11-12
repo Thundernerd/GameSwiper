@@ -93,7 +93,7 @@ To run the frontend unit tests with [Vitest](https://vitest.dev/), run:
 npm test
 ```
 
-It exits non-zero on any failing test. Tests sit next to the code they cover, as `*.test.ts` files (for example `app/shared/swipe.test.ts`).
+Run `npm test` before you commit too. It exits non-zero on any failing test. Tests sit next to the code they cover, as `*.test.ts` files (for example `app/shared/swipe.test.ts`).
 
 ### Serving the built frontend
 
