@@ -373,7 +373,8 @@ pub fn ww_full_release_date(game: &IgdbGame) -> Option<i64> {
 }
 
 /// Orders media newest first: highest IGDB id first, with a missing id
-/// counted as `0`. Items with equal ids keep their input order.
+/// counted as `0`. Items with equal ids keep their input order (`sort_by_key`
+/// is stable).
 fn newest_first_by_igdb_id(
     items: impl IntoIterator<Item = (Option<i64>, MediaItem)>,
 ) -> Vec<MediaItem> {
@@ -381,19 +382,18 @@ fn newest_first_by_igdb_id(
         .into_iter()
         .map(|(igdb_id, item)| (igdb_id.unwrap_or(0), item))
         .collect();
-    // `sort_by_key` is stable, which keeps equal ids in input order.
     keyed.sort_by_key(|(igdb_id, _)| std::cmp::Reverse(*igdb_id));
     keyed.into_iter().map(|(_, item)| item).collect()
 }
 
 pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
     let videos = game.videos.iter().flatten().filter_map(|v| {
-        let vid = v.video_id.as_ref()?;
+        let video_id = v.video_id.as_ref()?;
         Some((
             v.id,
             MediaItem {
                 kind: "video".into(),
-                url: format!("https://www.youtube.com/embed/{vid}"),
+                url: format!("https://www.youtube.com/embed/{video_id}"),
                 title: v.name.clone(),
             },
         ))
