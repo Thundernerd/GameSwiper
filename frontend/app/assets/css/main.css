@@ -27,6 +27,13 @@
   --arcade-red: 255 90 114; /* #ff5a72 */
 }
 
+/* Not a palette colour, so it gets its own block: this one holds a whole background image.
+   CRT scanlines, a 1px dark line every 3px. Add it as the top background layer of the page and
+   the UI chrome only, never as an overlay, so the <img>/<iframe> inside paint over it. */
+:root {
+  --arcade-scanlines: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+}
+
 html,
 body,
 #__nuxt {
@@ -37,6 +44,8 @@ body {
   /* The glow stops are --arcade-magenta and --arcade-cyan, but stay literal rgba(): written as
      rgb(var(…) / a), Chromium renders these gradients up to 1/255 off from before. */
   background:
+    var(--arcade-scanlines),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%),
     radial-gradient(ellipse at 50% 0%, rgba(255, 79, 216, 0.12), transparent 60%),
     radial-gradient(ellipse at 50% 100%, rgba(62, 240, 255, 0.08), transparent 60%),
     rgb(var(--arcade-bg));
@@ -93,12 +102,18 @@ select:focus-visible {
   text-underline-offset: 4px;
 }
 
+/* For markup that sets its background colour with a Tailwind class (the header bar, the swipe
+   page's action bar): adds the scanlines on top of that colour. */
+.arcade-scanlines {
+  background-image: var(--arcade-scanlines);
+}
+
 .arcade-glow {
   text-shadow: 0 0 6px currentColor, 0 0 18px currentColor;
 }
 
 .arcade-panel {
-  background: rgb(var(--arcade-panel));
+  background: var(--arcade-scanlines), rgb(var(--arcade-panel));
   border: 2px solid rgb(var(--arcade-line));
   box-shadow: 4px 4px 0 #000;
 }
@@ -108,6 +123,7 @@ select:focus-visible {
   text-transform: uppercase;
   border: 2px solid currentColor;
   box-shadow: 4px 4px 0 #000;
+  background-image: var(--arcade-scanlines);
   transition: transform 60ms, box-shadow 60ms, background-color 60ms;
 }
 .arcade-btn:hover {
@@ -126,11 +142,11 @@ select:focus-visible {
 }
 .arcade-btn-primary {
   color: rgb(var(--arcade-bg));
-  background: rgb(var(--arcade-yellow));
+  background-color: rgb(var(--arcade-yellow));
   border-color: rgb(var(--arcade-yellow));
 }
 .arcade-btn-primary:hover {
-  background: color-mix(in srgb, rgb(var(--arcade-yellow)) 70%, white);
+  background-color: color-mix(in srgb, rgb(var(--arcade-yellow)) 70%, white);
 }
 
 .arcade-input {
@@ -153,16 +169,6 @@ select:focus-visible {
   padding: 0 0.4rem;
   font-size: 1.05rem;
   line-height: 1.4;
-}
-
-.arcade-scanlines {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  background:
-    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
-    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
 }
 
 .arcade-blink {

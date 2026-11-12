@@ -50,7 +50,7 @@
 
       <div class="flex-1 min-h-0" aria-hidden="true" />
 
-      <div class="relative z-30 flex items-end justify-center gap-5 py-6 shrink-0 bg-arcade-bg">
+      <div class="relative z-30 flex items-end justify-center gap-5 py-6 shrink-0 bg-arcade-bg arcade-scanlines">
         <button
           type="button"
           class="arcade-btn h-16 w-16 text-3xl !font-sans"
