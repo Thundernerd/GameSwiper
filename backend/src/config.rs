@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, path::PathBuf};
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -8,6 +8,8 @@ pub struct Config {
     pub igdb_client_secret: Option<String>,
     pub bind_addr: String,
     pub igdb_sync_interval_hours: u64,
+    /// Directory of the built frontend to serve; unset serves only `/api`.
+    pub static_dir: Option<PathBuf>,
 }
 
 impl Config {
@@ -35,6 +37,10 @@ impl Config {
                 .ok()
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(6),
+            static_dir: env::var("STATIC_DIR")
+                .ok()
+                .filter(|s| !s.trim().is_empty())
+                .map(PathBuf::from),
         }
     }
 
