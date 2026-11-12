@@ -372,43 +372,46 @@ pub fn ww_full_release_date(game: &IgdbGame) -> Option<i64> {
     game.first_release_date
 }
 
+/// Orders media newest first: highest IGDB id first, with a missing id
+/// counted as `0`. Items with equal ids keep their input order.
+fn newest_first_by_igdb_id(
+    items: impl IntoIterator<Item = (Option<i64>, MediaItem)>,
+) -> Vec<MediaItem> {
+    let mut keyed: Vec<(i64, MediaItem)> = items
+        .into_iter()
+        .map(|(igdb_id, item)| (igdb_id.unwrap_or(0), item))
+        .collect();
+    // `sort_by_key` is stable, which keeps equal ids in input order.
+    keyed.sort_by_key(|(igdb_id, _)| std::cmp::Reverse(*igdb_id));
+    keyed.into_iter().map(|(_, item)| item).collect()
+}
+
 pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
-    let mut videos: Vec<(i64, MediaItem)> = Vec::new();
-    if let Some(list) = &game.videos {
-        for v in list {
-            if let Some(vid) = &v.video_id {
-                videos.push((
-                    v.id.unwrap_or(0),
-                    MediaItem {
-                        kind: "video".into(),
-                        url: format!("https://www.youtube.com/embed/{vid}"),
-                        title: v.name.clone(),
-                    },
-                ));
-            }
-        }
-    }
-    videos.sort_by_key(|v| std::cmp::Reverse(v.0));
+    let videos = game.videos.iter().flatten().filter_map(|v| {
+        let vid = v.video_id.as_ref()?;
+        Some((
+            v.id,
+            MediaItem {
+                kind: "video".into(),
+                url: format!("https://www.youtube.com/embed/{vid}"),
+                title: v.name.clone(),
+            },
+        ))
+    });
+    let shots = game.screenshots.iter().flatten().filter_map(|s| {
+        let image_id = s.image_id.as_ref()?;
+        Some((
+            s.id,
+            MediaItem {
+                kind: "image".into(),
+                url: image_url(image_id, "screenshot_huge"),
+                title: None,
+            },
+        ))
+    });
 
-    let mut shots: Vec<(i64, MediaItem)> = Vec::new();
-    if let Some(list) = &game.screenshots {
-        for s in list {
-            if let Some(image_id) = &s.image_id {
-                shots.push((
-                    s.id.unwrap_or(0),
-                    MediaItem {
-                        kind: "image".into(),
-                        url: image_url(image_id, "screenshot_huge"),
-                        title: None,
-                    },
-                ));
-            }
-        }
-    }
-    shots.sort_by_key(|s| std::cmp::Reverse(s.0));
-
-    let mut media: Vec<MediaItem> = videos.into_iter().map(|(_, m)| m).collect();
-    media.extend(shots.into_iter().map(|(_, m)| m));
+    let mut media = newest_first_by_igdb_id(videos);
+    media.extend(newest_first_by_igdb_id(shots));
 
     if media.is_empty() {
         if let Some(cover) = game.cover.as_ref().and_then(|c| c.image_id.as_ref()) {
