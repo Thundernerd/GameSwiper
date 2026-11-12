@@ -250,5 +250,3 @@ mod tests {
         assert_eq!(status, StatusCode::NOT_FOUND);
     }
 }
-
-fn   ci_break( ) { }
