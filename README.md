@@ -87,6 +87,14 @@ npm run lint:fix   # fix what ESLint can fix by itself
 
 Run `npm run lint` before you commit too. The rules come from [`@nuxt/eslint`](https://eslint.nuxt.com/packages/module) and can be overridden in `frontend/eslint.config.mjs`.
 
+To run the frontend unit tests with [Vitest](https://vitest.dev/), run:
+
+```bash
+npm test
+```
+
+It exits non-zero on any failing test. Tests sit next to the code they cover, as `*.test.ts` files (for example `app/shared/swipe.test.ts`).
+
 ### Serving the built frontend
 
 The backend can also serve the built frontend. Then one process on one origin runs the whole app, with no `/api` proxy and no CORS.
