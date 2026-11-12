@@ -25,7 +25,7 @@
             :src="ev.logoUrl"
             :alt="ev.name"
             class="h-full w-full object-cover opacity-80 group-hover:opacity-100"
-          />
+          >
           <div
             v-else
             class="arcade-display h-full w-full flex items-center justify-center text-[10px] text-arcade-dim"

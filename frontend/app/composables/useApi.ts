@@ -284,7 +284,7 @@ export function useApi() {
     },
     async logout() {
       if (useMock) return (await mockApi()).logout()
-      return liveFetch<void>('/auth/logout', { method: 'POST' })
+      await liveFetch<unknown>('/auth/logout', { method: 'POST' })
     },
     async me() {
       if (useMock) return (await mockApi()).me()
