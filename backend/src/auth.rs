@@ -1,10 +1,10 @@
 use argon2::{
+    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
-    password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
 use axum::{
     extract::FromRequestParts,
-    http::{HeaderMap, HeaderValue, header, request::Parts},
+    http::{header, request::Parts, HeaderMap, HeaderValue},
 };
 use chrono::{Duration, Utc};
 use sqlx::SqlitePool;
@@ -58,9 +58,8 @@ pub async fn delete_session(pool: &SqlitePool, session_id: &str) -> AppResult<()
 
 pub fn set_session_cookie(headers: &mut HeaderMap, session_id: &str) {
     let max_age = SESSION_DAYS * 24 * 60 * 60;
-    let value = format!(
-        "{SESSION_COOKIE}={session_id}; HttpOnly; Path=/; SameSite=Lax; Max-Age={max_age}"
-    );
+    let value =
+        format!("{SESSION_COOKIE}={session_id}; HttpOnly; Path=/; SameSite=Lax; Max-Age={max_age}");
     if let Ok(hv) = HeaderValue::from_str(&value) {
         headers.insert(header::SET_COOKIE, hv);
     }
@@ -87,10 +86,12 @@ pub struct AuthUser(pub User);
 impl FromRequestParts<AppState> for AuthUser {
     type Rejection = AppError;
 
-    async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> {
-        let session_id = read_session_cookie(&parts.headers).ok_or_else(|| {
-            AppError::Unauthorized("not authenticated".into())
-        })?;
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        let session_id = read_session_cookie(&parts.headers)
+            .ok_or_else(|| AppError::Unauthorized("not authenticated".into()))?;
 
         let now = Utc::now().to_rfc3339();
         let row = sqlx::query_as::<_, (i64, String, String)>(

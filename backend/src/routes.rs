@@ -1,9 +1,9 @@
 use axum::{
-    Json, Router,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
     routing::{get, post},
+    Json, Router,
 };
 use chrono::Utc;
 use rand::seq::SliceRandom;
@@ -11,8 +11,8 @@ use serde_json::json;
 
 use crate::{
     auth::{
-        AuthUser, clear_session_cookie, create_session, delete_session, hash_password,
-        read_session_cookie, set_session_cookie, verify_password,
+        clear_session_cookie, create_session, delete_session, hash_password, read_session_cookie,
+        set_session_cookie, verify_password, AuthUser,
     },
     error::{AppError, AppResult},
     models::{
@@ -379,11 +379,7 @@ async fn event_queue(
     }))
 }
 
-async fn remaining_count(
-    pool: &sqlx::SqlitePool,
-    user_id: i64,
-    event_id: i64,
-) -> AppResult<i64> {
+async fn remaining_count(pool: &sqlx::SqlitePool, user_id: i64, event_id: i64) -> AppResult<i64> {
     let count = sqlx::query_scalar::<_, i64>(
         r#"
         SELECT COUNT(*)
@@ -580,9 +576,7 @@ async fn user_library(
             _ => continue,
         };
 
-        let release_date = row
-            .first_release_date
-            .filter(|s| !s.trim().is_empty());
+        let release_date = row.first_release_date.filter(|s| !s.trim().is_empty());
 
         if let Some(existing) = target.get_mut(&row.id) {
             if !existing.events.iter().any(|e| e.id == event.id) {
