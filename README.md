@@ -71,7 +71,7 @@ npm run lint       # report problems; exits non-zero on any error
 npm run lint:fix   # fix what ESLint can fix by itself
 ```
 
-The rules come from [`@nuxt/eslint`](https://eslint.nuxt.com/packages/module) and are set in `frontend/eslint.config.mjs`.
+Run `npm run lint` before you commit too. The rules come from [`@nuxt/eslint`](https://eslint.nuxt.com/packages/module) and can be overridden in `frontend/eslint.config.mjs`.
 
 ## API contract
 
