@@ -621,6 +621,7 @@ fn sort_library_by_name(games: &mut [LibraryGame]) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::MediaKind;
 
     fn library_game(id: i64, name: &str) -> LibraryGame {
         LibraryGame {
@@ -664,5 +665,22 @@ mod tests {
                 (3, "Gamma"),
             ]
         );
+    }
+
+    #[test]
+    fn parse_media_reads_stored_json_with_both_kinds() {
+        let raw = Some(
+            r#"[{"kind":"video","url":"https://www.youtube.com/embed/abc","title":"Trailer"},{"kind":"image","url":"https://images.igdb.com/igdb/image/upload/t_cover_big/co1.jpg"}]"#
+                .to_string(),
+        );
+
+        let media = parse_media(&raw);
+
+        assert_eq!(media.len(), 2);
+        assert_eq!(media[0].kind, MediaKind::Video);
+        assert_eq!(media[0].url, "https://www.youtube.com/embed/abc");
+        assert_eq!(media[0].title.as_deref(), Some("Trailer"));
+        assert_eq!(media[1].kind, MediaKind::Image);
+        assert_eq!(media[1].title, None);
     }
 }

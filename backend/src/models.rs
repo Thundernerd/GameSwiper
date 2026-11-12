@@ -38,10 +38,17 @@ pub struct EventsListResponse {
     pub events: Vec<EventSummary>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MediaKind {
+    Video,
+    Image,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MediaItem {
-    pub kind: String,
+    pub kind: MediaKind,
     pub url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -139,4 +146,27 @@ pub struct LibraryGame {
 pub struct LibraryResponse {
     pub liked: Vec<LibraryGame>,
     pub disliked: Vec<LibraryGame>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn media_item_kind_serializes_lowercase_and_round_trips() {
+        for (kind, json_kind) in [(MediaKind::Video, "video"), (MediaKind::Image, "image")] {
+            let item = MediaItem {
+                kind,
+                url: "https://example.com/x".into(),
+                title: None,
+            };
+            let json = serde_json::to_string(&item).unwrap();
+            assert_eq!(
+                json,
+                format!(r#"{{"kind":"{json_kind}","url":"https://example.com/x"}}"#)
+            );
+            let back: MediaItem = serde_json::from_str(&json).unwrap();
+            assert_eq!(back.kind, kind);
+        }
+    }
 }
