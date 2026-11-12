@@ -68,7 +68,6 @@ async fn main() -> anyhow::Result<()> {
         igdb,
     };
 
-    let static_dir = state.config.static_dir.clone();
     let app = app(state);
 
     let addr: SocketAddr = config
@@ -76,11 +75,11 @@ async fn main() -> anyhow::Result<()> {
         .parse()
         .map_err(|e| anyhow::anyhow!("invalid BIND_ADDR: {e}"))?;
 
-    tracing::info!(%addr, "listening");
-    match &static_dir {
+    match &config.static_dir {
         Some(dir) => tracing::info!(static_dir = %dir.display(), "serving frontend"),
         None => tracing::info!("STATIC_DIR not set; serving only /api"),
     }
+    tracing::info!(%addr, "listening");
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
     Ok(())
@@ -164,7 +163,7 @@ mod tests {
         }
     }
 
-    async fn get(app: Router, uri: &str) -> (StatusCode, String) {
+    async fn get_body(app: Router, uri: &str) -> (StatusCode, String) {
         let response = app
             .oneshot(Request::get(uri).body(Body::empty()).unwrap())
             .await
@@ -175,7 +174,9 @@ mod tests {
     }
 
     /// A throwaway built frontend: `index.html` and `assets/app.js`.
-    struct StaticDir(PathBuf);
+    struct StaticDir {
+        path: PathBuf,
+    }
 
     impl StaticDir {
         fn new() -> Self {
@@ -188,22 +189,28 @@ mod tests {
             )
             .unwrap();
             std::fs::write(dir.join("assets/app.js"), "console.log('app');").unwrap();
-            Self(dir)
+            Self { path: dir }
         }
     }
 
     impl Drop for StaticDir {
         fn drop(&mut self) {
-            let _ = std::fs::remove_dir_all(&self.0);
+            let _ = std::fs::remove_dir_all(&self.path);
         }
+    }
+
+    /// The router serving a fresh [`StaticDir`]; keep the dir alive for the test.
+    async fn app_with_static_dir() -> (StaticDir, Router) {
+        let dir = StaticDir::new();
+        let app = app(test_state(Some(dir.path.clone())).await);
+        (dir, app)
     }
 
     #[tokio::test]
     async fn static_dir_serves_existing_files() {
-        let dir = StaticDir::new();
-        let app = app(test_state(Some(dir.0.clone())).await);
+        let (_dir, app) = app_with_static_dir().await;
 
-        let (status, body) = get(app, "/assets/app.js").await;
+        let (status, body) = get_body(app, "/assets/app.js").await;
 
         assert_eq!(status, StatusCode::OK);
         assert_eq!(body, "console.log('app');");
@@ -211,10 +218,9 @@ mod tests {
 
     #[tokio::test]
     async fn static_dir_serves_index_for_deep_links() {
-        let dir = StaticDir::new();
-        let app = app(test_state(Some(dir.0.clone())).await);
+        let (_dir, app) = app_with_static_dir().await;
 
-        let (status, body) = get(app, "/events/3/overview").await;
+        let (status, body) = get_body(app, "/events/3/overview").await;
 
         assert_eq!(status, StatusCode::OK);
         assert_eq!(body, "<!doctype html><title>Hype Check</title>");
@@ -222,10 +228,9 @@ mod tests {
 
     #[tokio::test]
     async fn static_dir_leaves_api_routes_alone() {
-        let dir = StaticDir::new();
-        let app = app(test_state(Some(dir.0.clone())).await);
+        let (_dir, app) = app_with_static_dir().await;
 
-        let (status, body) = get(app, "/api/health").await;
+        let (status, body) = get_body(app, "/api/health").await;
 
         assert_eq!(status, StatusCode::OK);
         assert_eq!(body, "ok");
@@ -233,10 +238,9 @@ mod tests {
 
     #[tokio::test]
     async fn static_dir_keeps_unknown_api_paths_not_found() {
-        let dir = StaticDir::new();
-        let app = app(test_state(Some(dir.0.clone())).await);
+        let (_dir, app) = app_with_static_dir().await;
 
-        let (status, body) = get(app, "/api/does-not-exist").await;
+        let (status, body) = get_body(app, "/api/does-not-exist").await;
 
         assert_eq!(status, StatusCode::NOT_FOUND);
         assert!(!body.contains("Hype Check"), "got index.html: {body}");
@@ -246,7 +250,7 @@ mod tests {
     async fn without_static_dir_root_is_not_found() {
         let app = app(test_state(None).await);
 
-        let (status, _) = get(app, "/").await;
+        let (status, _) = get_body(app, "/").await;
 
         assert_eq!(status, StatusCode::NOT_FOUND);
     }
