@@ -78,7 +78,7 @@ The backend can also serve the built frontend. Then one process on one origin ru
 
    This writes static files to `frontend/.output/public`.
 
-2. In `backend/.env`, point `STATIC_DIR` at that folder. A relative path is resolved from `backend/`:
+2. In `backend/.env`, point `STATIC_DIR` at that folder. A relative path is resolved from the directory you start the backend in, which is `backend/` if you use `cargo run` as below:
 
    ```bash
    STATIC_DIR=../frontend/.output/public
