@@ -33,7 +33,6 @@
     <main class="flex-1">
       <NuxtPage />
     </main>
-    <div class="arcade-scanlines" aria-hidden="true" />
   </div>
 </template>
 

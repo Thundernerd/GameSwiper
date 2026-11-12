@@ -25,6 +25,10 @@
   --arcade-yellow: 255 226 74; /* #ffe24a */
   --arcade-green: 77 255 138; /* #4dff8a */
   --arcade-red: 255 90 114; /* #ff5a72 */
+
+  /* CRT scanlines: a 1px dark line every 3px. Add it as the top background layer of the page and
+     the UI chrome only, never as an overlay, so the <img>/<iframe> inside paint over it. */
+  --arcade-scanlines: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
 }
 
 html,
@@ -37,6 +41,8 @@ body {
   /* The glow stops are --arcade-magenta and --arcade-cyan, but stay literal rgba(): written as
      rgb(var(…) / a), Chromium renders these gradients up to 1/255 off from before. */
   background:
+    var(--arcade-scanlines),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%),
     radial-gradient(ellipse at 50% 0%, rgba(255, 79, 216, 0.12), transparent 60%),
     radial-gradient(ellipse at 50% 100%, rgba(62, 240, 255, 0.08), transparent 60%),
     rgb(var(--arcade-bg));
@@ -153,16 +159,6 @@ select:focus-visible {
   padding: 0 0.4rem;
   font-size: 1.05rem;
   line-height: 1.4;
-}
-
-.arcade-scanlines {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  background:
-    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
-    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
 }
 
 .arcade-blink {
