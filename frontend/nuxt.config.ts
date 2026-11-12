@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   // causing hydration mismatches.
   // Pages fetch their data in onMounted anyway, so SSR only ever rendered a "Loading…" shell.
   ssr: false,
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
   // main.css carries the @tailwind directives itself. Without this the module also injects its
   // default tailwind.css after it, so utilities would win over the arcade-* classes in main.css.

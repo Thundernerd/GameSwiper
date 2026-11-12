@@ -163,10 +163,9 @@ async fn backfill_demo_release_dates(pool: &SqlitePool) -> anyhow::Result<()> {
 }
 
 async fn ensure_games_columns(pool: &SqlitePool) -> anyhow::Result<()> {
-    let existing: Vec<(String,)> =
-        sqlx::query_as("SELECT name FROM pragma_table_info('games')")
-            .fetch_all(pool)
-            .await?;
+    let existing: Vec<(String,)> = sqlx::query_as("SELECT name FROM pragma_table_info('games')")
+        .fetch_all(pool)
+        .await?;
     let names: Vec<&str> = existing.iter().map(|(n,)| n.as_str()).collect();
 
     let needed = [

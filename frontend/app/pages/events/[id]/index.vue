@@ -17,7 +17,7 @@
     <ErrorPanel v-else-if="error" :message="error" large class="my-16 text-center" />
 
     <div v-else-if="!deck.length" class="flex-1 flex flex-col items-center justify-center text-center gap-5">
-      <p class="arcade-display arcade-glow text-xl sm:text-2xl leading-relaxed text-arcade-green">DECK<br />CLEARED!</p>
+      <p class="arcade-display arcade-glow text-xl sm:text-2xl leading-relaxed text-arcade-green">DECK<br>CLEARED!</p>
       <p class="arcade-display arcade-blink text-[10px] text-arcade-yellow">STAGE COMPLETE</p>
       <p class="text-arcade-muted">You have rated every game in this event.</p>
       <NuxtLink

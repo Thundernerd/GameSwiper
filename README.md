@@ -64,6 +64,39 @@ npm run typecheck
 
 `nuxt build` strips types without checking them, so run this before you commit. It exits non-zero on any type error.
 
+To lint the frontend with ESLint (unused variables, Vue template mistakes and similar), run:
+
+```bash
+npm run lint       # report problems; exits non-zero on any error
+npm run lint:fix   # fix what ESLint can fix by itself
+```
+
+Run `npm run lint` before you commit too. The rules come from [`@nuxt/eslint`](https://eslint.nuxt.com/packages/module) and can be overridden in `frontend/eslint.config.mjs`.
+
+### Serving the built frontend
+
+The backend can also serve the built frontend. Then one process on one origin runs the whole app, with no `/api` proxy and no CORS.
+
+1. Build the frontend against the live API:
+
+   ```bash
+   cd frontend
+   npm install
+   NUXT_PUBLIC_USE_MOCK=false npm run generate
+   ```
+
+   This writes static files to `frontend/.output/public`.
+
+2. In `backend/.env`, point `STATIC_DIR` at that folder. A relative path is resolved from the directory you start the backend in, which is `backend/` if you use `cargo run` as below:
+
+   ```bash
+   STATIC_DIR=../frontend/.output/public
+   ```
+
+3. Start the backend with `cargo run` and open `http://127.0.0.1:8080`.
+
+Paths under `/api` still go to the API. Other paths serve the file with that name, or `index.html` if there is no such file, so a reload on a page such as `/events/3/overview` still works.
+
 ## API contract
 
 The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/api.ts). The mock fixtures are in [`frontend/app/shared/fixtures/`](frontend/app/shared/fixtures/).

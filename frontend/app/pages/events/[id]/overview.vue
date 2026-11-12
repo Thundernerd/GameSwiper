@@ -27,7 +27,7 @@
               :src="game.coverUrl"
               :alt="game.name"
               class="h-20 w-14 shrink-0 object-cover bg-black border-2 border-arcade-line"
-            />
+            >
             <div class="min-w-0 flex-1">
               <p class="text-arcade-text text-2xl leading-none truncate">{{ game.name }}</p>
               <p class="text-arcade-muted mt-1 truncate">

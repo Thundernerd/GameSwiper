@@ -30,7 +30,7 @@
           :alt="current.title || 'Game media'"
           draggable="false"
           class="h-full w-full object-cover [image-rendering:pixelated]"
-        />
+        >
       </div>
 
       <div

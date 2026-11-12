@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use anyhow::{Context, Result, bail};
+use anyhow::{bail, Context, Result};
 use chrono::{TimeZone, Utc};
 use reqwest::StatusCode;
 use serde::Deserialize;
@@ -138,10 +138,7 @@ impl IgdbClient {
     }
 
     async fn access_token(&self) -> Result<String> {
-        let client_id = self
-            .client_id
-            .as_ref()
-            .context("IGDB_CLIENT_ID missing")?;
+        let client_id = self.client_id.as_ref().context("IGDB_CLIENT_ID missing")?;
         let client_secret = self
             .client_secret
             .as_ref()
@@ -244,9 +241,7 @@ impl IgdbClient {
     }
 
     pub async fn fetch_event_games_ids(&self, igdb_event_id: i64) -> Result<Vec<i64>> {
-        let query = format!(
-            "fields games;\nwhere id = {igdb_event_id};\nlimit 1;"
-        );
+        let query = format!("fields games;\nwhere id = {igdb_event_id};\nlimit 1;");
         let events: Vec<IgdbEvent> = self.post_apicalypse("events", &query).await?;
         Ok(events
             .into_iter()
@@ -311,10 +306,7 @@ fn status_name(status: &Option<IgdbNamed>) -> String {
 }
 
 fn is_explicit_full_release(status: &Option<IgdbNamed>) -> bool {
-    matches!(
-        status_name(status).as_str(),
-        "full release" | "released"
-    )
+    matches!(status_name(status).as_str(), "full release" | "released")
 }
 
 fn is_pre_release_status(status: &Option<IgdbNamed>) -> bool {
@@ -362,9 +354,9 @@ pub fn ww_full_release_date(game: &IgdbGame) -> Option<i64> {
     }
 
     // 2) Worldwide dated entry that is not a known pre-release (legacy rows often omit status)
-    if let Some(ts) = earliest(&|d| {
-        is_worldwide(d) && d.date.is_some() && !is_pre_release_status(&d.status)
-    }) {
+    if let Some(ts) =
+        earliest(&|d| is_worldwide(d) && d.date.is_some() && !is_pre_release_status(&d.status))
+    {
         return Some(ts);
     }
 
@@ -396,7 +388,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
             }
         }
     }
-    videos.sort_by(|a, b| b.0.cmp(&a.0));
+    videos.sort_by_key(|v| std::cmp::Reverse(v.0));
 
     let mut shots: Vec<(i64, MediaItem)> = Vec::new();
     if let Some(list) = &game.screenshots {
@@ -413,7 +405,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
             }
         }
     }
-    shots.sort_by(|a, b| b.0.cmp(&a.0));
+    shots.sort_by_key(|s| std::cmp::Reverse(s.0));
 
     let mut media: Vec<MediaItem> = videos.into_iter().map(|(_, m)| m).collect();
     media.extend(shots.into_iter().map(|(_, m)| m));
@@ -534,11 +526,7 @@ fn normalize_site_name(raw: &str) -> String {
 
 pub fn names(list: &Option<Vec<IgdbNamed>>) -> Vec<String> {
     list.as_ref()
-        .map(|v| {
-            v.iter()
-                .filter_map(|n| n.name.clone())
-                .collect::<Vec<_>>()
-        })
+        .map(|v| v.iter().filter_map(|n| n.name.clone()).collect::<Vec<_>>())
         .unwrap_or_default()
 }
 
