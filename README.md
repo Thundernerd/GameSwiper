@@ -64,6 +64,30 @@ npm run typecheck
 
 `nuxt build` strips types without checking them, so run this before you commit. It exits non-zero on any type error.
 
+### Serving the built frontend
+
+The backend can also serve the built frontend. Then one process on one origin runs the whole app, with no `/api` proxy and no CORS.
+
+1. Build the frontend against the live API:
+
+   ```bash
+   cd frontend
+   npm install
+   NUXT_PUBLIC_USE_MOCK=false npm run generate
+   ```
+
+   This writes static files to `frontend/.output/public`.
+
+2. In `backend/.env`, point `STATIC_DIR` at that folder. A relative path is resolved from `backend/`:
+
+   ```bash
+   STATIC_DIR=../frontend/.output/public
+   ```
+
+3. Start the backend with `cargo run` and open `http://127.0.0.1:8080`.
+
+Paths under `/api` still go to the API. Other paths serve the file with that name, or `index.html` if there is no such file, so a reload on a page such as `/events/3/overview` still works.
+
 ## API contract
 
 The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/api.ts). The mock fixtures are in [`frontend/app/shared/fixtures/`](frontend/app/shared/fixtures/).
