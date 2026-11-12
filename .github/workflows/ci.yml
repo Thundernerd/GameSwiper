@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install Rust toolchain
-        # Installs the channel and components pinned in backend/rust-toolchain.toml.
+        # Installs the channel and components listed in backend/rust-toolchain.toml.
         run: rustup toolchain install
 
       - name: Cache Cargo
