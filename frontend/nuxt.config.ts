@@ -12,6 +12,10 @@ export default defineNuxtConfig({
   // main.css carries the @tailwind directives itself. Without this the module also injects its
   // default tailwind.css after it, so utilities would win over the arcade-* classes in main.css.
   tailwindcss: { cssPath: false },
+  // The tailwind module adds `tailwindcss/nesting`, which Nuxt 4.6+ can no longer resolve from
+  // tailwindcss 3 (it has no `exports` map) and warns about on every build. No CSS here uses
+  // nesting, so turn the plugin off.
+  postcss: { plugins: { 'tailwindcss/nesting': false } },
   app: {
     head: {
       title: 'Hype Check',
