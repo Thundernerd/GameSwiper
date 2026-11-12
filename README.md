@@ -1,5 +1,7 @@
 # Hype Check
 
+[![CI](https://github.com/Thundernerd/HypeCheck/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Thundernerd/HypeCheck/actions/workflows/ci.yml)
+
 Hype Check shows games from finished IGDB events as cards. You can like, dislike, or defer each card. Later visits show only the games that you did not rate.
 
 ## Stack
@@ -42,7 +44,19 @@ The API listens on `http://127.0.0.1:8080`.
 
 If you do not set IGDB credentials, the backend creates a few finished demo events. You can use these events to try the full flow on your machine.
 
+Before you commit, run the same backend checks that CI runs:
+
+```bash
+cargo fmt --check
+cargo clippy --all-targets --locked -- -D warnings
+cargo test --locked
+```
+
+Each command exits non-zero on a problem. Run `cargo fmt` to fix the formatting.
+
 ### 3. Frontend
+
+The frontend uses Node 26, as set in `frontend/.nvmrc`. If you use nvm, run `nvm use` in `frontend/`.
 
 ```bash
 cd frontend
