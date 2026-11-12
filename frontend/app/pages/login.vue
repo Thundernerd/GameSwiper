@@ -21,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+const ciBreak: number = "not a number"
 definePageMeta({ middleware: [] })
 
 const { login, user } = useAuth()
