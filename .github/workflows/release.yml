@@ -9,6 +9,8 @@ on:
 permissions:
   contents: read
 
+# Jobs pin runner images (ubuntu-24.04, not ubuntu-latest) like the build matrix, which needs exact
+# labels such as ubuntu-24.04-arm, so every release job builds on a known image.
 jobs:
   version:
     name: Check version
@@ -82,8 +84,8 @@ jobs:
           - { target: aarch64-apple-darwin, runner: macos-15, suffix: macos-arm64 }
           # Cross-compiled: Apple's clang builds the bundled SQLite for both architectures.
           - { target: x86_64-apple-darwin, runner: macos-15, suffix: macos-x86_64 }
-          - { target: x86_64-pc-windows-msvc, runner: windows-2025, suffix: windows-x86_64, exe: .exe }
-          - { target: aarch64-pc-windows-msvc, runner: windows-11-arm, suffix: windows-arm64, exe: .exe }
+          - { target: x86_64-pc-windows-msvc, runner: windows-2025, suffix: windows-x86_64, ext: .exe }
+          - { target: aarch64-pc-windows-msvc, runner: windows-11-arm, suffix: windows-arm64, ext: .exe }
     defaults:
       run:
         shell: bash
@@ -125,7 +127,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: backend-${{ matrix.suffix }}
-          path: backend/target/${{ matrix.target }}/release/hypecheck_api${{ matrix.exe }}
+          path: backend/target/${{ matrix.target }}/release/hypecheck_api${{ matrix.ext }}
           if-no-files-found: error
 
   release:

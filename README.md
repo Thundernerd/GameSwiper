@@ -147,3 +147,10 @@ Pushing a version tag publishes a GitHub Release. The [release workflow](.github
 The workflow fails before it builds anything if the tag doesn't match both versions. No release is published if a CI check or any build fails.
 
 A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump.
+
+The workflow's tag check and packing live in [`.github/scripts/`](.github/scripts/). If you change them, run the same checks that CI runs:
+
+```bash
+shellcheck .github/scripts/*.sh
+bash .github/scripts/check-release-version.test.sh
+```
