@@ -2,7 +2,7 @@
   <div class="min-h-screen flex flex-col">
     <header
       v-if="user"
-      class="sticky top-0 z-40 border-b-4 border-arcade-magenta bg-arcade-bg"
+      class="sticky top-0 z-40 border-b-4 border-arcade-magenta bg-arcade-bg arcade-scanlines"
     >
       <div class="mx-auto max-w-6xl px-4 py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div class="flex items-center gap-4 min-w-0">
