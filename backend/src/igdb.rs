@@ -699,4 +699,43 @@ mod tests {
         assert_eq!(media[0].kind, "image");
         assert!(media[0].url.contains("cover1"));
     }
+
+    #[test]
+    fn build_media_keeps_input_order_for_equal_ids() {
+        let mut game = empty_game();
+        game.videos = Some(vec![
+            IgdbVideo {
+                id: Some(7),
+                name: None,
+                video_id: Some("first_same".into()),
+            },
+            IgdbVideo {
+                id: None,
+                name: None,
+                video_id: Some("first_missing".into()),
+            },
+            IgdbVideo {
+                id: Some(7),
+                name: None,
+                video_id: Some("second_same".into()),
+            },
+            IgdbVideo {
+                id: None,
+                name: None,
+                video_id: Some("second_missing".into()),
+            },
+        ]);
+
+        let urls: Vec<String> = build_media(&game).into_iter().map(|m| m.url).collect();
+
+        assert_eq!(
+            urls,
+            vec![
+                "https://www.youtube.com/embed/first_same",
+                "https://www.youtube.com/embed/second_same",
+                "https://www.youtube.com/embed/first_missing",
+                "https://www.youtube.com/embed/second_missing",
+            ]
+        );
+    }
 }
