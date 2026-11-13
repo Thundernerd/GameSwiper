@@ -224,7 +224,8 @@ jobs:
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
           LATEST: ${{ needs.version.outputs.latest }}
         run: |
-          # --latest=false keeps a patch for an older line from taking over the "Latest" badge.
+          # --latest follows the version check, so a patch for an older line doesn't take over
+          # the "Latest" badge.
           flags=("--latest=$LATEST")
           if [[ "$PRERELEASE" == true ]]; then flags+=(--prerelease); fi
           gh release create "$GITHUB_REF_NAME" dist/* \
