@@ -121,6 +121,28 @@ The backend can also serve the built frontend. Then one process on one origin ru
 
 Paths under `/api` still go to the API. Other paths serve the file with that name, or `index.html` if there is no such file, so a reload on a page such as `/events/3/overview` still works.
 
+## Docker
+
+Each release also publishes a container image to the GitHub Container Registry (GHCR), for `linux/amd64` and `linux/arm64`. The image runs the whole app on port 8080 and keeps its SQLite database in the `/data` volume:
+
+```bash
+docker run -d --name hypecheck \
+  -p 8080:8080 \
+  -v hypecheck-data:/data \
+  -e SESSION_SECRET=change-me-to-a-long-random-string \
+  -e IGDB_CLIENT_ID=your-client-id \
+  -e IGDB_CLIENT_SECRET=your-client-secret \
+  ghcr.io/thundernerd/hypecheck:latest
+```
+
+Open `http://localhost:8080`. Leave out the two IGDB variables to try the app with the demo events. Set `SESSION_SECRET` to a fixed value. If you don't, the backend picks a new one at each start.
+
+`latest` follows the newest stable release. To pin a version, use `X.Y.Z`, or `X.Y` to also get patch releases. Pre-releases are only published under their own version, such as `1.0.0-rc.1`.
+
+The container runs as a non-root user and reports its health from `/api/health`. The other variables in [`.env.example`](.env.example), such as `IGDB_SYNC_INTERVAL_HOURS`, can be passed with `-e` too.
+
+To build the image yourself, run `docker build -t hypecheck .` in the repository root.
+
 ## API contract
 
 The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/api.ts). The mock fixtures are in [`frontend/app/shared/fixtures/`](frontend/app/shared/fixtures/).
@@ -143,7 +165,7 @@ The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/a
 
 ## Releasing
 
-Pushing a version tag publishes a GitHub Release. The [release workflow](.github/workflows/release.yml) runs the CI checks, builds the backend for Linux, macOS and Windows on x86_64 and arm64, and packs each build with the built frontend. Each archive runs the whole app on one port; its `RUN.md` explains how. The release also gets a `SHA256SUMS` file and generated release notes.
+Pushing a version tag publishes a GitHub Release. The [release workflow](.github/workflows/release.yml) runs the CI checks, builds the backend for Linux, macOS and Windows on x86_64 and arm64, and packs each build with the built frontend. Each archive runs the whole app on one port; its `RUN.md` explains how. The release also gets a `SHA256SUMS` file and generated release notes. The same workflow publishes the [Docker image](#docker) to `ghcr.io/thundernerd/hypecheck`.
 
 1. Bump the version in both `backend/Cargo.toml` and `frontend/package.json` to the same `X.Y.Z`. Run `cargo check` in `backend/` and `npm install` in `frontend/` so both lockfiles pick up the new version.
 2. Open a pull request and merge it to `main`.
@@ -154,13 +176,16 @@ Pushing a version tag publishes a GitHub Release. The [release workflow](.github
    git tag vX.Y.Z && git push origin vX.Y.Z
    ```
 
-The workflow fails before it builds anything if the tag doesn't match both versions. No release is published if a CI check or any build fails.
+The workflow fails before it builds anything if the tag doesn't match both versions. No release or image tag is published if a CI check or any build fails.
 
-A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump.
+A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump. A pre-release image gets only its own version tag, so it never moves `latest` or `X.Y`.
+
+GHCR makes a new package private. After the first image is published, set the `hypecheck` package's visibility to public in its package settings so `docker pull` works without logging in.
 
 The workflow's tag check and packing live in [`.github/scripts/`](.github/scripts/). If you change them, run the same checks that CI runs:
 
 ```bash
 shellcheck .github/scripts/*.sh
 bash .github/scripts/check-release-version.test.sh
+bash .github/scripts/docker-tags.test.sh
 ```

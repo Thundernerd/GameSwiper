@@ -90,4 +90,6 @@ jobs:
         run: shellcheck .github/scripts/*.sh
 
       - name: Tests
-        run: bash .github/scripts/check-release-version.test.sh
+        run: |
+          bash .github/scripts/check-release-version.test.sh
+          bash .github/scripts/docker-tags.test.sh
