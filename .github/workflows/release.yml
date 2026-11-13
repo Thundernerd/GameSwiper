@@ -258,8 +258,12 @@ jobs:
         with:
           platforms: ${{ matrix.platform }}
           outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=gha,scope=image-${{ matrix.suffix }}
-          cache-to: type=gha,scope=image-${{ matrix.suffix }},mode=max
+          # The layer cache lives in GHCR, not the gha cache: a run can only restore gha caches saved
+          # by its own ref or the default branch, so the next release's tag couldn't read this one's.
+          # mode=max keeps the Dockerfile's dependency layer, so a release whose dependencies haven't
+          # changed doesn't recompile them. A package of its own keeps these tags off the image.
+          cache-from: type=registry,ref=${{ env.IMAGE }}-buildcache:${{ matrix.suffix }}
+          cache-to: type=registry,ref=${{ env.IMAGE }}-buildcache:${{ matrix.suffix }},mode=max
 
       - name: Save digest
         env:

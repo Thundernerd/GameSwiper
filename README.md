@@ -192,7 +192,7 @@ bash .github/scripts/check-release-version.test.sh
 bash .github/scripts/docker-tags.test.sh
 ```
 
-The image build compiles the backend's dependencies in a layer of their own, which the release workflow caches between releases. A release whose dependencies haven't changed recompiles only the backend crate. If you change the `Dockerfile`, run the build cache test too. CI doesn't run it because it compiles the backend in Docker several times, which takes a few minutes. It also checks that the built image serves on port 8080, keeps its database in `/data` and reports healthy:
+The image build compiles the backend's dependencies in a layer of their own. The release workflow caches its layers between releases in the `hypecheck-buildcache` package on GHCR, which can stay private. A release whose dependencies haven't changed recompiles only the backend crate. If you change the `Dockerfile`, run the build cache test too. CI doesn't run it because it compiles the backend in Docker several times, which takes a few minutes. It also checks that the built image serves on port 8080, keeps its database in `/data` and reports healthy:
 
 ```bash
 bash .github/scripts/docker-build-cache.test.sh
