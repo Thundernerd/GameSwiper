@@ -1,13 +1,18 @@
 name: Release
 
 # Pushing a version tag (vX.Y.Z, or vX.Y.Z-suffix for a pre-release) builds the backend for every
-# target, packs each with the built frontend, and publishes a GitHub Release. See README "Releasing".
+# target, packs each with the built frontend, and publishes a GitHub Release. It also publishes a
+# multi-arch container image to GHCR. See README "Releasing" and "Docker".
 on:
   push:
     tags: ['v*.*.*']
 
 permissions:
   contents: read
+
+env:
+  # Lowercase: registries reject uppercase repository names, and github.repository is mixed case.
+  IMAGE: ghcr.io/thundernerd/hypecheck
 
 # Jobs pin runner images (ubuntu-24.04, not ubuntu-latest) like the build matrix, which needs exact
 # labels such as ubuntu-24.04-arm, so every release job builds on a known image.
@@ -219,3 +224,115 @@ jobs:
             --title "Hype Check $VERSION" \
             --generate-notes \
             "${flags[@]}"
+
+  # Each architecture builds on its own runner and is pushed by digest only, untagged. Building
+  # under QEMU instead would take many times longer to compile the backend.
+  image:
+    name: Image (${{ matrix.platform }})
+    needs: [version, ci]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux/amd64, runner: ubuntu-24.04, suffix: amd64 }
+          - { platform: linux/arm64, runner: ubuntu-24.04-arm, suffix: arm64 }
+    steps:
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          platforms: ${{ matrix.platform }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=image-${{ matrix.suffix }}
+          cache-to: type=gha,scope=image-${{ matrix.suffix }},mode=max
+
+      - name: Save digest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p digests
+          touch "digests/${DIGEST#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v7
+        with:
+          name: digest-${{ matrix.suffix }}
+          path: digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # Combines the per-architecture digests into one manifest list and tags it. It waits for the
+  # GitHub Release, so a failed build or release never moves a tag people pull.
+  image-manifest:
+    name: Image manifest
+    needs: [version, image, release]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      PRERELEASE: ${{ needs.version.outputs.prerelease }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Download digests
+        uses: actions/download-artifact@v8
+        with:
+          pattern: digest-*
+          merge-multiple: true
+          path: digests
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Create and push the manifest list
+        run: |
+          mapfile -t tags < <(bash .github/scripts/docker-tags.sh "$IMAGE" "$VERSION" "$PRERELEASE")
+
+          sources=()
+          for digest in digests/*; do sources+=("$IMAGE@sha256:${digest#digests/}"); done
+          if [[ "${#sources[@]}" -ne 2 ]]; then
+            echo "::error::expected 2 digests, found ${#sources[@]}"
+            exit 1
+          fi
+
+          flags=()
+          for tag in "${tags[@]}"; do flags+=(--tag "$tag"); done
+          docker buildx imagetools create "${flags[@]}" "${sources[@]}"
+
+      - name: Check both architectures are published
+        run: |
+          platforms="$(docker buildx imagetools inspect "$IMAGE:$VERSION" --format '{{json .Manifest}}' \
+            | jq -r '.manifests[].platform | "\(.os)/\(.architecture)"' | sort -u)"
+          echo "$IMAGE:$VERSION:"$'\n'"$platforms"
+          for platform in linux/amd64 linux/arm64; do
+            if ! grep -qx "$platform" <<<"$platforms"; then
+              echo "::error::$IMAGE:$VERSION has no $platform image"
+              exit 1
+            fi
+          done

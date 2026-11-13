@@ -1,0 +1,19 @@
+# Build output and dependencies are rebuilt inside the image.
+**/target/
+**/node_modules/
+**/.nuxt/
+**/.output/
+**/dist/
+**/.data/
+
+# Local databases and secrets must never reach the build context.
+backend/data/
+**/*.db
+**/*.db-*
+**/.env
+**/.env.*
+!.env.example
+
+.git/
+.github/
+**/.DS_Store
