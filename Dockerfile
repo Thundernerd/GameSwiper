@@ -45,6 +45,7 @@ WORKDIR /app
 USER hypecheck
 VOLUME /data
 EXPOSE 8080
+# Checks the port in BIND_ADDR, so the check still works if that is overridden.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD curl -fsS http://127.0.0.1:8080/api/health || exit 1
+  CMD curl -fsS "http://127.0.0.1:${BIND_ADDR##*:}/api/health" || exit 1
 CMD ["hypecheck_api"]
