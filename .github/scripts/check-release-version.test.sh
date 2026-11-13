@@ -108,6 +108,17 @@ expect_latest "first ever release moves latest" \
 expect_latest "newer pre-release tags don't hold latest back" \
   v1.2.1 $'v1.2.0\nv1.3.0-rc.1\nv1.2.1\nvnext.major.release' true
 
+# The workflow pipes `git tag --list` in under pipefail, so the script must read all of stdin even
+# when it doesn't need the tags, or the writer dies of SIGPIPE and fails the step.
+root="$(make_repo 2.0.0-rc.1 2.0.0-rc.1)"
+if ! (set -o pipefail; seq -f "v1.0.%g" 1 20000 | bash "$script" v2.0.0-rc.1 "$root" >/dev/null); then
+  echo "FAIL pre-release reads a long tag list to the end: the pipe failed"
+  failures=$((failures + 1))
+else
+  echo "ok   pre-release reads a long tag list to the end"
+fi
+rm -rf "$root"
+
 if ((failures > 0)); then
   echo "$failures test(s) failed"
   exit 1

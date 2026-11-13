@@ -11,6 +11,8 @@ set -euo pipefail
 
 tag="$1"
 root="${2:-.}"
+# Read every tag now: exiting early with stdin unread would kill the caller's `git tag` with SIGPIPE.
+tags="$(cat)"
 
 # The release trigger's `v*.*.*` glob also matches tags such as `vnext.major.release`.
 if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
@@ -49,7 +51,7 @@ fi
 echo "prerelease=false"
 
 # Latest only if no stable vX.Y.Z tag is newer, so a patch for an older line leaves it alone.
-newest="$( { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; echo "$tag"; } | sort -V | tail -n 1)"
+newest="$( { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' <<<"$tags" || true; echo "$tag"; } | sort -V | tail -n 1)"
 if [[ "$newest" == "$tag" ]]; then
   echo "latest=true"
 else
