@@ -24,13 +24,19 @@ jobs:
     outputs:
       version: ${{ steps.check.outputs.version }}
       prerelease: ${{ steps.check.outputs.prerelease }}
+      latest: ${{ steps.check.outputs.latest }}
     steps:
+      # Full history brings every tag, which decides whether this release becomes latest.
       - name: Check out
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Match tag to backend/Cargo.toml and frontend/package.json
         id: check
-        run: bash .github/scripts/check-release-version.sh "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+        # An explicit `shell: bash` adds pipefail, so a failed check fails the step.
+        shell: bash
+        run: git tag --list | bash .github/scripts/check-release-version.sh "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
 
   # The one list of release targets. The backend matrix builds each entry, and the release job
   # checks each binary against its arch_pattern (an extended regex for `file -b`) and expects one
@@ -216,8 +222,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PRERELEASE: ${{ needs.version.outputs.prerelease }}
+          LATEST: ${{ needs.version.outputs.latest }}
         run: |
-          flags=()
+          # --latest follows the version check, so a patch for an older line doesn't take over
+          # the "Latest" badge.
+          flags=("--latest=$LATEST")
           if [[ "$PRERELEASE" == true ]]; then flags+=(--prerelease); fi
           gh release create "$GITHUB_REF_NAME" dist/* \
             --verify-tag \
@@ -294,6 +303,7 @@ jobs:
     env:
       VERSION: ${{ needs.version.outputs.version }}
       PRERELEASE: ${{ needs.version.outputs.prerelease }}
+      LATEST: ${{ needs.version.outputs.latest }}
     steps:
       - name: Check out
         uses: actions/checkout@v7
@@ -317,7 +327,7 @@ jobs:
 
       - name: Create and push the manifest list
         run: |
-          mapfile -t tags < <(bash .github/scripts/docker-tags.sh "$IMAGE" "$VERSION" "$PRERELEASE")
+          mapfile -t tags < <(bash .github/scripts/docker-tags.sh "$IMAGE" "$VERSION" "$PRERELEASE" "$LATEST")
 
           sources=()
           for digest in digests/*; do sources+=("$IMAGE@sha256:${digest#digests/}"); done

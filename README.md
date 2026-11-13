@@ -180,6 +180,8 @@ The workflow fails before it builds anything if the tag doesn't match both versi
 
 A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump. A pre-release image gets only its own version tag, so it never moves `latest` or `X.Y`.
 
+A stable release moves the `latest` image tag and the "Latest" GitHub Release only when no other stable `vX.Y.Z` tag is newer. A patch for an older line, such as `v1.1.5` after `v1.2.0`, gets its own `X.Y.Z` and `X.Y` tags and leaves `latest` on `1.2.0`.
+
 GHCR makes a new package private. After the first image is published, set the `hypecheck` package's visibility to public in its package settings so `docker pull` works without logging in.
 
 The build targets are listed once, in the workflow's `targets` job. Each entry names its Rust target, runner, archive suffix and `arch_pattern`: an extended regex that the binary's `file` description must match, ignoring case, before the release is published. Windows entries also set `ext`, the binary's file extension.
