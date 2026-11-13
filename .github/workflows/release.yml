@@ -251,10 +251,11 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Combines the per-architecture digests into one manifest list and tags it.
+  # Combines the per-architecture digests into one manifest list and tags it. It waits for the
+  # GitHub Release, so a failed build or release never moves a tag people pull.
   image-manifest:
     name: Image manifest
-    needs: [version, image]
+    needs: [version, image, release]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
