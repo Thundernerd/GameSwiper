@@ -261,9 +261,10 @@ jobs:
           # The layer cache lives in GHCR, not the gha cache: a run can only restore gha caches saved
           # by its own ref or the default branch, so the next release's tag couldn't read this one's.
           # mode=max keeps the Dockerfile's dependency layer, so a release whose dependencies haven't
-          # changed doesn't recompile them. A package of its own keeps these tags off the image.
+          # changed doesn't recompile them. A package of its own keeps these tags off the image, and
+          # a failed cache export only warns, so it never blocks a release.
           cache-from: type=registry,ref=${{ env.IMAGE }}-buildcache:${{ matrix.suffix }}
-          cache-to: type=registry,ref=${{ env.IMAGE }}-buildcache:${{ matrix.suffix }},mode=max
+          cache-to: type=registry,ref=${{ env.IMAGE }}-buildcache:${{ matrix.suffix }},mode=max,ignore-error=true
 
       - name: Save digest
         env:
