@@ -38,9 +38,8 @@ async fn main() -> anyhow::Result<()> {
         "config loaded"
     );
 
-    std::fs::create_dir_all("data")?;
-
-    // Ensure parent of sqlite file exists when DATABASE_URL uses a custom path
+    // Create the directory of the SQLite file. Nothing else is written to the working directory,
+    // which may be read-only (the Docker image keeps its data in /data).
     if let Some(path) = sqlite_path_from_url(&config.database_url) {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent)?;
