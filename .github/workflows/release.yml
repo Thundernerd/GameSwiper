@@ -29,8 +29,9 @@ jobs:
 
   # The one list of release targets. The backend matrix builds each entry, and the release job
   # checks each binary against its arch_pattern (an extended regex for `file -b`) and expects one
-  # build per entry. macos-x86_64 is cross-compiled: Apple's clang builds the bundled SQLite for
-  # both architectures.
+  # build per entry. Windows entries add ext, the binary's file extension. Patterns write `[+]`
+  # rather than `\+` to stay free of JSON escapes. macos-x86_64 is cross-compiled: Apple's clang
+  # builds the bundled SQLite for both architectures.
   targets:
     name: List targets
     runs-on: ubuntu-24.04
@@ -38,7 +39,7 @@ jobs:
     outputs:
       targets: ${{ steps.list.outputs.targets }}
     steps:
-      - name: List targets
+      - name: Write and check the targets list
         id: list
         run: |
           targets="$(jq -c . <<'EOF'
@@ -52,6 +53,13 @@ jobs:
           ]
           EOF
           )"
+          # Fail before any build starts if an entry lacks a field the build or release job needs.
+          missing="$(jq -r 'map(select([.target, .runner, .suffix, .arch_pattern] | any(. == null or . == ""))
+            | .suffix // .target // "an entry") | join(", ")' <<<"$targets")"
+          if [[ -n "$missing" ]]; then
+            echo "::error::targets missing target, runner, suffix or arch_pattern: $missing"
+            exit 1
+          fi
           echo "targets=$targets" >> "$GITHUB_OUTPUT"
 
   ci:
@@ -187,10 +195,6 @@ jobs:
             binary="$(find "$dir" -type f -name 'hypecheck_api*')"
 
             # Fail rather than publish a binary built for the wrong OS or architecture.
-            if [[ -z "$pattern" ]]; then
-              echo "::error::target $suffix has no arch_pattern"
-              exit 1
-            fi
             description="$(file -b "$binary")"
             echo "$suffix: $description (expected /$pattern/)"
             if ! grep -Eiq "$pattern" <<<"$description"; then
@@ -199,8 +203,8 @@ jobs:
             fi
 
             bash .github/scripts/package-release.sh \
-              "$VERSION" "$suffix" "$binary" build/frontend .env.example dist
-          done < <(jq -r '.[] | .suffix, .arch_pattern // ""' <<<"$TARGETS")
+              "$VERSION" "$suffix" "$binary" build/frontend .env.example dist </dev/null
+          done < <(jq -r '.[] | .suffix, .arch_pattern' <<<"$TARGETS")
           (cd dist && sha256sum -- * > SHA256SUMS && cat SHA256SUMS)
 
       - name: Publish
