@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tests that the Docker image build reuses compiled Rust dependencies from an exported layer cache,
-# as the release workflow does with its gha cache.
+# as the release workflow does with its gha cache, and that the built image runs as documented.
 # Run: bash .github/scripts/docker-build-cache.test.sh
 #
 # It's slow: it compiles the backend in Docker more than once. CI doesn't run it.
@@ -15,9 +15,13 @@ work="$(mktemp -d)"
 context="$work/context"
 cache="$work/cache"
 builder="hypecheck-build-cache-test-$$"
+image="hypecheck-build-cache-test:$$"
+container="hypecheck-build-cache-test-$$"
 failures=0
 
 cleanup() {
+  docker rm -fv "$container" >/dev/null 2>&1
+  docker image rm "$image" >/dev/null 2>&1
   docker buildx rm "$builder" >/dev/null 2>&1
   rm -rf "$work"
 }
@@ -70,8 +74,51 @@ expect_only_backend_compiled() {
   fi
 }
 
+# fail NAME MESSAGE
+fail() {
+  echo "FAIL $1: $2"
+  failures=$((failures + 1))
+}
+
+# expect_runs_as_documented NAME: runs $image as README "Docker" describes it, without IGDB
+# credentials, and checks it serves on 8080, keeps its database in /data and reports healthy.
+expect_runs_as_documented() {
+  local name="$1" health="" address i
+  if ! docker run -d --name "$container" -p 127.0.0.1::8080 -e SESSION_SECRET=test "$image" >/dev/null; then
+    fail "$name" "docker run failed"
+    return
+  fi
+
+  # The first health check runs one interval (30s) after the start.
+  for ((i = 0; i < 60; i++)); do
+    health="$(docker inspect -f '{{.State.Health.Status}}' "$container")"
+    [[ "$health" == starting ]] || break
+    sleep 2
+  done
+  if [[ "$health" != healthy ]]; then
+    fail "$name" "expected health healthy, got ${health:-nothing}. Container log:"
+    docker logs "$container" 2>&1 | tail -n 20
+    return
+  fi
+
+  address="$(docker port "$container" 8080/tcp | head -n 1)"
+  if [[ "$(curl -fsS "http://$address/api/health")" != ok ]]; then
+    fail "$name" "GET /api/health on port 8080 didn't answer ok"
+  elif ! curl -fsS "http://$address/" | grep -qi '<html'; then
+    fail "$name" "GET / on port 8080 didn't serve the frontend"
+  elif ! docker exec "$container" test -s /data/hypecheck.db; then
+    fail "$name" "no database at /data/hypecheck.db"
+  elif [[ "$(docker exec "$container" id -un)" != hypecheck ]]; then
+    fail "$name" "expected to run as hypecheck, runs as $(docker exec "$container" id -un)"
+  else
+    echo "ok   $name"
+  fi
+  docker rm -fv "$container" >/dev/null 2>&1
+}
+
 echo "Building from scratch to fill the cache. This compiles every dependency."
-build initial || exit 1
+build initial --load --tag "$image" || exit 1
+expect_runs_as_documented runs-as-documented
 
 echo '// changed by docker-build-cache.test.sh' >>"$context/backend/src/main.rs"
 if build source-change; then
