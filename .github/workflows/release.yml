@@ -32,6 +32,41 @@ jobs:
         id: check
         run: bash .github/scripts/check-release-version.sh "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
 
+  # The one list of release targets. The backend matrix builds each entry, and the release job
+  # checks each binary against its arch_pattern (an extended regex for `file -b`) and expects one
+  # build per entry. Windows entries add ext, the binary's file extension. Patterns write `[+]`
+  # rather than `\+` to stay free of JSON escapes. macos-x86_64 is cross-compiled: Apple's clang
+  # builds the bundled SQLite for both architectures.
+  targets:
+    name: List targets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      targets: ${{ steps.list.outputs.targets }}
+    steps:
+      - name: Write and check the targets list
+        id: list
+        run: |
+          targets="$(jq -c . <<'EOF'
+          [
+            { "target": "x86_64-unknown-linux-gnu", "runner": "ubuntu-24.04", "suffix": "linux-x86_64", "arch_pattern": "ELF 64-bit.*x86-64" },
+            { "target": "aarch64-unknown-linux-gnu", "runner": "ubuntu-24.04-arm", "suffix": "linux-arm64", "arch_pattern": "ELF 64-bit.*aarch64" },
+            { "target": "aarch64-apple-darwin", "runner": "macos-15", "suffix": "macos-arm64", "arch_pattern": "Mach-O 64-bit.*arm64" },
+            { "target": "x86_64-apple-darwin", "runner": "macos-15", "suffix": "macos-x86_64", "arch_pattern": "Mach-O 64-bit.*x86_64" },
+            { "target": "x86_64-pc-windows-msvc", "runner": "windows-2025", "suffix": "windows-x86_64", "ext": ".exe", "arch_pattern": "PE32[+].*x86-64" },
+            { "target": "aarch64-pc-windows-msvc", "runner": "windows-11-arm", "suffix": "windows-arm64", "ext": ".exe", "arch_pattern": "PE32[+].*Aarch64" }
+          ]
+          EOF
+          )"
+          # Fail before any build starts if an entry lacks a field the build or release job needs.
+          missing="$(jq -r 'map(select([.target, .runner, .suffix, .arch_pattern] | any(. == null or . == ""))
+            | .suffix // .target // "an entry") | join(", ")' <<<"$targets")"
+          if [[ -n "$missing" ]]; then
+            echo "::error::targets missing target, runner, suffix or arch_pattern: $missing"
+            exit 1
+          fi
+          echo "targets=$targets" >> "$GITHUB_OUTPUT"
+
   ci:
     name: CI
     needs: version
@@ -77,20 +112,13 @@ jobs:
 
   backend:
     name: Backend (${{ matrix.suffix }})
-    needs: [version, ci]
+    needs: [version, ci, targets]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { target: x86_64-unknown-linux-gnu, runner: ubuntu-24.04, suffix: linux-x86_64 }
-          - { target: aarch64-unknown-linux-gnu, runner: ubuntu-24.04-arm, suffix: linux-arm64 }
-          - { target: aarch64-apple-darwin, runner: macos-15, suffix: macos-arm64 }
-          # Cross-compiled: Apple's clang builds the bundled SQLite for both architectures.
-          - { target: x86_64-apple-darwin, runner: macos-15, suffix: macos-x86_64 }
-          - { target: x86_64-pc-windows-msvc, runner: windows-2025, suffix: windows-x86_64, ext: .exe }
-          - { target: aarch64-pc-windows-msvc, runner: windows-11-arm, suffix: windows-arm64, ext: .exe }
+        include: ${{ fromJSON(needs.targets.outputs.targets) }}
     defaults:
       run:
         shell: bash
@@ -137,13 +165,14 @@ jobs:
 
   release:
     name: Publish release
-    needs: [version, ci, frontend, backend]
+    needs: [version, ci, targets, frontend, backend]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
     env:
       VERSION: ${{ needs.version.outputs.version }}
+      TARGETS: ${{ needs.targets.outputs.targets }}
     steps:
       - name: Check out
         uses: actions/checkout@v7
@@ -155,36 +184,32 @@ jobs:
 
       - name: Pack archives
         run: |
-          for dir in build/backend-*; do
-            suffix="${dir#build/backend-}"
+          expected_count="$(jq length <<<"$TARGETS")"
+          count="$(find build -mindepth 1 -maxdepth 1 -type d -name 'backend-*' | wc -l)"
+          if [[ "$count" -ne "$expected_count" ]]; then
+            echo "::error::expected $expected_count backend builds, found $count"
+            exit 1
+          fi
+
+          while read -r suffix && read -r pattern; do
+            dir="build/backend-$suffix"
+            if [[ ! -d "$dir" ]]; then
+              echo "::error::no backend build for $suffix"
+              exit 1
+            fi
             binary="$(find "$dir" -type f -name 'hypecheck_api*')"
 
             # Fail rather than publish a binary built for the wrong OS or architecture.
-            case "$suffix" in
-              linux-x86_64) expected='ELF 64-bit.*x86-64' ;;
-              linux-arm64) expected='ELF 64-bit.*aarch64' ;;
-              macos-x86_64) expected='Mach-O 64-bit.*x86_64' ;;
-              macos-arm64) expected='Mach-O 64-bit.*arm64' ;;
-              windows-x86_64) expected='PE32\+.*x86-64' ;;
-              windows-arm64) expected='PE32\+.*Aarch64' ;;
-              *) echo "::error::unexpected build $dir"; exit 1 ;;
-            esac
             description="$(file -b "$binary")"
-            echo "$suffix: $description"
-            if ! grep -Eiq "$expected" <<<"$description"; then
-              echo "::error::$suffix binary is not $expected"
+            echo "$suffix: $description (expected /$pattern/)"
+            if ! grep -Eiq "$pattern" <<<"$description"; then
+              echo "::error::$suffix binary does not match /$pattern/"
               exit 1
             fi
 
             bash .github/scripts/package-release.sh \
-              "$VERSION" "$suffix" "$binary" build/frontend .env.example dist
-          done
-
-          count="$(find dist -maxdepth 1 -type f | wc -l)"
-          if [[ "$count" -ne 6 ]]; then
-            echo "::error::expected 6 archives, found $count"
-            exit 1
-          fi
+              "$VERSION" "$suffix" "$binary" build/frontend .env.example dist </dev/null
+          done < <(jq -r '.[] | .suffix, .arch_pattern' <<<"$TARGETS")
           (cd dist && sha256sum -- * > SHA256SUMS && cat SHA256SUMS)
 
       - name: Publish

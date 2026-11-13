@@ -182,6 +182,8 @@ A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifes
 
 GHCR makes a new package private. After the first image is published, set the `hypecheck` package's visibility to public in its package settings so `docker pull` works without logging in.
 
+The build targets are listed once, in the workflow's `targets` job. Each entry names its Rust target, runner, archive suffix and `arch_pattern`: an extended regex that the binary's `file` description must match, ignoring case, before the release is published. Windows entries also set `ext`, the binary's file extension.
+
 The workflow's tag check and packing live in [`.github/scripts/`](.github/scripts/). If you change them, run the same checks that CI runs:
 
 ```bash
