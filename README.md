@@ -158,6 +158,8 @@ The workflow fails before it builds anything if the tag doesn't match both versi
 
 A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump.
 
+The build targets are listed once, in the workflow's `targets` job. Each entry names its Rust target, runner, archive suffix and `arch_pattern`, the `file` description its binary must match before the release is published.
+
 The workflow's tag check and packing live in [`.github/scripts/`](.github/scripts/). If you change them, run the same checks that CI runs:
 
 ```bash
