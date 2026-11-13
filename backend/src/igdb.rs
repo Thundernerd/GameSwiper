@@ -9,7 +9,7 @@ use serde_json::Value;
 use tokio::sync::Mutex;
 
 use crate::config::Config;
-use crate::models::{GameLink, MediaItem};
+use crate::models::{GameLink, MediaItem, MediaKind};
 
 const TOKEN_URL: &str = "https://id.twitch.tv/oauth2/token";
 const IGDB_BASE: &str = "https://api.igdb.com/v4";
@@ -392,7 +392,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
         Some((
             v.id,
             MediaItem {
-                kind: "video".into(),
+                kind: MediaKind::Video,
                 url: format!("https://www.youtube.com/embed/{video_id}"),
                 title: v.name.clone(),
             },
@@ -403,7 +403,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
         Some((
             s.id,
             MediaItem {
-                kind: "image".into(),
+                kind: MediaKind::Image,
                 url: image_url(image_id, "screenshot_huge"),
                 title: None,
             },
@@ -416,7 +416,7 @@ pub fn build_media(game: &IgdbGame) -> Vec<MediaItem> {
     if media.is_empty() {
         if let Some(cover) = game.cover.as_ref().and_then(|c| c.image_id.as_ref()) {
             media.push(MediaItem {
-                kind: "image".into(),
+                kind: MediaKind::Image,
                 url: image_url(cover, "cover_big"),
                 title: None,
             });
@@ -683,13 +683,13 @@ mod tests {
         let media = build_media(&game);
 
         assert_eq!(media.len(), 4);
-        assert_eq!(media[0].kind, "video");
+        assert_eq!(media[0].kind, MediaKind::Video);
         assert_eq!(media[0].url, "https://www.youtube.com/embed/newvid");
-        assert_eq!(media[1].kind, "video");
+        assert_eq!(media[1].kind, MediaKind::Video);
         assert_eq!(media[1].url, "https://www.youtube.com/embed/oldvid");
-        assert_eq!(media[2].kind, "image");
+        assert_eq!(media[2].kind, MediaKind::Image);
         assert!(media[2].url.contains("shot_new"));
-        assert_eq!(media[3].kind, "image");
+        assert_eq!(media[3].kind, MediaKind::Image);
         assert!(media[3].url.contains("shot_old"));
         assert!(!media.iter().any(|m| m.url.contains("cover1")));
     }
@@ -699,7 +699,7 @@ mod tests {
         let game = empty_game();
         let media = build_media(&game);
         assert_eq!(media.len(), 1);
-        assert_eq!(media[0].kind, "image");
+        assert_eq!(media[0].kind, MediaKind::Image);
         assert!(media[0].url.contains("cover1"));
     }
 
