@@ -95,6 +95,8 @@ npm test
 
 Run `npm test` before you commit too. It exits non-zero on any failing test. Tests sit next to the code they cover, as `*.test.ts` files (for example `app/shared/swipe.test.ts`).
 
+`frontend/package.json` has an `overrides` block that moves `minimatch` 10 to 11 and `glob` 13 to 14. This clears two moderate `npm audit` advisories in build and lint tooling ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) and [GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4)). ESLint and Nitro still ask for the older majors. Once they ask for `minimatch` 11 and `glob` 14 themselves, remove the block and run `npm install`.
+
 ### Serving the built frontend
 
 The backend can also serve the built frontend. Then one process on one origin runs the whole app, with no `/api` proxy and no CORS.
