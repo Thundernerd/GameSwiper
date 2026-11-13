@@ -138,3 +138,27 @@ The TypeScript types are in [`frontend/app/shared/api.ts`](frontend/app/shared/a
 
 - **like / dislike** — These actions are final. The card does not return to the deck.
 - **defer** — The app saves the card and moves it to the back of the queue. Later visits show deferred cards after unseen games.
+
+## Releasing
+
+Pushing a version tag publishes a GitHub Release. The [release workflow](.github/workflows/release.yml) runs the CI checks, builds the backend for Linux, macOS and Windows on x86_64 and arm64, and packs each build with the built frontend. Each archive runs the whole app on one port; its `RUN.md` explains how. The release also gets a `SHA256SUMS` file and generated release notes.
+
+1. Bump the version in both `backend/Cargo.toml` and `frontend/package.json` to the same `X.Y.Z`. Run `cargo check` in `backend/` and `npm install` in `frontend/` so both lockfiles pick up the new version.
+2. Open a pull request and merge it to `main`.
+3. Tag the merge commit on `main` and push the tag:
+
+   ```bash
+   git checkout main && git pull
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+
+The workflow fails before it builds anything if the tag doesn't match both versions. No release is published if a CI check or any build fails.
+
+A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump.
+
+The workflow's tag check and packing live in [`.github/scripts/`](.github/scripts/). If you change them, run the same checks that CI runs:
+
+```bash
+shellcheck .github/scripts/*.sh
+bash .github/scripts/check-release-version.test.sh
+```
