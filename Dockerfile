@@ -17,12 +17,20 @@ RUN NUXT_PUBLIC_USE_MOCK=false npm run generate \
 # Same Debian release as the runtime stage, so the binary links against the glibc it runs with.
 FROM rust:1-slim-trixie AS backend
 WORKDIR /src/backend
-COPY backend/ ./
-# rustup installs the toolchain named in rust-toolchain.toml on the first cargo call. The binary
-# is copied out of the cached target directory, which later stages can't see.
+# Dependencies first, against a stub main.rs, so a change to src/ reuses this layer. target/ stays
+# in the layer rather than a cache mount: the release workflow's layer cache exports layers, not
+# mounts. rustup installs the toolchain named in rust-toolchain.toml on the first cargo call.
+COPY backend/Cargo.toml backend/Cargo.lock backend/rust-toolchain.toml ./
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/src/backend/target \
-    cargo build --release --locked \
+    mkdir src \
+ && echo 'fn main() {}' > src/main.rs \
+ && cargo build --release --locked \
+ && rm -r src
+COPY backend/ ./
+# Touch main.rs so cargo rebuilds the crate even if the copied file is older than the stub's build.
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    touch src/main.rs \
+ && cargo build --release --locked \
  && cp target/release/hypecheck_api /usr/local/bin/hypecheck_api
 
 FROM debian:trixie-slim
