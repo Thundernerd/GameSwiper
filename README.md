@@ -123,7 +123,7 @@ Paths under `/api` still go to the API. Other paths serve the file with that nam
 
 ## Docker
 
-Each release also publishes a container image to the GitHub Container Registry, for `linux/amd64` and `linux/arm64`. The image runs the whole app on port 8080 and keeps its SQLite database in the `/data` volume:
+Each release also publishes a container image to the GitHub Container Registry (GHCR), for `linux/amd64` and `linux/arm64`. The image runs the whole app on port 8080 and keeps its SQLite database in the `/data` volume:
 
 ```bash
 docker run -d --name hypecheck \
@@ -176,7 +176,7 @@ Pushing a version tag publishes a GitHub Release. The [release workflow](.github
    git tag vX.Y.Z && git push origin vX.Y.Z
    ```
 
-The workflow fails before it builds anything if the tag doesn't match both versions. No release is published if a CI check or any build fails.
+The workflow fails before it builds anything if the tag doesn't match both versions. No release or image tag is published if a CI check or any build fails.
 
 A tag with a suffix, such as `v1.0.0-rc.1`, publishes a pre-release. Its manifests can say either `1.0.0-rc.1` or `1.0.0`, so you can cut release candidates without a version bump. A pre-release image gets only its own version tag, so it never moves `latest` or `X.Y`.
 
