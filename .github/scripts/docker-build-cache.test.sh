@@ -80,6 +80,17 @@ else
   failures=$((failures + 1))
 fi
 
+# A release bumps the version in Cargo.toml, and with it the backend's own entry in Cargo.lock,
+# while its dependencies stay the same.
+sed -i.bak -E '1,/^version = /s/^version = .*/version = "99.0.0"/' "$context/backend/Cargo.toml"
+sed -i.bak -E '/^name = "hypecheck_api"$/{n;s/^version = .*/version = "99.0.0"/;}' "$context/backend/Cargo.lock"
+rm "$context"/backend/*.bak
+if build version-bump; then
+  expect_only_backend_compiled version-bump
+else
+  failures=$((failures + 1))
+fi
+
 if ((failures > 0)); then
   echo "$failures test(s) failed"
   exit 1
