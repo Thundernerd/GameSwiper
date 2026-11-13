@@ -14,15 +14,37 @@ RUN NUXT_PUBLIC_USE_MOCK=false npm run generate \
  # useMock defaults to true (nuxt.config.ts); the image must call /api, not the fixtures.
  && grep -q 'useMock:false' .output/public/index.html
 
+# The backend's manifests with its own version set to 0.0.0 in Cargo.toml and Cargo.lock. Every
+# release bumps that version, and its dependencies needn't recompile for it: the backend stage
+# copies these files, and a copy is cached on the files' content. The greps fail the build if the
+# manifests change shape and the seds stop matching, rather than quietly losing the cache.
+FROM debian:trixie-slim AS backend-manifests
+WORKDIR /src/backend
+COPY backend/Cargo.toml backend/Cargo.lock backend/rust-toolchain.toml ./
+RUN sed -i '1,/^version = /s/^version = .*/version = "0.0.0"/' Cargo.toml \
+ && sed -i '/^name = "hypecheck_api"$/{n;s/^version = .*/version = "0.0.0"/;}' Cargo.lock \
+ && grep -qx 'version = "0.0.0"' Cargo.toml \
+ && grep -A1 -x 'name = "hypecheck_api"' Cargo.lock | grep -qx 'version = "0.0.0"'
+
 # Same Debian release as the runtime stage, so the binary links against the glibc it runs with.
 FROM rust:1-slim-trixie AS backend
 WORKDIR /src/backend
-COPY backend/ ./
-# rustup installs the toolchain named in rust-toolchain.toml on the first cargo call. The binary
-# is copied out of the cached target directory, which later stages can't see.
+# Dependencies first, against a stub main.rs, so a change to src/ reuses this layer. target/ stays
+# in the layer rather than a cache mount: the release workflow's layer cache exports layers, not
+# mounts. rustup installs the toolchain named in rust-toolchain.toml on the first cargo call.
+# --locked fails the build if the masked Cargo.toml and Cargo.lock disagree. The stub covers a
+# single binary crate: a lib.rs or build.rs added later needs a stub here too.
+COPY --from=backend-manifests /src/backend/ ./
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/src/backend/target \
-    cargo build --release --locked \
+    mkdir src \
+ && echo 'fn main() {}' > src/main.rs \
+ && cargo build --release --locked \
+ && rm -r src
+COPY backend/ ./
+# Touch main.rs so cargo rebuilds the crate even if the copied file is older than the stub's build.
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    touch src/main.rs \
+ && cargo build --release --locked \
  && cp target/release/hypecheck_api /usr/local/bin/hypecheck_api
 
 FROM debian:trixie-slim
