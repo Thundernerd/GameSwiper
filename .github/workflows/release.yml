@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Lowercase: registries reject uppercase repository names, and github.repository is mixed case.
+  IMAGE: ghcr.io/thundernerd/hypecheck
+
 # Jobs pin runner images (ubuntu-24.04, not ubuntu-latest) like the build matrix, which needs exact
 # labels such as ubuntu-24.04-arm, so every release job builds on a known image.
 jobs:
@@ -213,13 +217,6 @@ jobs:
           - { platform: linux/amd64, runner: ubuntu-24.04, suffix: amd64 }
           - { platform: linux/arm64, runner: ubuntu-24.04-arm, suffix: arm64 }
     steps:
-      - name: Name the image
-        id: image
-        env:
-          REPOSITORY: ${{ github.repository }}
-        # Registries reject uppercase repository names.
-        run: echo "name=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
-
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v4
 
@@ -235,7 +232,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=${{ steps.image.outputs.name }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=image-${{ matrix.suffix }}
           cache-to: type=gha,scope=image-${{ matrix.suffix }},mode=max
 
@@ -266,7 +263,6 @@ jobs:
     env:
       VERSION: ${{ needs.version.outputs.version }}
       PRERELEASE: ${{ needs.version.outputs.prerelease }}
-      IMAGE: ghcr.io/${{ github.repository }}
     steps:
       - name: Check out
         uses: actions/checkout@v7
@@ -291,10 +287,9 @@ jobs:
       - name: Create and push the manifest list
         run: |
           mapfile -t tags < <(bash .github/scripts/docker-tags.sh "$IMAGE" "$VERSION" "$PRERELEASE")
-          image="${tags[0]%:*}"
 
           sources=()
-          for digest in digests/*; do sources+=("$image@sha256:${digest#digests/}"); done
+          for digest in digests/*; do sources+=("$IMAGE@sha256:${digest#digests/}"); done
           if [[ "${#sources[@]}" -ne 2 ]]; then
             echo "::error::expected 2 digests, found ${#sources[@]}"
             exit 1
@@ -306,13 +301,12 @@ jobs:
 
       - name: Check both architectures are published
         run: |
-          tag="$(bash .github/scripts/docker-tags.sh "$IMAGE" "$VERSION" "$PRERELEASE" | head -n 1)"
-          docker buildx imagetools inspect "$tag"
-          platforms="$(docker buildx imagetools inspect "$tag" --format '{{json .Manifest}}' \
+          platforms="$(docker buildx imagetools inspect "$IMAGE:$VERSION" --format '{{json .Manifest}}' \
             | jq -r '.manifests[].platform | "\(.os)/\(.architecture)"' | sort -u)"
+          echo "$IMAGE:$VERSION:"$'\n'"$platforms"
           for platform in linux/amd64 linux/arm64; do
             if ! grep -qx "$platform" <<<"$platforms"; then
-              echo "::error::$tag has no $platform image"
+              echo "::error::$IMAGE:$VERSION has no $platform image"
               exit 1
             fi
           done

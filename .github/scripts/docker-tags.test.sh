@@ -23,8 +23,6 @@ expect_pass "stable release gets its version, major.minor and latest" \
   ghcr.io/owner/app 1.2.3 false $'ghcr.io/owner/app:1.2.3\nghcr.io/owner/app:1.2\nghcr.io/owner/app:latest'
 expect_pass "pre-release gets only its own version" \
   ghcr.io/owner/app 1.2.3-rc.1 true 'ghcr.io/owner/app:1.2.3-rc.1'
-expect_pass "image name is lowercased, as registries require" \
-  ghcr.io/Owner/App 1.2.3-rc.1 true 'ghcr.io/owner/app:1.2.3-rc.1'
 
 if ((failures > 0)); then
   echo "$failures test(s) failed"

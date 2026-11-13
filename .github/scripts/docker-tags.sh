@@ -8,8 +8,7 @@
 # the tags people pull for a stable release.
 set -euo pipefail
 
-# Registries reject uppercase repository names, and github.repository is mixed case.
-image="$(tr '[:upper:]' '[:lower:]' <<<"$1")"
+image="$1"
 version="$2"
 prerelease="$3"
 
